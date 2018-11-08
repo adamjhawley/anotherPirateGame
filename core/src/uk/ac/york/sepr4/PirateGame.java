@@ -1,33 +1,29 @@
 package uk.ac.york.sepr4;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.Game;
+import uk.ac.york.sepr4.screen.GameScreen;
+import uk.ac.york.sepr4.screen.MenuScreen;
+import uk.ac.york.sepr4.screen.ScreenType;
 
-public class PirateGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
+public class PirateGame extends Game {
+
+	private MenuScreen menuScreen;
+	private GameScreen gameScreen;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+	    switchScreen(ScreenType.MENU);
 	}
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(img, 0, 0);
-		batch.end();
-	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
+	public void switchScreen(ScreenType screenType){
+		switch (screenType) {
+			case MENU:
+				if(menuScreen == null) menuScreen = new MenuScreen(this);
+				this.setScreen(menuScreen);
+				break;
+            case GAME:
+                if(gameScreen == null) gameScreen = new GameScreen(this);
+                this.setScreen(gameScreen);
+		}
 	}
 }

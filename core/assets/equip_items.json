@@ -1,0 +1,14 @@
+[
+  {
+    "class": "uk.ac.york.sepr4.object.entity.item.EquipItem",
+    "name": "Item1",
+    "lore": "desc for item1",
+    "attributes": {
+      "class": "uk.ac.york.sepr4.object.entity.attribute.Attributes",
+      "health": 10.0,
+      "maxHealth": 0.0,
+      "maxSpeed": 0,
+      "damageBoost": 0.0
+    }
+  }
+]
