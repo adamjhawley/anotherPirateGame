@@ -12,7 +12,10 @@ public class PirateGame extends Game {
 	
 	@Override
 	public void create () {
-	    switchScreen(ScreenType.MENU);
+	    //switchScreen(ScreenType.MENU);
+
+		//FOR DEVELOPMENT
+		switchScreen(ScreenType.GAME);
 	}
 
 	public void switchScreen(ScreenType screenType){
