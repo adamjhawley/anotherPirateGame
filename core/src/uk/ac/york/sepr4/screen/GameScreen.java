@@ -75,6 +75,7 @@ public class GameScreen implements Screen {
 
         orthographicCamera.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getWidth() / 2,0);
         orthographicCamera.update();
+        batch.setProjectionMatrix(orthographicCamera.combined);
         tiledMapRenderer.setView(orthographicCamera);
         tiledMapRenderer.render();
 

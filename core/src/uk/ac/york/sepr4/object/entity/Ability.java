@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.object.entity.attribute;
+package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;

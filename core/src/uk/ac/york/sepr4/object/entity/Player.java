@@ -9,24 +9,38 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
+import uk.ac.york.sepr4.object.entity.item.Item;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class Player extends LivingEntity {
 
     private Integer balance;
     private Integer xp;
-    //private List<Item> inventory;
+    private Double health;
+    private Double maxHealth;
+    private float maxSpeed;
+
+    private List<Item> inventory;
     private float angularSpeed;
     private boolean isAccelerating;
 
     public Player(){
-        this(0, 0, 0, 0, 0, 0f, false);
+        this(0, 0, 0, 0, 0, 20.0, 20.0, 120f, new ArrayList<Item>(), 0f, false);
     }
 
-    public Player(Integer id, float angle, float speed, Integer balance, Integer xp, float angularSpeed, boolean isAccelerating) {
+    public Player(Integer id, float angle, float speed, Integer balance, Integer xp, Double health, Double maxHealth, float maxSpeed, List<Item> inventory, float angularSpeed, boolean isAccelerating) {
         super(id, angle, speed, TextureManager.PLAYER);
         this.balance = balance;
         this.xp = xp;
+
+        this.health = health;
+        this.maxHealth = maxHealth;
+        this.maxSpeed = maxSpeed;
+        this.inventory = inventory;
+
         this.angularSpeed = angularSpeed;
         this.isAccelerating = isAccelerating;
 
@@ -49,23 +63,19 @@ public class Player extends LivingEntity {
         super.act(deltaTime);
 
         float speed = getSpeed();
-        float force = 0;
         float angle = getAngle();
 
-        if(speed > 0.2) {
-            force = getWidth() * speed * 0.05f;
-            force = Math.max(force, getWidth() * 4);
-            force = -force;
-        }
-
-        speed = Math.max(getSpeed(), 0);
-
         if(isAccelerating) {
-            force += getWidth() * 100;
+            if(speed > maxSpeed) {
+                speed = maxSpeed;
+            } else {
+                speed += 80f * deltaTime;
+            }
+        } else {
+            if(speed > 0) {
+                speed -= 20f * deltaTime;
+            }
         }
-
-        speed = force * deltaTime;
-
 
         float y = getY();
         float x = getX();
@@ -74,7 +84,7 @@ public class Player extends LivingEntity {
 
         setPosition(x, y);
 
-        angle += angularSpeed * deltaTime;
+        angle += (angularSpeed * deltaTime) * (speed/maxSpeed);
 
         setSpeed(speed);
         setAngle(angle);
@@ -97,16 +107,7 @@ public class Player extends LivingEntity {
                 playerTexture.getWidth(), playerTexture.getHeight(), false, false);
 
 
-//        if(mIsAccelerating) {
-//            Texture playerShipJetTexture = ResourceManager.getInstance().playerShipJetTexture;
-//            float jetAlpha = (float) (Math.cos((mElapsedTime )* 40f));
-//            batch.setColor(getColor().r, getColor().g, getColor().b,
-//                    alpha * jetAlpha * getColor().a * parentAlpha);
-//
-//            batch.draw(playerShipJetTexture, getX(), getY(), getWidth()/2, getHeight()/2,
-//                    getWidth(), getHeight(), 1, 1, angleDegrees, 0, 0,
-//                    playerShipJetTexture.getWidth(), playerShipJetTexture.getHeight(), false, false);
-//        }
+        //TODO: Render trail/bow wave?
     }
 
     private final InputListener inputListener = new InputListener() {
@@ -128,10 +129,6 @@ public class Player extends LivingEntity {
                 return true;
             }
 
-//            if(event.getKeyCode() == Input.Keys.SPACE) {
-//                //fire cannon?
-//                return true;
-//            }
 
             return false;
         }

@@ -17,7 +17,7 @@ public class ItemManager {
        // consumeItems = json.fromJson(Array.class, ConsumeItem.class, Gdx.files.internal("consume_items.json"));
         for(EquipItem item : equipItems){
             System.out.println(item.getName());
-            System.out.println(item.getAttributes().getHealth());
+            //System.out.println(item.getAttribute().getHealth());
 
         }
 
