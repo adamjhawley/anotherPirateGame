@@ -71,28 +71,12 @@ public class GameScreen implements Screen {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-//        stage.getBatch().setProjectionMatrix(orthographicCamera.combined);
-//        stage.getCamera().update();
-//
-//        Player player = entityManager.getOrCreatePlayer();
-//
-//        orthographicCamera.position.set(player.getX(), player.getY(),0);
-//        orthographicCamera.update();
-////
-////        tiledMapRenderer.setView(orthographicCamera);
-////        tiledMapRenderer.render();
-//
-//        stage.getViewport().apply();
-//        stage.act(delta);
-//        stage.draw();
-
         Player player = entityManager.getOrCreatePlayer();
 
         orthographicCamera.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getWidth() / 2,0);
         orthographicCamera.update();
         tiledMapRenderer.setView(orthographicCamera);
         tiledMapRenderer.render();
-
 
         stage.act(delta);
         stage.draw();
