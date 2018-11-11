@@ -33,21 +33,10 @@ public abstract class LivingEntity extends Entity {
         this.health = health;
         this.maxHealth = maxHealth;
         this.isDead = false;
+        this.currentCooldown = 0f;
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-        float alpha = 1;
 
-        batch.setColor(getColor().r, getColor().g, getColor().b,
-                alpha * getColor().a * parentAlpha);
-
-        float angleDegrees = getAngle() * 360 / 2 / 3.14f;
-        batch.draw(getTexture(), getX(), getY(), getWidth()/2, getHeight()/2,
-                getWidth(), getHeight(), 1, 1, angleDegrees, 0, 0,
-                getTexture().getWidth(), getTexture().getHeight(), false, false);
-    }
 
     public void addProjectileType(ProjectileType projectileType) {
         this.projectileTypes.add(projectileType);

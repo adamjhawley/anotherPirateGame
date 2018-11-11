@@ -2,6 +2,7 @@ package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Player extends LivingEntity {
+public class Player extends LivingEntity implements InputProcessor {
 
     private Integer balance;
     private Integer xp;
@@ -50,13 +51,6 @@ public class Player extends LivingEntity {
         addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
         setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
 
-        addListener(inputListener);
-    }
-
-    @Override
-    protected void setStage(Stage stage) {
-        super.setStage(stage);
-        stage.setKeyboardFocus(this);
     }
 
     @Override
@@ -104,75 +98,94 @@ public class Player extends LivingEntity {
         this.setSelectedProjectileType(projectileType);
     }
 
-    private final InputListener inputListener = new InputListener() {
-        @Override
-        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-            if(event.getKeyCode() == Input.Buttons.LEFT) {
-                Gdx.app.log("test","click");
-                float fireAngle = 0f;
-                //TODO: Calc angle
-                fire(fireAngle);
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public boolean keyDown(InputEvent event, int keycode) {
-            if(event.getKeyCode() == Input.Keys.UP) {
-                isAccelerating = true;
-                return true;
-            }
-
-            if(event.getKeyCode() == Input.Keys.LEFT) {
-                angularSpeed = 1;
-                return true;
-            }
-
-            if(event.getKeyCode() == Input.Keys.RIGHT) {
-                angularSpeed = -1;
-                return true;
-            }
-
-            for(ProjectileType projectileTypes : getProjectileTypes()) {
-                Gdx.app.log("test",projectileTypes.getKeyCode()+"");
-                if(event.getKeyCode() == projectileTypes.getKeyCode()) {
-                    Gdx.app.log("test","switch");
-
-                    switchWeapon(projectileTypes);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        @Override
-        public boolean keyUp(InputEvent event, int keycode) {
-            if(event.getKeyCode() == Input.Keys.UP) {
-                isAccelerating = false;
-                return true;
-            }
-
-            if(event.getKeyCode() == Input.Keys.LEFT) {
-                angularSpeed = 0;
-                return true;
-            }
-
-            if(event.getKeyCode() == Input.Keys.RIGHT) {
-                angularSpeed = 0;
-                return true;
-            }
-            return false;
-        }
-    };
-
     @Override
     public void fire(float angle) {
+        Gdx.app.log("test", "firing");
         ProjectileType projectileType = this.getSelectedProjectileType();
+        Gdx.app.log("test", getCurrentCooldown()+"");
         if(projectileType.getCooldown() <= getCurrentCooldown()) {
+            Gdx.app.log("test", "cooldown ok");
             setCurrentCooldown(0f);
             GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
         }
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        if(keycode == Input.Keys.UP) {
+            isAccelerating = true;
+            return true;
+        }
+
+        if(keycode == Input.Keys.LEFT) {
+            angularSpeed = 1;
+            return true;
+        }
+
+        if(keycode == Input.Keys.RIGHT) {
+            angularSpeed = -1;
+            return true;
+        }
+
+        for(ProjectileType projectileTypes : getProjectileTypes()) {
+            Gdx.app.log("test",projectileTypes.getKeyCode()+"");
+            if(keycode == projectileTypes.getKeyCode()) {
+                Gdx.app.log("test","switch");
+
+                switchWeapon(projectileTypes);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if(keycode == Input.Keys.UP) {
+            isAccelerating = false;
+            return true;
+        }
+
+        if(keycode == Input.Keys.LEFT) {
+            angularSpeed = 0;
+            return true;
+        }
+
+        if(keycode == Input.Keys.RIGHT) {
+            angularSpeed = 0;
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

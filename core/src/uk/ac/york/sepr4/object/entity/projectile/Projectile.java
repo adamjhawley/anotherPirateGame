@@ -1,5 +1,6 @@
 package uk.ac.york.sepr4.object.entity.projectile;
 
+import com.badlogic.gdx.Gdx;
 import lombok.Data;
 import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
@@ -10,19 +11,21 @@ public class Projectile extends Entity {
     private LivingEntity shooter;
     private ProjectileType projectileType;
 
-    public Projectile(Integer id, ProjectileType projectileType, LivingEntity shooter, float angle, float speed) {
+    public Projectile(Integer id, ProjectileType projectileType, LivingEntity shooter, float speed, float angle) {
+        //Take speed from the shooter so bullet has a speed relative to the shooter
+        //TODO: Make the speed direction dependant (how much of the force is in the direction of the projectile)
         super(id, angle, speed+projectileType.getBaseSpeed(), projectileType.getTexture());
         this.shooter = shooter;
         this.projectileType = projectileType;
-
-        setPosition(shooter.getX(), shooter.getY());
+        Gdx.app.log("testagnel",""+angle);
+        setSize(getTexture().getWidth(), getTexture().getHeight());
+        setPosition(shooter.getCentre().x, shooter.getCentre().y);
     }
 
     @Override
     public void act(float deltaTime) {
         super.act(deltaTime);
-
-        //TODO: Cleanup
+        //TODO: Cleanup and check if projectile is too far out of view
         float speed = getSpeed();
         float angle = getAngle();
 

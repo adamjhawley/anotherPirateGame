@@ -5,8 +5,8 @@
     "damage": 5.0,
     "triggerKey": "1",
     "textureStr": "cannonball.png",
-    "cooldown":10,
-    "baseSpeed":10
+    "cooldown":0.1,
+    "baseSpeed":25
 
   }
 ]

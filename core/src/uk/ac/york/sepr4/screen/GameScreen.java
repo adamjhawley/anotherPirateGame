@@ -1,8 +1,6 @@
 package uk.ac.york.sepr4.screen;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,7 +8,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -22,7 +22,7 @@ import uk.ac.york.sepr4.object.entity.item.ItemManager;
 import uk.ac.york.sepr4.object.entity.projectile.Projectile;
 import uk.ac.york.sepr4.object.entity.projectile.ProjectileManager;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen, InputProcessor {
 
     private PirateGame pirateGame;
     private Stage stage;
@@ -37,6 +37,8 @@ public class GameScreen implements Screen {
     private EntityManager entityManager;
     @Getter
     private ProjectileManager projectileManager;
+
+    private InputMultiplexer inputMultiplexer;
 
     private static GameScreen gameScreen;
 
@@ -68,14 +70,19 @@ public class GameScreen implements Screen {
 
         stage.addActor(entityManager.getOrCreatePlayer());
 
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
 
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(inputMultiplexer);
     }
+
 
 
     @Override
@@ -108,6 +115,7 @@ public class GameScreen implements Screen {
     private void handleProjectiles() {
         for(Projectile projectile:projectileManager.getProjectileList()) {
             if(!stage.getActors().contains(projectile, true)) {
+                Gdx.app.log("test", "adding projectile");
                 stage.addActor(projectile);
             }
         }
@@ -140,5 +148,56 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if(button == Input.Buttons.LEFT) {
+            Gdx.app.log("test","click at "+screenX+", "+screenY);
+            Player player = entityManager.getOrCreatePlayer();
+            Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
+            float fireAngle = (float)( -Math.atan2(player.getCentre().x-clickLoc.x, player.getCentre().y-clickLoc.y));
+            Gdx.app.log("test","click at "+fireAngle);
+
+            //TODO: Calc angle
+            player.fire(fireAngle);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }
