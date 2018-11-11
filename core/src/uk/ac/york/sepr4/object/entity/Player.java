@@ -2,14 +2,16 @@ package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.entity.item.Item;
+import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
+import uk.ac.york.sepr4.screen.GameScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +21,7 @@ public class Player extends LivingEntity {
 
     private Integer balance;
     private Integer xp;
-    private Double health;
-    private Double maxHealth;
+
     private float maxSpeed;
 
     private List<Item> inventory;
@@ -32,12 +33,10 @@ public class Player extends LivingEntity {
     }
 
     public Player(Integer id, float angle, float speed, Integer balance, Integer xp, Double health, Double maxHealth, float maxSpeed, List<Item> inventory, float angularSpeed, boolean isAccelerating) {
-        super(id, angle, speed, TextureManager.PLAYER);
+        super(id, angle, speed, health, maxHealth, TextureManager.PLAYER);
         this.balance = balance;
         this.xp = xp;
 
-        this.health = health;
-        this.maxHealth = maxHealth;
         this.maxSpeed = maxSpeed;
         this.inventory = inventory;
 
@@ -46,10 +45,12 @@ public class Player extends LivingEntity {
 
         setPosition(50, 50);
 
-        float shipSize = Gdx.graphics.getWidth() / 25;
         setSize(getTexture().getWidth(), getTexture().getHeight());
-        addListener(inputListener);
 
+        addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
+        setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
+
+        addListener(inputListener);
     }
 
     @Override
@@ -61,6 +62,8 @@ public class Player extends LivingEntity {
     @Override
     public void act(float deltaTime){
         super.act(deltaTime);
+        setCurrentCooldown(getCurrentCooldown()+deltaTime);
+
 
         float speed = getSpeed();
         float angle = getAngle();
@@ -94,23 +97,25 @@ public class Player extends LivingEntity {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
-        float alpha = 1;
-
-        batch.setColor(getColor().r, getColor().g, getColor().b,
-                alpha * getColor().a * parentAlpha);
-
-        Texture playerTexture = getTexture();
-
-        float angleDegrees = getAngle() * 360 / 2 / 3.14f;
-        batch.draw(playerTexture, getX(), getY(), getWidth()/2, getHeight()/2,
-                getWidth(), getHeight(), 1, 1, angleDegrees, 0, 0,
-                playerTexture.getWidth(), playerTexture.getHeight(), false, false);
-
-
         //TODO: Render trail/bow wave?
     }
 
+    private void switchWeapon(ProjectileType projectileType) {
+        this.setSelectedProjectileType(projectileType);
+    }
+
     private final InputListener inputListener = new InputListener() {
+        @Override
+        public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            if(event.getKeyCode() == Input.Buttons.LEFT) {
+                Gdx.app.log("test","click");
+                float fireAngle = 0f;
+                //TODO: Calc angle
+                fire(fireAngle);
+                return true;
+            }
+            return false;
+        }
 
         @Override
         public boolean keyDown(InputEvent event, int keycode) {
@@ -129,6 +134,15 @@ public class Player extends LivingEntity {
                 return true;
             }
 
+            for(ProjectileType projectileTypes : getProjectileTypes()) {
+                Gdx.app.log("test",projectileTypes.getKeyCode()+"");
+                if(event.getKeyCode() == projectileTypes.getKeyCode()) {
+                    Gdx.app.log("test","switch");
+
+                    switchWeapon(projectileTypes);
+                    return true;
+                }
+            }
 
             return false;
         }
@@ -149,10 +163,16 @@ public class Player extends LivingEntity {
                 angularSpeed = 0;
                 return true;
             }
-
-
             return false;
         }
     };
 
+    @Override
+    public void fire(float angle) {
+        ProjectileType projectileType = this.getSelectedProjectileType();
+        if(projectileType.getCooldown() <= getCurrentCooldown()) {
+            setCurrentCooldown(0f);
+            GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
+        }
+    }
 }

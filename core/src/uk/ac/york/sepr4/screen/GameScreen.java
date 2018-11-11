@@ -1,24 +1,26 @@
 package uk.ac.york.sepr4.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.object.entity.item.ItemManager;
+import uk.ac.york.sepr4.object.entity.projectile.Projectile;
+import uk.ac.york.sepr4.object.entity.projectile.ProjectileManager;
 
 public class GameScreen implements Screen {
 
@@ -33,12 +35,21 @@ public class GameScreen implements Screen {
 
     private ItemManager itemManager;
     private EntityManager entityManager;
+    @Getter
+    private ProjectileManager projectileManager;
+
+    private static GameScreen gameScreen;
+
+    public static GameScreen getInstance() {
+        return gameScreen;
+    }
 
     public GameScreen(PirateGame pirateGame) {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
         this.pirateGame = pirateGame;
+        gameScreen = this;
 
         orthographicCamera = new OrthographicCamera();
         orthographicCamera.setToOrtho(false, w,h);
@@ -48,22 +59,24 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
         stage = new Stage(stretchViewport, batch);
 
-        tiledMap = new TmxMapLoader().load("FullSea.tmx");
+        tiledMap = new TmxMapLoader().load("TestMap/PP_Sea_100.tmx");
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1/2f);
 
         this.itemManager = new ItemManager();
         this.entityManager = new EntityManager();
+        this.projectileManager = new ProjectileManager(entityManager);
 
         stage.addActor(entityManager.getOrCreatePlayer());
+
+
         Gdx.input.setInputProcessor(stage);
-
     }
-
 
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
+
 
     @Override
     public void render(float delta) {
@@ -73,7 +86,11 @@ public class GameScreen implements Screen {
 
         Player player = entityManager.getOrCreatePlayer();
 
-        orthographicCamera.position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getWidth() / 2,0);
+        handleProjectiles();
+        handleEnemies();
+        checkCollisions();
+
+        orthographicCamera.position.set(player.getX() + player.getWidth() / 2f, player.getY() + player.getHeight() / 2f,0);
         orthographicCamera.update();
         batch.setProjectionMatrix(orthographicCamera.combined);
         tiledMapRenderer.setView(orthographicCamera);
@@ -82,6 +99,22 @@ public class GameScreen implements Screen {
         stage.act(delta);
         stage.draw();
 
+    }
+
+    private void checkCollisions() {
+        //TODO: CHECK!
+    }
+
+    private void handleProjectiles() {
+        for(Projectile projectile:projectileManager.getProjectileList()) {
+            if(!stage.getActors().contains(projectile, true)) {
+                stage.addActor(projectile);
+            }
+        }
+    }
+
+    private void handleEnemies() {
+        //
     }
 
     @Override

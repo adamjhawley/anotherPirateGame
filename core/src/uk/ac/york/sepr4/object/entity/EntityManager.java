@@ -8,7 +8,6 @@ public class EntityManager {
     private Player player;
 
     public EntityManager() {
-
     }
 
     public Player getOrCreatePlayer() {
@@ -17,5 +16,6 @@ public class EntityManager {
         }
         return player;
     }
+
 
 }

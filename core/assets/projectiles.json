@@ -1,0 +1,12 @@
+[
+  {
+    "class": "uk.ac.york.sepr4.object.entity.projectile.ProjectileType",
+    "name": "Basic Cannonball",
+    "damage": 5.0,
+    "triggerKey": "1",
+    "textureStr": "cannonball.png",
+    "cooldown":10,
+    "baseSpeed":10
+
+  }
+]

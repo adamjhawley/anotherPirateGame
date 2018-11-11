@@ -1,6 +1,7 @@
 package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import lombok.Data;
@@ -20,6 +21,11 @@ public abstract class Entity extends Actor {
         this.texture = texture;
 
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(getX(), getY(), getWidth(), getHeight());
 
     }
 
