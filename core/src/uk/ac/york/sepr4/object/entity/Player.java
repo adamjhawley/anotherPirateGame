@@ -23,6 +23,7 @@ public class Player extends LivingEntity implements InputProcessor {
     private List<Item> inventory;
     private float angularSpeed;
     private boolean isAccelerating;
+    private boolean isDeaccelerating;
 
     public Player(){
         this(0, 0, 0, 0, 0, 20.0, 20.0, 120f, new ArrayList<Item>(), 0f, false);
