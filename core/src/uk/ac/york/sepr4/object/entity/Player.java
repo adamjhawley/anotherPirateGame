@@ -19,6 +19,7 @@ public class Player extends LivingEntity implements InputProcessor {
     private Integer xp;
 
     private float maxSpeed;
+    private Integer turningSpeed;
 
     private List<Item> inventory;
     private float angularSpeed;
@@ -26,19 +27,21 @@ public class Player extends LivingEntity implements InputProcessor {
     private boolean isDeaccelerating;
 
     public Player(){
-        this(0, 0, 0, 0, 0, 20.0, 20.0, 120f, new ArrayList<Item>(), 0f, false);
+        this(0, 0, 0, 0, 0, 20.0, 20.0, 120f, new ArrayList<Item>(), 0f, false, false, 1);
     }
 
-    public Player(Integer id, float angle, float speed, Integer balance, Integer xp, Double health, Double maxHealth, float maxSpeed, List<Item> inventory, float angularSpeed, boolean isAccelerating) {
+    public Player(Integer id, float angle, float speed, Integer balance, Integer xp, Double health, Double maxHealth, float maxSpeed, List<Item> inventory, float angularSpeed, boolean isAccelerating, boolean isDeaccelerating, Integer turningSpeed) {
         super(id, angle, speed, health, maxHealth, TextureManager.PLAYER);
         this.balance = balance;
         this.xp = xp;
 
         this.maxSpeed = maxSpeed;
         this.inventory = inventory;
+        this.turningSpeed = turningSpeed;
 
         this.angularSpeed = angularSpeed;
         this.isAccelerating = isAccelerating;
+        this.isDeaccelerating = isDeaccelerating;
 
         setPosition(50, 50);
 
@@ -59,10 +62,14 @@ public class Player extends LivingEntity implements InputProcessor {
         float angle = getAngle();
 
         if(isAccelerating) {
-            if(speed > maxSpeed) {
+            if (speed > maxSpeed) {
                 speed = maxSpeed;
             } else {
-                speed += 80f * deltaTime;
+                speed += 40f * deltaTime;
+            }
+        } else if(isDeaccelerating) {
+            if(speed > 0) {
+                speed -= 80f * deltaTime;
             }
         } else {
             if(speed > 0) {
@@ -110,13 +117,18 @@ public class Player extends LivingEntity implements InputProcessor {
             return true;
         }
 
+        if(keycode == Input.Keys.DOWN) {
+            isDeaccelerating = true;
+            return true;
+        }
+
         if(keycode == Input.Keys.LEFT) {
-            angularSpeed = 1;
+            angularSpeed = turningSpeed;
             return true;
         }
 
         if(keycode == Input.Keys.RIGHT) {
-            angularSpeed = -1;
+            angularSpeed = -turningSpeed;
             return true;
         }
 
@@ -136,6 +148,11 @@ public class Player extends LivingEntity implements InputProcessor {
     public boolean keyUp(int keycode) {
         if(keycode == Input.Keys.UP) {
             isAccelerating = false;
+            return true;
+        }
+
+        if(keycode == Input.Keys.DOWN) {
+            isDeaccelerating = false;
             return true;
         }
 

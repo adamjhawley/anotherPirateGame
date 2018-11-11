@@ -6,7 +6,7 @@
     "triggerKey": "1",
     "textureStr": "cannonball.png",
     "cooldown":0.1,
-    "baseSpeed":25
+    "baseSpeed":100
 
   }
 ]
