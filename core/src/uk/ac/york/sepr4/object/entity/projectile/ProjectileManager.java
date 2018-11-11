@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Json;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
-
+import uk.ac.york.sepr4.screen.GameScreen;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +16,13 @@ public class ProjectileManager {
     private Array<ProjectileType> projectileTypeList;
 
     @Getter
-    private List<Projectile> projectileList;
+    private Array<Projectile> projectileList;
 
     private EntityManager entityManager;
 
     public ProjectileManager(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.projectileList = new ArrayList<Projectile>();
+        this.projectileList = new Array<Projectile>();
 
         Json json = new Json();
         projectileTypeList = json.fromJson(Array.class, ProjectileType.class, Gdx.files.internal("projectiles.json"));
@@ -33,12 +33,23 @@ public class ProjectileManager {
     }
 
     private Integer getNextProjectileID(){
-        return projectileList.size();
+        return projectileList.size;
     }
 
     public void spawnProjectile(ProjectileType projectileType, LivingEntity livingEntity, float speed, float angle) {
         Projectile projectile = new Projectile(getNextProjectileID(), projectileType, livingEntity, speed, angle);
         projectileList.add(projectile);
+    }
+
+    public Array<Projectile> removeNonActiveProjectiles() {
+        Array<Projectile> toRemove = new Array<Projectile>();
+        for(Projectile projectile : projectileList) {
+            if(!projectile.isActive()){
+                toRemove.add(projectile);
+            }
+        }
+        projectileList.removeAll(toRemove, true);
+        return toRemove;
     }
 
 }

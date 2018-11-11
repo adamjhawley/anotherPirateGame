@@ -1,13 +1,11 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import lombok.Data;
-import uk.ac.york.sepr4.object.entity.projectile.Projectile;
 
 @Data
 public abstract class Entity extends Actor {
@@ -31,6 +29,10 @@ public abstract class Entity extends Actor {
         return new Vector2(getX()+(getTexture().getWidth()/2f), getY()+(getTexture().getHeight()/2f));
     }
 
+    public double distanceFrom(Entity entity){
+        return Math.sqrt(Math.pow((entity.getX() - this.getX()), 2) + Math.pow((entity.getY() - this.getY()), 2));
+    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
@@ -38,10 +40,6 @@ public abstract class Entity extends Actor {
 
         batch.setColor(getColor().r, getColor().g, getColor().b,
                 alpha * getColor().a * parentAlpha);
-
-        if(this instanceof Projectile){
-         //   Gdx.app.log("tes","rendering projectile with texture: "+getTexture().toString());
-        }
 
         float angleDegrees = getAngle() * 360 / 2 / 3.14f;
         batch.draw(getTexture(), getX(), getY(), getWidth()/2, getHeight()/2,

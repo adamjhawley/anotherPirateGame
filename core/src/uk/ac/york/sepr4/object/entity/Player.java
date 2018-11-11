@@ -4,16 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.entity.item.Item;
 import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,11 +95,8 @@ public class Player extends LivingEntity implements InputProcessor {
 
     @Override
     public void fire(float angle) {
-        Gdx.app.log("test", "firing");
         ProjectileType projectileType = this.getSelectedProjectileType();
-        Gdx.app.log("test", getCurrentCooldown()+"");
         if(projectileType.getCooldown() <= getCurrentCooldown()) {
-            Gdx.app.log("test", "cooldown ok");
             setCurrentCooldown(0f);
             GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
         }
@@ -128,9 +120,8 @@ public class Player extends LivingEntity implements InputProcessor {
         }
 
         for(ProjectileType projectileTypes : getProjectileTypes()) {
-            Gdx.app.log("test",projectileTypes.getKeyCode()+"");
             if(keycode == projectileTypes.getKeyCode()) {
-                Gdx.app.log("test","switch");
+                Gdx.app.log("Test Log","switching weapon to "+projectileTypes.getName());
 
                 switchWeapon(projectileTypes);
                 return true;

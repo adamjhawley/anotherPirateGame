@@ -113,9 +113,11 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     private void handleProjectiles() {
+        stage.getActors().removeAll(projectileManager.removeNonActiveProjectiles(), true);
+
         for(Projectile projectile:projectileManager.getProjectileList()) {
             if(!stage.getActors().contains(projectile, true)) {
-                Gdx.app.log("test", "adding projectile");
+                Gdx.app.log("Test Log", "Adding new projectile to actors list.");
                 stage.addActor(projectile);
             }
         }
@@ -168,13 +170,10 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.LEFT) {
-            Gdx.app.log("test","click at "+screenX+", "+screenY);
             Player player = entityManager.getOrCreatePlayer();
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float)( -Math.atan2(player.getCentre().x-clickLoc.x, player.getCentre().y-clickLoc.y));
-            Gdx.app.log("test","click at "+fireAngle);
-
-            //TODO: Calc angle
+            Gdx.app.log("Test Log","Firing: Click at (rad) "+fireAngle);
             player.fire(fireAngle);
             return true;
         }
