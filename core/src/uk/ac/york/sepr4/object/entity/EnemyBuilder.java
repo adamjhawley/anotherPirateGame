@@ -40,4 +40,9 @@ public class EnemyBuilder {
         return this;
     }
 
+    public EnemyBuilder maxSpeed(float maxSpeed) {
+        this.maxSpeed = maxSpeed;
+        return this;
+    }
+
 }

@@ -33,7 +33,7 @@ public class ProjectileType {
     }
 
     public Texture getTexture() {
-        return new Texture(Gdx.files.internal(textureStr));
+        return new Texture(Gdx.files.internal("textures/"+textureStr));
     }
 
 }
