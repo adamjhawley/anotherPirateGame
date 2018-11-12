@@ -30,22 +30,11 @@ public class Projectile extends Entity {
 
     @Override
     public void act(float deltaTime) {
-        super.act(deltaTime);
-
         if(this.distanceFrom(shooter) > 1000) {
             Gdx.app.log("Test Log","Clearing up distant projectile!");
             this.active = false;
         } else {
-            //TODO: Cleanup and check if projectile is too far out of view
-            float speed = getSpeed();
-            float angle = getAngle();
-
-            float y = getY();
-            float x = getX();
-            y -= speed * deltaTime * Math.cos(angle);
-            x += speed * deltaTime * Math.sin(angle);
-
-            setPosition(x, y);
+            super.act(deltaTime);
         }
     }
 

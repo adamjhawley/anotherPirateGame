@@ -17,77 +17,19 @@ public class Player extends LivingEntity implements InputProcessor {
 
     private Integer balance;
     private Integer xp;
-
-    private float maxSpeed;
-    private Integer turningSpeed;
-
     private List<Item> inventory;
-    private float angularSpeed;
-    private boolean isAccelerating;
-    private boolean isDeaccelerating;
 
-    public Player(){
-        this(0, 0, 0, 0, 0, 20.0, 20.0, 120f, new ArrayList<Item>(), 0f, false, false, 1);
-    }
-
-    public Player(Integer id, float angle, float speed, Integer balance, Integer xp, Double health, Double maxHealth, float maxSpeed, List<Item> inventory, float angularSpeed, boolean isAccelerating, boolean isDeaccelerating, Integer turningSpeed) {
-        super(id, angle, speed, health, maxHealth, TextureManager.PLAYER);
-        this.balance = balance;
-        this.xp = xp;
-
-        this.maxSpeed = maxSpeed;
-        this.inventory = inventory;
-        this.turningSpeed = turningSpeed;
-
-        this.angularSpeed = angularSpeed;
-        this.isAccelerating = isAccelerating;
-        this.isDeaccelerating = isDeaccelerating;
+    public Player() {
+        super(0, TextureManager.PLAYER);
+        this.balance = 0;
+        this.xp = 0;
+        this.inventory = new ArrayList<Item>();
 
         setPosition(50, 50);
-
-        setSize(getTexture().getWidth(), getTexture().getHeight());
 
         addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
         setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
 
-    }
-
-    @Override
-    public void act(float deltaTime){
-        super.act(deltaTime);
-        setCurrentCooldown(getCurrentCooldown()+deltaTime);
-
-
-        float speed = getSpeed();
-        float angle = getAngle();
-
-        if(isAccelerating) {
-            if (speed > maxSpeed) {
-                speed = maxSpeed;
-            } else {
-                speed += 40f * deltaTime;
-            }
-        } else if(isDeaccelerating) {
-            if(speed > 0) {
-                speed -= 80f * deltaTime;
-            }
-        } else {
-            if(speed > 0) {
-                speed -= 20f * deltaTime;
-            }
-        }
-
-        float y = getY();
-        float x = getX();
-        y -= speed * deltaTime * Math.cos(angle);
-        x += speed * deltaTime * Math.sin(angle);
-
-        setPosition(x, y);
-
-        angle += (angularSpeed * deltaTime) * (speed/maxSpeed);
-
-        setSpeed(speed);
-        setAngle(angle);
     }
 
     @Override
@@ -113,22 +55,22 @@ public class Player extends LivingEntity implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.UP) {
-            isAccelerating = true;
+            setAccelerating(true);
             return true;
         }
 
         if(keycode == Input.Keys.DOWN) {
-            isDeaccelerating = true;
+            setBraking(true);
             return true;
         }
 
         if(keycode == Input.Keys.LEFT) {
-            angularSpeed = turningSpeed;
+            setAngularSpeed(getTurningSpeed());
             return true;
         }
 
         if(keycode == Input.Keys.RIGHT) {
-            angularSpeed = -turningSpeed;
+            setAngularSpeed(-getTurningSpeed());
             return true;
         }
 
@@ -147,22 +89,22 @@ public class Player extends LivingEntity implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         if(keycode == Input.Keys.UP) {
-            isAccelerating = false;
+            setAccelerating(false);
             return true;
         }
 
         if(keycode == Input.Keys.DOWN) {
-            isDeaccelerating = false;
+            setBraking(false);
             return true;
         }
 
         if(keycode == Input.Keys.LEFT) {
-            angularSpeed = 0;
+            setAngularSpeed(0);
             return true;
         }
 
         if(keycode == Input.Keys.RIGHT) {
-            angularSpeed = 0;
+            setAngularSpeed(0);
             return true;
         }
         return false;

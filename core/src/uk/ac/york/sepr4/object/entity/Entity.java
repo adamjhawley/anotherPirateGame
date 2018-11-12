@@ -11,8 +11,7 @@ import lombok.Data;
 public abstract class Entity extends Actor {
 
     private Integer id;
-    private float angle;
-    private float speed;
+    private float angle, speed;
     private Texture texture;
 
     public Entity(Integer id, float angle, float speed, Texture texture) {
@@ -21,7 +20,10 @@ public abstract class Entity extends Actor {
         this.speed = speed;
         this.texture = texture;
 
+        //Stops texture glitches when moving
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        //Required to display sprite
+        setSize(getTexture().getWidth(), getTexture().getHeight());
 
     }
 
@@ -45,6 +47,22 @@ public abstract class Entity extends Actor {
         batch.draw(getTexture(), getX(), getY(), getWidth()/2, getHeight()/2,
                 getWidth(), getHeight(), 1, 1, angleDegrees, 0, 0,
                 getTexture().getWidth(), getTexture().getHeight(), false, false);
+    }
+
+    @Override
+    public void act(float deltaTime) {
+        super.act(deltaTime);
+
+            //TODO: Cleanup and check if projectile is too far out of view
+            float speed = getSpeed();
+            float angle = getAngle();
+
+            float y = getY();
+            float x = getX();
+            y -= speed * deltaTime * Math.cos(angle);
+            x += speed * deltaTime * Math.sin(angle);
+
+            setPosition(x, y);
     }
 
     public Rectangle getBounds() {

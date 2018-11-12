@@ -8,6 +8,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,6 +19,7 @@ import lombok.Data;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.entity.Enemy;
+import uk.ac.york.sepr4.object.entity.EnemyBuilder;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.object.entity.item.ItemManager;
@@ -71,7 +73,8 @@ public class GameScreen implements Screen, InputProcessor {
         this.projectileManager = new ProjectileManager(entityManager);
 
         stage.addActor(entityManager.getOrCreatePlayer());
-        stage.addActor(entityManager.getOrCreateEnemy()); //Will need to changed
+        Enemy enemy = new EnemyBuilder().buildEnemy(entityManager.getNextEnemyID(), new Vector2(200f, 200f));
+        stage.addActor(enemy); //Will need to changed
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
@@ -95,7 +98,6 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Player player = entityManager.getOrCreatePlayer();
-        Enemy enemy = entityManager.getOrCreateEnemy();
 
         handleProjectiles();
         handleEnemies();
