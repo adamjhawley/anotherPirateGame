@@ -1,10 +1,12 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import lombok.Data;
+import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.entity.item.Item;
 import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
@@ -23,22 +25,29 @@ public class Enemy extends LivingEntity {
     private boolean isDeaccelerating;
 
     public Enemy() {
-        this(1, 0, 20, 20.0, 20.0, 0f, false, false);
+        this(1, 0, 0, 20.0, 20.0, 0f, false, false, 120f);
     }
-    public Enemy(Integer id, float angle, float speed, Double health, Double maxHealth, float angularSpeed, boolean isAccelerating, boolean isDeaccelerating){
+
+    public Enemy(Integer id, float angle, float speed, Double health, Double maxHealth, float angularSpeed, boolean isAccelerating, boolean isDeaccelerating, float maxSpeed){
         super(id, angle, speed, health, maxHealth, TextureManager.ENEMY);
         setPosition(50, 50);
         setSize(getTexture().getWidth(), getTexture().getHeight());
 
+        this.maxSpeed = maxSpeed;
+
         this.angularSpeed = angularSpeed;
         this.isAccelerating = isAccelerating;
         this.isDeaccelerating = isDeaccelerating;
+
+        addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
+        setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
     }
 
     @Override
     public void act(float deltaTime) {
         super.act(deltaTime);
         setCurrentCooldown(getCurrentCooldown()+deltaTime);
+        AI();
 
         float speed = getSpeed();
         float angle = getAngle();
@@ -47,15 +56,15 @@ public class Enemy extends LivingEntity {
             if (speed > maxSpeed) {
                 speed = maxSpeed;
             } else {
-                speed += 30f * deltaTime;
+                speed += 39f * deltaTime;
             }
         } else if(isDeaccelerating) {
             if(speed > 0) {
-                speed -= 70f * deltaTime;
+                speed -= 79f * deltaTime;
             }
         } else {
             if(speed > 0) {
-                speed -= 20f * deltaTime;
+                speed -= 19f * deltaTime;
             }
         }
 
@@ -88,6 +97,6 @@ public class Enemy extends LivingEntity {
     }
 
     private void AI() {
-
+        //Player player =
     }
 }

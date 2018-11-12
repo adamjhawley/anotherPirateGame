@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import lombok.Data;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.entity.Enemy;
@@ -202,4 +203,5 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }
