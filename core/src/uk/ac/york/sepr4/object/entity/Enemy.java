@@ -15,13 +15,61 @@ import java.util.List;
 @Data
 public class Enemy extends LivingEntity {
 
+    private float maxSpeed;
+    private Integer turningSpeed;
+
+    private float angularSpeed;
+    private boolean isAccelerating;
+    private boolean isDeaccelerating;
+
     public Enemy() {
-        this(1, 0, 20, 20.0, 20.0);
+        this(1, 0, 20, 20.0, 20.0, 0f, false, false);
     }
-    public Enemy(Integer id, float angle, float speed, Double health, Double maxHealth){
+    public Enemy(Integer id, float angle, float speed, Double health, Double maxHealth, float angularSpeed, boolean isAccelerating, boolean isDeaccelerating){
         super(id, angle, speed, health, maxHealth, TextureManager.ENEMY);
         setPosition(50, 50);
         setSize(getTexture().getWidth(), getTexture().getHeight());
+
+        this.angularSpeed = angularSpeed;
+        this.isAccelerating = isAccelerating;
+        this.isDeaccelerating = isDeaccelerating;
+    }
+
+    @Override
+    public void act(float deltaTime) {
+        super.act(deltaTime);
+        setCurrentCooldown(getCurrentCooldown()+deltaTime);
+
+        float speed = getSpeed();
+        float angle = getAngle();
+
+        if(isAccelerating) {
+            if (speed > maxSpeed) {
+                speed = maxSpeed;
+            } else {
+                speed += 30f * deltaTime;
+            }
+        } else if(isDeaccelerating) {
+            if(speed > 0) {
+                speed -= 70f * deltaTime;
+            }
+        } else {
+            if(speed > 0) {
+                speed -= 20f * deltaTime;
+            }
+        }
+
+        float y = getY();
+        float x = getX();
+        y -= speed * deltaTime * Math.cos(angle);
+        x += speed * deltaTime * Math.sin(angle);
+
+        setPosition(x, y);
+
+        angle += (angularSpeed * deltaTime) * (speed/maxSpeed);
+
+        setSpeed(speed);
+        setAngle(angle);
     }
 
     @Override
@@ -37,5 +85,9 @@ public class Enemy extends LivingEntity {
         super.draw(batch, parentAlpha);
 
         //TODO: Render trail/bow wave?
+    }
+
+    private void AI() {
+
     }
 }
