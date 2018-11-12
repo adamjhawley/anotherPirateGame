@@ -16,10 +16,12 @@ import java.util.List;
 public class Enemy extends LivingEntity {
 
     public Enemy() {
-        this(1, 0, 0, 20.0, 20.0);
+        this(1, 0, 20, 20.0, 20.0);
     }
     public Enemy(Integer id, float angle, float speed, Double health, Double maxHealth){
         super(id, angle, speed, health, maxHealth, TextureManager.ENEMY);
+        setPosition(50, 50);
+        setSize(getTexture().getWidth(), getTexture().getHeight());
     }
 
     @Override
@@ -29,5 +31,11 @@ public class Enemy extends LivingEntity {
             setCurrentCooldown(0f);
             GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
         }
+    }
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+
+        //TODO: Render trail/bow wave?
     }
 }

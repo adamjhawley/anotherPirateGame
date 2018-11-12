@@ -6,6 +6,7 @@ import lombok.Data;
 public class EntityManager {
 
     private Player player;
+    private Enemy enemy;
 
     public EntityManager() {
     }
@@ -15,6 +16,13 @@ public class EntityManager {
             player = new Player();
         }
         return player;
+    }
+
+    public Enemy getOrCreateEnemy() { //Will need to be changed
+        if(enemy == null) {
+            enemy = new Enemy();
+        }
+        return enemy;
     }
 
 
