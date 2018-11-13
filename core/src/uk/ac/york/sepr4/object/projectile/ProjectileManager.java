@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.object.entity.projectile;
+package uk.ac.york.sepr4.object.projectile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
@@ -6,9 +6,6 @@ import com.badlogic.gdx.utils.Json;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
-import uk.ac.york.sepr4.screen.GameScreen;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProjectileManager {
 

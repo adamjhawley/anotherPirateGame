@@ -11,20 +11,16 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import lombok.Data;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
-import uk.ac.york.sepr4.hud.HealthBar;
+import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.entity.*;
-import uk.ac.york.sepr4.object.entity.item.ItemManager;
-import uk.ac.york.sepr4.object.entity.projectile.Projectile;
-import uk.ac.york.sepr4.object.entity.projectile.ProjectileManager;
+import uk.ac.york.sepr4.object.item.ItemManager;
+import uk.ac.york.sepr4.object.projectile.Projectile;
+import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 
 public class GameScreen implements Screen, InputProcessor {
 

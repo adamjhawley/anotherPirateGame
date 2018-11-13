@@ -1,12 +1,10 @@
 package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
-import uk.ac.york.sepr4.hud.HealthBar;
-import uk.ac.york.sepr4.object.entity.projectile.Projectile;
-import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
+import uk.ac.york.sepr4.screen.hud.HealthBar;
+import uk.ac.york.sepr4.object.projectile.ProjectileType;
 
 import java.util.ArrayList;
 import java.util.List;

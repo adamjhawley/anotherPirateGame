@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.object.entity.projectile;
+package uk.ac.york.sepr4.object.projectile;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;

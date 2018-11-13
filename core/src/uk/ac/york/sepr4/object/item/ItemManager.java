@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.object.entity.item;
+package uk.ac.york.sepr4.object.item;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;

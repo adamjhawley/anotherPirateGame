@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.object.entity.item;
+package uk.ac.york.sepr4.object.item;
 
 import lombok.Data;
 

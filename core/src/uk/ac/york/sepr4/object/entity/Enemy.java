@@ -1,16 +1,9 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import lombok.Data;
-import uk.ac.york.sepr4.PirateGame;
-import uk.ac.york.sepr4.TextureManager;
-import uk.ac.york.sepr4.object.entity.item.Item;
-import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
+import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import java.util.ArrayList;
 import java.util.List;

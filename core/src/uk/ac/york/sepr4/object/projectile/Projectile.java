@@ -1,11 +1,9 @@
-package uk.ac.york.sepr4.object.entity.projectile;
+package uk.ac.york.sepr4.object.projectile;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import lombok.Data;
 import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
-import uk.ac.york.sepr4.screen.GameScreen;
 
 @Data
 public class Projectile extends Entity {

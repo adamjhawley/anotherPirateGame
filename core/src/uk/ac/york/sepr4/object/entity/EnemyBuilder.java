@@ -4,8 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
-import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
-import uk.ac.york.sepr4.screen.GameScreen;
+import uk.ac.york.sepr4.object.projectile.ProjectileType;
 
 import java.util.ArrayList;
 import java.util.List;

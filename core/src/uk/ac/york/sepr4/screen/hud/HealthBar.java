@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.hud;
+package uk.ac.york.sepr4.screen.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
