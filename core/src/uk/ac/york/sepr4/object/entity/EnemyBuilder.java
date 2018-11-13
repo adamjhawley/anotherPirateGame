@@ -21,6 +21,8 @@ public class EnemyBuilder {
     private Integer turningSpeed = 1;
     private Texture texture = TextureManager.ENEMY;
 
+    private ProjectileType selectedProjectile;
+
     public EnemyBuilder(){
 
     }
@@ -29,8 +31,10 @@ public class EnemyBuilder {
         Enemy enemy = new Enemy(id, texture);
         enemy.setX(pos.x);
         enemy.setY(pos.y);
-        projectileType.add(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
-        enemy.setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
+        if(selectedProjectile != null) {
+            enemy.setSelectedProjectileType(this.selectedProjectile);
+            enemy.addProjectileType(this.selectedProjectile);
+        }
         return enemy;
     }
 
@@ -46,6 +50,11 @@ public class EnemyBuilder {
 
     public EnemyBuilder maxSpeed(float maxSpeed) {
         this.maxSpeed = maxSpeed;
+        return this;
+    }
+
+    public EnemyBuilder selectedProjectile(ProjectileType projectileType) {
+        this.selectedProjectile = projectileType;
         return this;
     }
 

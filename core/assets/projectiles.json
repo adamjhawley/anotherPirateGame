@@ -1,6 +1,6 @@
 [
   {
-    "class": "uk.ac.york.sepr4.object.entity.projectile.ProjectileType",
+    "class": "uk.ac.york.sepr4.object.projectile.ProjectileType",
     "name": "Basic Cannonball",
     "damage": 5.0,
     "triggerKey": "1",

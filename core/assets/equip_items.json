@@ -1,6 +1,6 @@
 [
   {
-    "class": "uk.ac.york.sepr4.object.entity.item.EquipItem",
+    "class": "uk.ac.york.sepr4.object.item.EquipItem",
     "name": "Item1",
     "lore": "desc for item1"
   }

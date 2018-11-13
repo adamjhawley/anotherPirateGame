@@ -3,28 +3,16 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import lombok.Data;
-import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 @Data
 public class Enemy extends LivingEntity {
 
     public Enemy(Integer id, Texture texture){
         super(id, texture);
-        setSize(getTexture().getWidth(), getTexture().getHeight());
     }
 
-    @Override
-    public void fire(float angle) {
-        ProjectileType projectileType = this.getSelectedProjectileType();
-        if(projectileType.getCooldown() <= getCurrentCooldown()) {
-            setCurrentCooldown(0f);
-            GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
-        }
-    }
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);

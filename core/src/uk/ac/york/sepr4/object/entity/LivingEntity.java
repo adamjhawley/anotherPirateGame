@@ -3,6 +3,7 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
+import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 
@@ -129,5 +130,14 @@ public abstract class LivingEntity extends Entity {
         return true;
     }
 
-    public abstract void fire(float angle);
-}
+    public boolean fire(float angle) {
+        ProjectileType projectileType = this.getSelectedProjectileType();
+        if(projectileType != null) {
+            if (projectileType.getCooldown() <= getCurrentCooldown()) {
+                setCurrentCooldown(0f);
+                GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
+                return true;
+            }
+        }
+        return false;
+    }}

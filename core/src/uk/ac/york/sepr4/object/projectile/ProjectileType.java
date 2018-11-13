@@ -36,4 +36,5 @@ public class ProjectileType {
         return new Texture(Gdx.files.internal("textures/"+textureStr));
     }
 
+
 }

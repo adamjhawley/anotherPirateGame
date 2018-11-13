@@ -27,9 +27,9 @@ public class Player extends LivingEntity implements InputProcessor {
 
         setPosition(50, 50);
 
-        addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
+        //Setup default weapon
         setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
-
+        addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
     }
 
     @Override
@@ -41,15 +41,6 @@ public class Player extends LivingEntity implements InputProcessor {
 
     private void switchWeapon(ProjectileType projectileType) {
         this.setSelectedProjectileType(projectileType);
-    }
-
-    @Override
-    public void fire(float angle) {
-        ProjectileType projectileType = this.getSelectedProjectileType();
-        if(projectileType.getCooldown() <= getCurrentCooldown()) {
-            setCurrentCooldown(0f);
-            GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
-        }
     }
 
     @Override
