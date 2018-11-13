@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
+import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.item.ItemManager;
@@ -39,6 +40,8 @@ public class GameScreen implements Screen, InputProcessor {
     private EntityManager entityManager;
     @Getter
     private ProjectileManager projectileManager;
+    @Getter
+    private QuestManager questManager;
 
     private InputMultiplexer inputMultiplexer;
 
@@ -70,6 +73,7 @@ public class GameScreen implements Screen, InputProcessor {
         this.itemManager = new ItemManager();
         this.entityManager = new EntityManager();
         this.projectileManager = new ProjectileManager(entityManager);
+        this.questManager = new QuestManager(entityManager);
 
         stage.addActor(entityManager.getOrCreatePlayer());
         Enemy enemy = new EnemyBuilder()
@@ -252,7 +256,9 @@ public class GameScreen implements Screen, InputProcessor {
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float) (-Math.atan2(player.getCentre().x - clickLoc.x, player.getCentre().y - clickLoc.y));
             Gdx.app.log("Test Log", "Firing: Click at (rad) " + fireAngle);
-            player.fire(fireAngle);
+            if(!player.fire(fireAngle)) {
+                Gdx.app.log("Test Log", "Error firing!");
+            }
             return true;
         }
         return false;

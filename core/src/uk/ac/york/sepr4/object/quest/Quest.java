@@ -11,8 +11,10 @@ public class Quest {
     private String name, startMessage, endMessage;
     private List<Quest> requires, gives;
     private Reward reward;
-    private Integer targetEntityID;
+    private String targetEntityName;
     private boolean isKillQuest, isStarted, isCompleted;
 
-    
+
+    public Quest(){}
+
 }
