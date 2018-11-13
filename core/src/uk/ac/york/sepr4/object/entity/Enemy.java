@@ -14,17 +14,13 @@ import uk.ac.york.sepr4.object.entity.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Data
 public class Enemy extends LivingEntity {
 
-
-   // public Enemy() {
-       // this(1, 0, 20, 20.0, 20.0, 0f, false, false, 10f, 2);
-    //}
     public Enemy(Integer id, Texture texture){
         super(id, texture);
-        setPosition(50, 50);
         setSize(getTexture().getWidth(), getTexture().getHeight());
     }
 
@@ -43,7 +39,29 @@ public class Enemy extends LivingEntity {
         //TODO: Render trail/bow wave?
     }
 
-    private void AI() {
-        //Player player =
+    public void act(float deltaTime) {
+        Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
+
+        super.act(deltaTime);
     }
+
+    private float getAngleTowardsPlayer(Player player) {
+        double d_angle = -Math.atan(((player.getX() - getX())/ (player.getY() - getY())));
+        float angle = (float)d_angle;
+        if((player.getY() - getY()) > 0f) {
+            angle -= Math.PI;
+        }
+        return angle;
+    }
+
+    private float getDistanceToPlayer(Player player) {
+        float dist = (float)Math.sqrt(Math.pow((player.getX() - getX()), 2) + Math.pow((player.getY() - getX()), 2));
+        return dist;
+    }
+
+    //private float perfectShoot(Player player) {
+
+    //}
+
+
 }

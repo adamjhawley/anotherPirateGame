@@ -39,6 +39,7 @@ public class GameScreen implements Screen, InputProcessor {
     TiledMapRenderer tiledMapRenderer;
 
     private ItemManager itemManager;
+    @Getter
     private EntityManager entityManager;
     @Getter
     private ProjectileManager projectileManager;
