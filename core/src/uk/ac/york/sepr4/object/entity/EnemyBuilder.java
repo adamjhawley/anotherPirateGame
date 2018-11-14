@@ -18,7 +18,7 @@ public class EnemyBuilder {
     private boolean isDead, onFire = false;
     private float maxSpeed = 100f;
     private boolean isAccelerating, isBraking = false;
-    private Integer turningSpeed = 1;
+    private Integer turningSpeed = 10;
     private Texture texture = TextureManager.ENEMY;
 
     private ProjectileType selectedProjectile;
