@@ -15,6 +15,8 @@ public class Quest {
     private boolean isKillQuest, isStarted, isCompleted;
 
 
-    public Quest(){}
+    public Quest(){
+        // Empty constructor for JSON DAO.
+    }
 
 }

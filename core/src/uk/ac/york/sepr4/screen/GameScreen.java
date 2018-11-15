@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
+import uk.ac.york.sepr4.object.building.BuildingManager;
 import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.entity.*;
@@ -23,6 +24,14 @@ import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 
+/**
+ * GameScreen is main game class. Holds data related to current player including the
+ * {@link uk.ac.york.sepr4.object.building.BuildingManager}, {@link uk.ac.york.sepr4.object.item.ItemManager},
+ * {@link uk.ac.york.sepr4.object.quest.QuestManager} and {@link uk.ac.york.sepr4.object.entity.EntityManager}
+ *
+ * Responds to keyboard and mouse input by the player. InputMultiplexer used to combine input processing in both
+ * this class (mouse clicks) and {@link uk.ac.york.sepr4.object.entity.Player} class (key press).
+ */
 public class GameScreen implements Screen, InputProcessor {
 
     private PirateGame pirateGame;
@@ -32,6 +41,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private OrthographicCamera orthographicCamera;
 
+    @Getter
     TiledMap tiledMap;
     TiledMapRenderer tiledMapRenderer;
 
@@ -42,6 +52,7 @@ public class GameScreen implements Screen, InputProcessor {
     private ProjectileManager projectileManager;
     @Getter
     private QuestManager questManager;
+    private BuildingManager buildingManager;
 
     private InputMultiplexer inputMultiplexer;
 
@@ -51,6 +62,16 @@ public class GameScreen implements Screen, InputProcessor {
         return gameScreen;
     }
 
+    /**
+     * GameScreen Constructor
+     *
+     * Sets base game parameters, sets up camera, map, view port and stage(s).
+     * Initializes Item, Entity, Building and Quest managers and InputMultiplexer.
+     *
+     * Adds the player as an actor to the stage.
+     *
+     * @param pirateGame
+     */
     public GameScreen(PirateGame pirateGame) {
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -74,6 +95,7 @@ public class GameScreen implements Screen, InputProcessor {
         this.entityManager = new EntityManager();
         this.projectileManager = new ProjectileManager(entityManager);
         this.questManager = new QuestManager(entityManager);
+        this.buildingManager = new BuildingManager(this);
 
         stage.addActor(entityManager.getOrCreatePlayer());
         Enemy enemy = new EnemyBuilder()
@@ -89,12 +111,21 @@ public class GameScreen implements Screen, InputProcessor {
 
     }
 
+    /**
+     * Called when screen becomes active (is switched to).
+     */
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
 
+    /**
+     * Method responsible for rendering the GameScreen on each frame. This clears the screen, updates the map and
+     * visible entities, then calls the stage act. This causes actors (entities) on the stage to move (act).
+     *
+     * @param delta Time between last and current frame.
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -105,6 +136,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         handleProjectiles();
         handleEnemies();
+        buildingManager.spawnCollegeEnemies(delta);
 
         handleHUD();
 
@@ -123,6 +155,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     }
 
+    /**
+     * Handles HUD elements including health bars for damaged actors.
+     */
     private void handleHUD() {
         Player player = entityManager.getOrCreatePlayer();
         if (player.getHealth() < player.getMaxHealth()) {
@@ -153,6 +188,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     }
 
+    /**
+     * Checks whether actors have overlapped. In the instance where projectile and entity overlap, deal damage.
+     */
     private void checkCollisions() {
         Player player = entityManager.getOrCreatePlayer();
         for (Projectile projectile : projectileManager.getProjectileList()) {
@@ -185,6 +223,9 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    /**
+     * Adds and removes projectiles as actors from the stage.
+     */
     private void handleProjectiles() {
         stage.getActors().removeAll(projectileManager.removeNonActiveProjectiles(), true);
 
@@ -196,6 +237,9 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    /**
+     * Adds and removes enemies as actors from the stage.
+     */
     private void handleEnemies() {
         stage.getActors().removeAll(entityManager.removeDeadEnemies(), true);
 

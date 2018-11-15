@@ -15,11 +15,9 @@ public class ProjectileType {
     private String textureStr;
     private float baseSpeed;
 
-    public ProjectileType(){
+    public ProjectileType() {}
 
-    }
-
-    public ProjectileType(String name, Double damage, String triggerKey, String textureStr, float cooldown, float baseSpeed){
+    public ProjectileType(String name, Double damage, String triggerKey, String textureStr, float cooldown, float baseSpeed) {
         this.name = name;
         this.damage = damage;
         this.triggerKey = triggerKey;
