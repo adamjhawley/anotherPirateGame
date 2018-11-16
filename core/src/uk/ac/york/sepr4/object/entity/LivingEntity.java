@@ -28,7 +28,7 @@ public abstract class LivingEntity extends Entity {
     private float deathTimer = -1f;
 
     public LivingEntity(Integer id, Texture texture) {
-        this(id, 0f, 0f, 20.0, 20.0, texture, 300f, 1, false, new ArrayList<ProjectileType>());
+        this(id, 0f, 0f, 20.0, 20.0, texture, 100f, 1, false, new ArrayList<ProjectileType>());
     }
 
     public LivingEntity(Integer id, float angle, float speed, Double health, Double maxHealth, Texture texture, float maxSpeed, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes) {

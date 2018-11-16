@@ -136,7 +136,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         handleProjectiles();
         handleEnemies();
-        buildingManager.spawnCollegeEnemies(delta);
+        //buildingManager.spawnCollegeEnemies(delta);
 
         handleHUD();
 

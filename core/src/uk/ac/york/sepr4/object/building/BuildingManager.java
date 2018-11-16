@@ -29,8 +29,8 @@ public class BuildingManager {
         }
 
         Json json = new Json();
-        loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
-        loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
+        //loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
+        //loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
     }
 
     public void spawnCollegeEnemies(float delta) {
