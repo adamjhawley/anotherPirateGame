@@ -1,6 +1,8 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
@@ -16,7 +18,7 @@ public abstract class LivingEntity extends Entity {
     private List<ProjectileType> projectileTypes;
     private Double health, maxHealth;
     private boolean isDead, onFire, isDying;
-    private float angularSpeed, maxSpeed;
+    private float maxSpeed;
     private boolean isAccelerating, isBraking;
     private Integer turningSpeed;
 
@@ -45,6 +47,13 @@ public abstract class LivingEntity extends Entity {
 
         this.healthBar = new HealthBar(this);
         this.isDying = false;
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+
+        //TODO: Draw bow wave?
     }
 
     public void kill(boolean silent) {
@@ -87,7 +96,6 @@ public abstract class LivingEntity extends Entity {
         }
 
         float speed = getSpeed();
-        float angle = getAngle();
 
         if (isAccelerating) {
             if (speed > maxSpeed) {
@@ -104,13 +112,7 @@ public abstract class LivingEntity extends Entity {
                 speed -= 20f * deltaTime;
             }
         }
-
-
-        angle += (angularSpeed * deltaTime) * (speed / maxSpeed);
-
         setSpeed(speed);
-        setAngle(angle);
-
 
         super.act(deltaTime);
 

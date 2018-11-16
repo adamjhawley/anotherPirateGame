@@ -21,18 +21,14 @@ public class Enemy extends LivingEntity {
         this.mean = 250f;
     }
 
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-
-        //TODO: Render trail/bow wave?
-    }
-
     public void act(float deltaTime) {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
+        float resAngle = resultantAngle(player);
+        resAngle = resAngle % (float)(2*Math.PI);
+        setAngle(resAngle);
+        Gdx.app.log("re", ""+resAngle);
+        setAccelerating(true);
         super.act(deltaTime);
-        setAngle(resultantAngle(player));
     }
 
     private float getAngleTowardsPlayer(Player player) {

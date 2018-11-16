@@ -18,6 +18,7 @@ public class Player extends LivingEntity implements InputProcessor {
     private Integer balance;
     private Integer xp;
     private List<Item> inventory;
+    private float angularSpeed;
 
     public Player() {
         super(0, TextureManager.PLAYER);
@@ -33,10 +34,12 @@ public class Player extends LivingEntity implements InputProcessor {
     }
 
     @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
+    public void act(float deltaTime) {
+        float angle = getAngle();
+        angle += ((angularSpeed * deltaTime) * (getSpeed() / getMaxSpeed())) % (float)(2*Math.PI);;
 
-        //TODO: Render trail/bow wave?
+        setAngle(angle);
+        super.act(deltaTime);
     }
 
     private void switchWeapon(ProjectileType projectileType) {
