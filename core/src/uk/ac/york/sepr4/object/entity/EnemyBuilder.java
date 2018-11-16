@@ -13,23 +13,21 @@ import java.util.Random;
 @Data
 public class EnemyBuilder {
 
-    private float angle, speed, angularSpeed = 0f;
-    private Double health, maxHealth = 20.0;
+    private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 100f, accuracy = 0.5f;
+    private Double health = 20.0, maxHealth = 20.0;
     private List<ProjectileType> projectileTypes = new ArrayList<ProjectileType>();
-    private boolean isDead, onFire = false;
-    private float maxSpeed = 100f;
-    private boolean isAccelerating, isBraking = false;
+    private boolean isDead = false, onFire = false, isAccelerating, isBraking = false;
     private Integer turningSpeed = 10;
     private Texture texture = TextureManager.ENEMY;
-
     private ProjectileType selectedProjectile;
 
     public EnemyBuilder(){}
 
     public Enemy buildEnemy(Integer id, Vector2 pos) {
-        Enemy enemy = new Enemy(id, texture);
+        Enemy enemy = new Enemy(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy);
         enemy.setX(pos.x);
         enemy.setY(pos.y);
+
         if(selectedProjectile != null) {
             enemy.setSelectedProjectileType(this.selectedProjectile);
             enemy.addProjectileType(this.selectedProjectile);
@@ -64,6 +62,16 @@ public class EnemyBuilder {
 
     public EnemyBuilder projectileTypes(List<ProjectileType> projectileTypes) {
         this.projectileTypes = projectileTypes;
+        return this;
+    }
+
+    public EnemyBuilder range(float range) {
+        this.range =  range;
+        return this;
+    }
+
+    public EnemyBuilder accuracy(float accuracy) {
+        this.accuracy = accuracy;
         return this;
     }
 

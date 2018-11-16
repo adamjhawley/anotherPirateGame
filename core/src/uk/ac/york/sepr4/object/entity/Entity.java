@@ -14,7 +14,7 @@ public abstract class Entity extends Actor {
     private float angle, speed;
     private Texture texture;
 
-    public Entity(Integer id, float angle, float speed, Texture texture) {
+    public Entity(Integer id, Texture texture, float angle, float speed) {
         this.id = id;
         this.angle = angle;
         this.speed = speed;

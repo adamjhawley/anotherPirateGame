@@ -30,11 +30,11 @@ public abstract class LivingEntity extends Entity {
     private float deathTimer = -1f;
 
     public LivingEntity(Integer id, Texture texture) {
-        this(id, 0f, 0f, 20.0, 20.0, texture, 100f, 1, false, new ArrayList<ProjectileType>());
+        this(id, texture, 0f, 0f, 100f,20.0, 20.0,   1, false, new ArrayList<ProjectileType>());
     }
 
-    public LivingEntity(Integer id, float angle, float speed, Double health, Double maxHealth, Texture texture, float maxSpeed, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes) {
-        super(id, angle, speed, texture);
+    public LivingEntity(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes) {
+        super(id, texture, angle, speed);
 
         this.onFire = onFire;
         this.projectileTypes = projectileTypes;
@@ -116,6 +116,15 @@ public abstract class LivingEntity extends Entity {
 
         super.act(deltaTime);
 
+    }
+
+    public float getAngleTowardsLE(LivingEntity livingEntity) {
+        double d_angle = Math.atan(((livingEntity.getCentre().y - getCentre().y) / (livingEntity.getCentre().x - getCentre().x)));
+        if(livingEntity.getCentre().x < getCentre().x){
+            d_angle += Math.PI;
+        }
+        float angle = (float)d_angle + (float)Math.PI/2;
+        return angle;
     }
 
     public void addProjectileType(ProjectileType projectileType) {

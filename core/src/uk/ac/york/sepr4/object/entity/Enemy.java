@@ -1,47 +1,47 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import lombok.Data;
+import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
+
+import java.util.List;
 
 @Data
 public class Enemy extends LivingEntity {
 
     //Weightings for AI behaviour
-    private float standardDeviation;
-    private float mean;
+    private float standardDeviation = 50f;
+    private float mean = 250f;
+    private float range;
     private float accuracy;
-
 
     public Enemy(Integer id, Texture texture){
         super(id, texture);
-        this.standardDeviation = 50f;
-        this.mean = 250f;
     }
 
+    public Enemy(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy) {
+        super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
+        this.range = range;
+        this.accuracy = accuracy;
+    }
+
+    /**
+     * Overriding Actor's 'act' function.
+     * Calculates the direction of travel for the enemy depending on the location of the player.
+     *
+     * @param deltaTime
+     */
     public void act(float deltaTime) {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-        float resAngle = resultantAngle(player);
-        resAngle = resAngle % (float)(2*Math.PI);
-        setAngle(resAngle);
-        Gdx.app.log("re", ""+resAngle);
+        setAngle(resultantAngle(player) % (float)(2*Math.PI));
+        //Gdx.app.log("re", ""+resAngle);
         setAccelerating(true);
         super.act(deltaTime);
     }
 
-    private float getAngleTowardsPlayer(Player player) {
-        double d_angle = Math.atan(((player.getY() - getY()) / (player.getX() - getX())));
-        if(player.getX() < getX()){
-            d_angle += Math.PI;
-        }
-        float angle = (float)d_angle + (float)Math.PI/2;
-        return angle;
-    }
-
     private float getDistanceToPlayer(Player player) {
-        float dist = (float)Math.sqrt(Math.pow((player.getX() - getX()), 2) + Math.pow((player.getY() - getY()), 2));
+        float dist = (float)Math.sqrt(Math.pow((player.getCentre().x - getCentre().x), 2) + Math.pow((player.getCentre().y - getCentre().y), 2));
         return dist;
     }
 
@@ -54,7 +54,7 @@ public class Enemy extends LivingEntity {
 
     private float resultantAngle(Player player){
         float f = f(player);
-        float sigma = getAngleTowardsPlayer(player) - convertToRealAngle(player.getAngle());
+        float sigma = getAngleTowardsLE(player) - convertToRealAngle(player.getAngle());
 
         float tp;
         float rp;
@@ -82,7 +82,7 @@ public class Enemy extends LivingEntity {
         } else {
             sigma = (float)((3*Math.PI)/2 + Math.atan(tp/rp));
         }
-        float rsigma = sigma + getAngleTowardsPlayer(player);
+        float rsigma = sigma + getAngleTowardsLE(player);
         rsigma += f*(Math.PI);
         return  rsigma;
     }
@@ -95,12 +95,9 @@ public class Enemy extends LivingEntity {
             angle -= 2*Math.PI;
         }
         angle += 2*Math.PI;
+        angle = (float)(angle % (2*Math.PI));
         return angle;
     }
-
-    //private float perfectShoot(Player player) {
-
-    //}
 
 
 }

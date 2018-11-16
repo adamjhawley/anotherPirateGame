@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import javafx.util.Pair;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.building.BuildingManager;
@@ -23,6 +24,10 @@ import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -192,6 +197,20 @@ public class GameScreen implements Screen, InputProcessor {
      * Checks whether actors have overlapped. In the instance where projectile and entity overlap, deal damage.
      */
     private void checkCollisions() {
+        checkProjectileCollisions();
+        checkLivingEntityCollisions();
+    }
+
+    private void checkLivingEntityCollisions() {
+        Player player = getEntityManager().getOrCreatePlayer();
+        for(Enemy enemy:getEntityManager().getEnemyList()) {
+            if(enemy.getBounds().overlaps(player.getBounds())) {
+
+            }
+        }
+    }
+
+    private void checkProjectileCollisions() {
         Player player = entityManager.getOrCreatePlayer();
         for (Projectile projectile : projectileManager.getProjectileList()) {
             if (projectile.getShooter() != player && projectile.getBounds().overlaps(player.getBounds())) {

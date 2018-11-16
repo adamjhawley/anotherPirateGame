@@ -16,7 +16,7 @@ public class Projectile extends Entity {
     public Projectile(Integer id, ProjectileType projectileType, LivingEntity shooter, float speed, float angle) {
         //Take speed from the shooter so bullet has a speed relative to the shooter
         //TODO: Make the speed direction dependant (how much of the force is in the direction of the projectile)
-        super(id, angle, speed+projectileType.getBaseSpeed(), projectileType.getTexture());
+        super(id, projectileType.getTexture(), angle, speed+projectileType.getBaseSpeed());
         this.shooter = shooter;
         this.projectileType = projectileType;
 

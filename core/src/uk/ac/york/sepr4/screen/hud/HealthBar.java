@@ -40,7 +40,10 @@ public class HealthBar extends ProgressBar {
         setX(livingEntity.getX());
         //just above
         setY(livingEntity.getY() + livingEntity.getTexture().getHeight());
-        setValue((float)(livingEntity.getHealth()/livingEntity.getMaxHealth()));
+        setValue((float)(
+                livingEntity.getHealth()
+                        /
+                        livingEntity.getMaxHealth()));
     }
 
     /**
