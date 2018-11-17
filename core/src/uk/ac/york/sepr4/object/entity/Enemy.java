@@ -34,9 +34,32 @@ public class Enemy extends LivingEntity {
      */
     public void act(float deltaTime) {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-        setAngle(resultantAngle(player) % (float)(2*Math.PI));
-        //Gdx.app.log("re", ""+resAngle);
-        setAccelerating(true);
+        float resAngle = resultantAngle(player);
+        resAngle = resAngle % (float)(2*Math.PI);
+        setAngle(resAngle);
+
+        float f = f(player);
+
+        if((1-f) - f > 0.2){
+            setAccelerating(true);
+            setBraking(false);
+        } else if(((1-f) - f > -0.2)){
+            setAccelerating(false);
+            setBraking(false);
+        } else {
+                setBraking(false);
+                setAccelerating(true);
+            } else {
+                setAccelerating(false);
+                setBraking(true);
+            }
+        }
+        if(getSpeed() < getMaxSpeed()/5){
+            setAccelerating(true);
+            setBraking(false);
+        }
+
+
         super.act(deltaTime);
     }
 
@@ -49,12 +72,13 @@ public class Enemy extends LivingEntity {
         //f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mean)^2/(2 sigma^2))
         double sigma = (double)this.standardDeviation;
         double fx = (1/(Math.sqrt(2*Math.PI)*sigma))*Math.pow(Math.E, -(Math.pow(((double)getDistanceToPlayer(player) - (double)this.mean), 2)/(2*Math.pow(sigma, 2))));
-        return (float)fx*120f;
+        fx = fx*120f;
+        return (float)fx;
     }
 
     private float resultantAngle(Player player){
         float f = f(player);
-        float sigma = getAngleTowardsLE(player) - convertToRealAngle(player.getAngle());
+        float sigma = getAngleTowardsPlayer(player) - (player.getAngle() % (float)(2*Math.PI));
 
         float tp;
         float rp;
@@ -73,6 +97,7 @@ public class Enemy extends LivingEntity {
             rp = (float)(f*Math.cos(sigma - (3*Math.PI)/2));
         }
 
+
         if(tp >= 0 && rp <= 0){
             sigma = (float)Math.atan(-rp/tp);
         } else if(tp <= 0 && rp <= 0){
@@ -87,17 +112,6 @@ public class Enemy extends LivingEntity {
         return  rsigma;
     }
 
-    private float convertToRealAngle(float angle) {
-        if(angle < 0){
-            angle = -angle;
-        }
-        while(angle >= 0) {
-            angle -= 2*Math.PI;
-        }
-        angle += 2*Math.PI;
-        angle = (float)(angle % (2*Math.PI));
-        return angle;
-    }
 
 
 }

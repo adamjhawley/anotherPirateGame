@@ -105,7 +105,7 @@ public class GameScreen implements Screen, InputProcessor {
         stage.addActor(entityManager.getOrCreatePlayer());
         Enemy enemy = new EnemyBuilder()
                 .selectedProjectile(projectileManager.getDefaultWeaponType())
-                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(200f, 200f));
+                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(400f, 400f));
         entityManager.addEnemy(enemy);
 
         inputMultiplexer = new InputMultiplexer();
