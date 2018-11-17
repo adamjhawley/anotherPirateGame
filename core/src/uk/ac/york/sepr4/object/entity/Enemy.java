@@ -29,10 +29,12 @@ public class Enemy extends LivingEntity {
 
         float f = f(player);
 
-        if((1-f) - f > 0.3){
+        if((1-f) - f > 0.2){
             setAccelerating(true);
-        } else if(((1-f) - f > 0)){
+            setBraking(false);
+        } else if(((1-f) - f > -0.2)){
             setAccelerating(false);
+            setBraking(false);
         } else {
             if(player.getSpeed() > getSpeed()){
                 setBraking(false);
@@ -42,11 +44,10 @@ public class Enemy extends LivingEntity {
                 setBraking(true);
             }
         }
-        if(getSpeed() < getMaxSpeed()/50){
-            setBraking(false);
+        if(getSpeed() < getMaxSpeed()/5){
             setAccelerating(true);
+            setBraking(false);
         }
-        Gdx.app.log("test", Float.toString(getSpeed()));
 
 
         super.act(deltaTime);
