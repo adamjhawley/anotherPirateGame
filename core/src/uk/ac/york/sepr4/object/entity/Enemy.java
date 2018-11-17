@@ -34,9 +34,28 @@ public class Enemy extends LivingEntity {
      */
     public void act(float deltaTime) {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-        setAngle(resultantAngle(player) % (float)(2*Math.PI));
-        //Gdx.app.log("re", ""+resAngle);
-        setAccelerating(true);
+        float resAngle = resultantAngle(player);
+        resAngle = resAngle % (float)(2*Math.PI);
+        setAngle(resAngle);
+
+        float f = f(player);
+
+        if((1-f) - f > 0.2){
+            setAccelerating(true);
+            setBraking(false);
+        } else if(((1-f) - f > -0.2)){
+            setAccelerating(false);
+            setBraking(false);
+        } else {
+                setBraking(false);
+                setAccelerating(true);
+        }
+        if(getSpeed() < getMaxSpeed()/5){
+            setAccelerating(true);
+            setBraking(false);
+        }
+
+
         super.act(deltaTime);
     }
 
@@ -54,7 +73,7 @@ public class Enemy extends LivingEntity {
 
     private float resultantAngle(Player player){
         float f = f(player);
-        float sigma = getAngleTowardsLE(player) - convertToRealAngle(player.getAngle());
+        float sigma = getAngleTowardsLE(player) - (player.getAngle() % (float)(2*Math.PI));
 
         float tp;
         float rp;
