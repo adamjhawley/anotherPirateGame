@@ -13,6 +13,8 @@ public class Enemy extends LivingEntity {
     //Weightings for AI behaviour
     private float standardDeviation = 50f;
     private float mean = 250f;
+
+    //Enemy-specific variables
     private float range;
     private float accuracy;
 

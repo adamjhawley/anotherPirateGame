@@ -24,13 +24,13 @@ public class BuildingManager {
         this.gameScreen = gameScreen;
         this.spawnDelta = 0f;
 
-        if(gameScreen.getTiledMap().getLayers().get("objects") == null) {
-            Gdx.app.error("MAP ERROR", "Map does NOT have object layer!");
+        if(gameScreen.getPirateMap().isObjectsEnabled()) {
+            Json json = new Json();
+            loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
+            loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
+        } else {
+            Gdx.app.log("Building Manager", "Objects not enabled, not loading buildings!");
         }
-
-        Json json = new Json();
-        //loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
-        //loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
     }
 
     public void spawnCollegeEnemies(float delta) {
@@ -48,25 +48,23 @@ public class BuildingManager {
     }
 
     private void loadBuildings(Array<Building> buildings) {
-        MapObjects mapObjects = gameScreen.getTiledMap().getLayers().get("objects").getObjects();
         for(Building building : buildings) {
-            if(building instanceof College) {
-                if(building.load(mapObjects)){
+            if (building.load(gameScreen.getPirateMap())) {
+                if (building instanceof College) {
                     colleges.add((College) building);
-                    Gdx.app.log("BuildingManager", "Loaded "+building.getName());
+                    Gdx.app.log("BuildingManager", "Loaded " + building.getName());
                 } else {
-                    Gdx.app.error("BuildingManager", "Failed to load "+building.getName());
+                    Gdx.app.error("BuildingManager", "Failed to load " + building.getName());
                 }
-            }
-            if(building instanceof Department) {
-                if(building.load(mapObjects)){
+                if (building instanceof Department) {
                     departments.add((Department) building);
-                    Gdx.app.log("BuildingManager", "Loaded "+building.getName());
+                    Gdx.app.log("BuildingManager", "Loaded " + building.getName());
                 } else {
-                    Gdx.app.error("BuildingManager", "Failed to load "+building.getName());
+                    Gdx.app.error("BuildingManager", "Failed to load " + building.getName());
 
                 }
             }
+
         }
     }
 }

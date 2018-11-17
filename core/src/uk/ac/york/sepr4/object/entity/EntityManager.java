@@ -3,6 +3,7 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import uk.ac.york.sepr4.screen.GameScreen;
 
 @Data
 public class EntityManager {
@@ -11,7 +12,10 @@ public class EntityManager {
 
     Array<Enemy> enemyList;
 
-    public EntityManager() {
+    private GameScreen gameScreen;
+
+    public EntityManager(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
         this.enemyList = new Array<Enemy>();
     }
 
@@ -21,7 +25,7 @@ public class EntityManager {
 
     public Player getOrCreatePlayer() {
         if(player == null) {
-            player = new Player();
+            player = new Player(gameScreen.getSpawnPoint());
         }
         return player;
     }

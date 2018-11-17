@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import javafx.util.Pair;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
+import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
 import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
@@ -47,7 +48,7 @@ public class GameScreen implements Screen, InputProcessor {
     private OrthographicCamera orthographicCamera;
 
     @Getter
-    TiledMap tiledMap;
+    PirateMap pirateMap;
     TiledMapRenderer tiledMapRenderer;
 
     private ItemManager itemManager;
@@ -93,11 +94,11 @@ public class GameScreen implements Screen, InputProcessor {
         stage = new Stage(stretchViewport, batch);
         hudStage = new Stage(stretchViewport);
 
-        tiledMap = new TmxMapLoader().load("TestMap/PP_Sea_100.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 2f);
+        pirateMap = new PirateMap(new TmxMapLoader().load("TestMap/PP_Sea_100.tmx"));
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(pirateMap.getTiledMap(), 1 / 2f);
 
         this.itemManager = new ItemManager();
-        this.entityManager = new EntityManager();
+        this.entityManager = new EntityManager(this);
         this.projectileManager = new ProjectileManager(entityManager);
         this.questManager = new QuestManager(entityManager);
         this.buildingManager = new BuildingManager(this);
@@ -123,7 +124,14 @@ public class GameScreen implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
-
+    
+    public Vector2 getSpawnPoint() {
+        if(pirateMap.isObjectsEnabled()) {
+            return pirateMap.getSpawnPoint();
+        } else {
+            return new Vector2(50,50);
+        }
+    }
 
     /**
      * Method responsible for rendering the GameScreen on each frame. This clears the screen, updates the map and
@@ -141,7 +149,9 @@ public class GameScreen implements Screen, InputProcessor {
 
         handleProjectiles();
         handleEnemies();
-        //buildingManager.spawnCollegeEnemies(delta);
+        if(pirateMap.isObjectsEnabled()) {
+            buildingManager.spawnCollegeEnemies(delta);
+        }
 
         handleHUD();
 

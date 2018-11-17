@@ -3,6 +3,7 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.item.Item;
@@ -19,13 +20,13 @@ public class Player extends LivingEntity implements InputProcessor {
     private List<Item> inventory;
     private float angularSpeed;
 
-    public Player() {
+    public Player(Vector2 pos) {
         super(0, TextureManager.PLAYER);
         this.balance = 0;
         this.xp = 0;
         this.inventory = new ArrayList<Item>();
 
-        setPosition(50, 50);
+        setPosition(pos.x, pos.y);
 
         //Setup default weapon
         setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
