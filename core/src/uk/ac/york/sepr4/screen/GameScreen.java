@@ -1,10 +1,11 @@
 package uk.ac.york.sepr4.screen;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -12,23 +13,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import javafx.util.Pair;
 import lombok.Getter;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
 import uk.ac.york.sepr4.object.quest.QuestManager;
+import uk.ac.york.sepr4.screen.hud.HUD;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -62,6 +62,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     private InputMultiplexer inputMultiplexer;
 
+    private HUD hud;
+
     private static GameScreen gameScreen;
 
     public static GameScreen getInstance() {
@@ -92,7 +94,7 @@ public class GameScreen implements Screen, InputProcessor {
         StretchViewport stretchViewport = new StretchViewport(w, h, orthographicCamera);
         batch = new SpriteBatch();
         stage = new Stage(stretchViewport, batch);
-        hudStage = new Stage(stretchViewport);
+        hudStage = new Stage(new FitViewport(w,h, new OrthographicCamera()));
 
         pirateMap = new PirateMap(new TmxMapLoader().load("TestMap/PP_Sea_100.tmx"));
         tiledMapRenderer = new OrthogonalTiledMapRenderer(pirateMap.getTiledMap(), 1 / 2f);
@@ -113,6 +115,9 @@ public class GameScreen implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
 
+        this.hud = new HUD(this);
+        hudStage.addActor(this.hud.getTable());
+
         Gdx.input.setInputProcessor(inputMultiplexer);
 
     }
@@ -124,7 +129,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
-    
+
     public Vector2 getSpawnPoint() {
         if(pirateMap.isObjectsEnabled()) {
             return pirateMap.getSpawnPoint();
@@ -154,6 +159,7 @@ public class GameScreen implements Screen, InputProcessor {
         }
 
         handleHUD();
+        this.hud.update();
 
         checkCollisions();
 
@@ -174,11 +180,12 @@ public class GameScreen implements Screen, InputProcessor {
      * Handles HUD elements including health bars for damaged actors.
      */
     private void handleHUD() {
+
+
         Player player = entityManager.getOrCreatePlayer();
         if (player.getHealth() < player.getMaxHealth()) {
             if (!hudStage.getActors().contains(player.getHealthBar(), true)) {
                 hudStage.addActor(player.getHealthBar());
-
             }
         }
 
