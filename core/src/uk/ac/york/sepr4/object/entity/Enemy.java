@@ -68,10 +68,20 @@ public class Enemy extends LivingEntity {
 
     private float timeForPerfectShotToHit(Player player){
         double a = Math.PI - 2;
+        Gdx.app.log("a", a+"");
         double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
+        Gdx.app.log("time", time+"");
         double thetaP = 2*Math.PI - (Math.PI - getAngleTowardsLE(player)) - player.getAngle();
-        double b = 2*Math.sin(thetaP*time);
+        if(Math.PI - getAngleTowardsLE(player) < 0){
+            thetaP -= 2*Math.PI;
+        }
+        Gdx.app.log("ntp", (Math.PI - getAngleTowardsLE(player))+"");
+        Gdx.app.log("player", player.getAngle()+"");
+        Gdx.app.log("thetap", thetaP+"");
+        double b = 2*Math.sin(thetaP)*time;
+        Gdx.app.log("b", b+"");
         double c = Math.pow(time, 2);
+        Gdx.app.log("c", c+"");
 
         double BtimeMinus = (-b-Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
         double BtimePlus = (-b+Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
