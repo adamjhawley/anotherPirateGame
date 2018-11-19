@@ -1,5 +1,6 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
@@ -57,8 +58,27 @@ public class Enemy extends LivingEntity {
             setBraking(false);
         }
 
-
+        timeForPerfectShotToHit(player);
         super.act(deltaTime);
+    }
+
+    private float perfectShotAngle(Player player){
+        return 0;
+    }
+
+    private float timeForPerfectShotToHit(Player player){
+        double a = Math.PI - 2;
+        double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
+        double thetaP = 2*Math.PI - (Math.PI - getAngleTowardsLE(player)) - player.getAngle();
+        double b = 2*Math.sin(thetaP*time);
+        double c = Math.pow(time, 2);
+
+        double BtimeMinus = (-b-Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
+        double BtimePlus = (-b+Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
+
+        Gdx.app.log("minus", BtimeMinus+"");
+        Gdx.app.log("plus", BtimePlus+"");
+        return 0;
     }
 
     private float getDistanceToPlayer(Player player) {
@@ -67,10 +87,9 @@ public class Enemy extends LivingEntity {
     }
 
     private float f(Player player){
-        //f(x) = 1/(sqrt(2 pi) sigma) e^-((x - mean)^2/(2 sigma^2))
         double sigma = (double)this.standardDeviation;
         double fx = (1/(Math.sqrt(2*Math.PI)*sigma))*Math.pow(Math.E, -(Math.pow(((double)getDistanceToPlayer(player) - (double)this.mean), 2)/(2*Math.pow(sigma, 2))));
-        return (float)fx*120f;
+        return (float)fx*160f;
     }
 
     private float resultantAngle(Player player){
@@ -106,18 +125,6 @@ public class Enemy extends LivingEntity {
         float rsigma = sigma + getAngleTowardsLE(player);
         rsigma += f*(Math.PI);
         return  rsigma;
-    }
-
-    private float convertToRealAngle(float angle) {
-        if(angle < 0){
-            angle = -angle;
-        }
-        while(angle >= 0) {
-            angle -= 2*Math.PI;
-        }
-        angle += 2*Math.PI;
-        angle = (float)(angle % (2*Math.PI));
-        return angle;
     }
 
 
