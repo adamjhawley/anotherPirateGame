@@ -37,8 +37,14 @@ public class PirateMap {
             Gdx.app.log("Pirate Map", "Map does NOT contain object layer!");
             this.objectsEnabled = false;
         }
+    }
 
-
+    public Vector2 getSpawnPoint() {
+        if(isObjectsEnabled()) {
+            return spawnPoint;
+        } else {
+            return new Vector2(50,50);
+        }
     }
 
     private boolean checkObjectLayer() {

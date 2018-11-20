@@ -20,9 +20,9 @@ public abstract class Entity extends Actor {
         this.speed = speed;
         this.texture = texture;
 
-        //Stops texture glitches when moving
+        // Stops texture glitches when moving
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-        //Required to display sprite
+        // Required to display sprite
         setSize(getTexture().getWidth(), getTexture().getHeight());
 
     }
@@ -53,7 +53,6 @@ public abstract class Entity extends Actor {
     public void act(float deltaTime) {
         super.act(deltaTime);
 
-            //TODO: Cleanup and check if projectile is too far out of view
             float speed = getSpeed();
             float angle = getAngle();
 

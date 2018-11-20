@@ -82,35 +82,34 @@ public class GameScreen implements Screen, InputProcessor {
      * @param pirateGame
      */
     public GameScreen(PirateGame pirateGame) {
+        // Local widths and heights.
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
 
         this.pirateGame = pirateGame;
         gameScreen = this;
 
+        // Set up camera.
         orthographicCamera = new OrthographicCamera();
         orthographicCamera.setToOrtho(false, w, h);
         orthographicCamera.update();
 
+        // Set up stages (for entities and HUD).
         StretchViewport stretchViewport = new StretchViewport(w, h, orthographicCamera);
         batch = new SpriteBatch();
         stage = new Stage(stretchViewport, batch);
         hudStage = new Stage(new FitViewport(w,h, new OrthographicCamera()));
 
+        // Locate and set up tile map.
         pirateMap = new PirateMap(new TmxMapLoader().load("PirateMap/PirateMap.tmx"));
         tiledMapRenderer = new OrthogonalTiledMapRenderer(pirateMap.getTiledMap(), 1 / 2f);
+
 
         this.itemManager = new ItemManager();
         this.entityManager = new EntityManager(this);
         this.projectileManager = new ProjectileManager(entityManager);
         this.questManager = new QuestManager(entityManager);
         this.buildingManager = new BuildingManager(this);
-
-        stage.addActor(entityManager.getOrCreatePlayer());
-        Enemy enemy = new EnemyBuilder()
-                .selectedProjectile(projectileManager.getDefaultWeaponType())
-                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(200f, 200f));
-       // entityManager.addEnemy(enemy);
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
@@ -121,6 +120,16 @@ public class GameScreen implements Screen, InputProcessor {
 
         Gdx.input.setInputProcessor(inputMultiplexer);
 
+        startGame();
+
+    }
+
+    private void startGame(){
+        stage.addActor(entityManager.getOrCreatePlayer());
+        Enemy enemy = new EnemyBuilder()
+                .selectedProjectile(projectileManager.getDefaultWeaponType())
+                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(200f, 200f));
+        entityManager.addEnemy(enemy);
     }
 
     /**
@@ -129,14 +138,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
-    }
-
-    public Vector2 getSpawnPoint() {
-        if(pirateMap.isObjectsEnabled()) {
-            return pirateMap.getSpawnPoint();
-        } else {
-            return new Vector2(50,50);
-        }
     }
 
     /**
@@ -152,14 +153,19 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Player player = entityManager.getOrCreatePlayer();
+        if(player.isDead()) {
+            pirateGame.switchScreen(ScreenType.MENU);
+            return;
+        }
 
-        handleProjectiles();
-        handleEnemies();
+        entityManager.handleStageEntities(stage);
+
         if(pirateMap.isObjectsEnabled()) {
             buildingManager.spawnCollegeEnemies(delta);
         }
 
-        handleHUD();
+        handleHealthBars();
+
         this.hud.update();
 
         checkCollisions();
@@ -178,27 +184,25 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     /**
-     * Handles HUD elements including health bars for damaged actors.
+     * Handles HealthBar elements for damaged actors.
      */
-    private void handleHUD() {
-
-
+    private void handleHealthBars() {
         Player player = entityManager.getOrCreatePlayer();
         if (player.getHealth() < player.getMaxHealth()) {
-            if (!hudStage.getActors().contains(player.getHealthBar(), true)) {
-                hudStage.addActor(player.getHealthBar());
+            if (!stage.getActors().contains(player.getHealthBar(), true)) {
+                stage.addActor(player.getHealthBar());
             }
         }
 
         for (Enemy enemy : entityManager.getEnemyList()) {
             if (enemy.getHealth() < enemy.getMaxHealth()) {
-                if (!hudStage.getActors().contains(enemy.getHealthBar(), true)) {
-                    hudStage.addActor(enemy.getHealthBar());
+                if (!stage.getActors().contains(enemy.getHealthBar(), true)) {
+                    stage.addActor(enemy.getHealthBar());
                 }
             }
         }
         Array<Actor> toRemove = new Array<Actor>();
-        for (Actor actors : hudStage.getActors()) {
+        for (Actor actors : stage.getActors()) {
             if (actors instanceof HealthBar) {
                 HealthBar healthBar = (HealthBar) actors;
                 LivingEntity livingEntity = healthBar.getLivingEntity();
@@ -207,7 +211,7 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
         }
-        hudStage.getActors().removeAll(toRemove, true);
+        stage.getActors().removeAll(toRemove, true);
 
     }
 
@@ -219,11 +223,13 @@ public class GameScreen implements Screen, InputProcessor {
         checkLivingEntityCollisions();
     }
 
-    private void checkLivingEntityCollisions() {
+    public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
         for(Enemy enemy:getEntityManager().getEnemyList()) {
             if(enemy.getBounds().overlaps(player.getBounds())) {
-
+                //Double actingMom = enemy.getSpeed() * Math.acos(enemy.getAngleTowardsLE(player));
+                //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/enemy.getSpeed()));
+                //enemy.setSpeed(enemy.getSpeed()/2);
             }
         }
     }
@@ -256,34 +262,6 @@ public class GameScreen implements Screen, InputProcessor {
                     //kill projectile
                     projectile.setActive(false);
                 }
-            }
-        }
-    }
-
-    /**
-     * Adds and removes projectiles as actors from the stage.
-     */
-    private void handleProjectiles() {
-        stage.getActors().removeAll(projectileManager.removeNonActiveProjectiles(), true);
-
-        for (Projectile projectile : projectileManager.getProjectileList()) {
-            if (!stage.getActors().contains(projectile, true)) {
-                Gdx.app.log("Test Log", "Adding new projectile to actors list.");
-                stage.addActor(projectile);
-            }
-        }
-    }
-
-    /**
-     * Adds and removes enemies as actors from the stage.
-     */
-    private void handleEnemies() {
-        stage.getActors().removeAll(entityManager.removeDeadEnemies(), true);
-
-        for (Enemy enemy : entityManager.getEnemyList()) {
-            if (!stage.getActors().contains(enemy, true)) {
-                Gdx.app.log("Test Log", "Adding new enemy to actors list.");
-                stage.addActor(enemy);
             }
         }
     }
