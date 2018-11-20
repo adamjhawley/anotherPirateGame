@@ -28,8 +28,8 @@ public class HUD {
         //make the table fill the entire stage
         table.setFillParent(true);
 
-        goldLabel = new Label("Gold", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        goldValueLabel = new Label(""+goldValue, new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        goldLabel = new Label("GOLD", new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        goldValueLabel = new Label(""+goldValue, new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
         table.add(goldLabel).expandX().padTop(10);
         table.row();

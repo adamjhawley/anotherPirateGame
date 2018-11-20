@@ -45,6 +45,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage hudStage;
     private SpriteBatch batch;
 
+    @Getter
     private OrthographicCamera orthographicCamera;
 
     @Getter
@@ -96,7 +97,7 @@ public class GameScreen implements Screen, InputProcessor {
         stage = new Stage(stretchViewport, batch);
         hudStage = new Stage(new FitViewport(w,h, new OrthographicCamera()));
 
-        pirateMap = new PirateMap(new TmxMapLoader().load("TestMap/PP_Sea_100.tmx"));
+        pirateMap = new PirateMap(new TmxMapLoader().load("PirateMap/PirateMap.tmx"));
         tiledMapRenderer = new OrthogonalTiledMapRenderer(pirateMap.getTiledMap(), 1 / 2f);
 
         this.itemManager = new ItemManager();
@@ -109,7 +110,7 @@ public class GameScreen implements Screen, InputProcessor {
         Enemy enemy = new EnemyBuilder()
                 .selectedProjectile(projectileManager.getDefaultWeaponType())
                 .buildEnemy(entityManager.getNextEnemyID(), new Vector2(200f, 200f));
-        entityManager.addEnemy(enemy);
+       // entityManager.addEnemy(enemy);
 
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);

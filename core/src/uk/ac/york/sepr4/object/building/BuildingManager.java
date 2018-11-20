@@ -25,6 +25,8 @@ public class BuildingManager {
         this.spawnDelta = 0f;
 
         if(gameScreen.getPirateMap().isObjectsEnabled()) {
+            this.colleges = new Array<>();
+            this.departments = new Array<>();
             Json json = new Json();
             loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
             loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
