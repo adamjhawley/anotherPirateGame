@@ -58,37 +58,65 @@ public class Enemy extends LivingEntity {
             setBraking(false);
         }
 
-        timeForPerfectShotToHit(player);
+        fire(perfectShotAngle(player));
         super.act(deltaTime);
     }
 
     private float perfectShotAngle(Player player){
-        return 0;
+        double thetaP;
+        double b = timeForPerfectShotToHit(player);
+        double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
+
+        if(getAngleTowardsLE(player) > (player.getAngle() % 2*Math.PI)){
+            thetaP = getAngleTowardsLE(player) - (player.getAngle()% 2*Math.PI);
+            if(thetaP > Math.PI){
+                thetaP = 2*Math.PI - thetaP;
+            }
+        } else {
+            thetaP = (player.getAngle() % 2*Math.PI) - getAngleTowardsLE(player);
+            if(thetaP > Math.PI){
+                thetaP = 2*Math.PI - thetaP;
+            }
+        }
+
+        double shotAngle = getAngleTowardsLE(player) + (Math.PI - Math.acos(1-(Math.pow(time, 2)/(2*Math.pow(b, 2)))) - thetaP);
+        return (float)shotAngle;
     }
 
     private float timeForPerfectShotToHit(Player player){
-        double a = Math.PI - 2;
-        Gdx.app.log("a", a+"");
+//        double a = Math.PI - 2;
+//        Gdx.app.log("a", a+"");
         double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
         Gdx.app.log("time", time+"");
-        double thetaP = 2*Math.PI - (Math.PI - getAngleTowardsLE(player)) - player.getAngle();
-        if(Math.PI - getAngleTowardsLE(player) < 0){
-            thetaP -= 2*Math.PI;
-        }
-        Gdx.app.log("ntp", (Math.PI - getAngleTowardsLE(player))+"");
-        Gdx.app.log("player", player.getAngle()+"");
-        Gdx.app.log("thetap", thetaP+"");
-        double b = 2*Math.sin(thetaP)*time;
-        Gdx.app.log("b", b+"");
-        double c = Math.pow(time, 2);
-        Gdx.app.log("c", c+"");
-
-        double BtimeMinus = (-b-Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
-        double BtimePlus = (-b+Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
-
-        Gdx.app.log("minus", BtimeMinus+"");
-        Gdx.app.log("plus", BtimePlus+"");
-        return 0;
+//        double thetaP;
+//
+//        if(getAngleTowardsLE(player) > (player.getAngle() % 2*Math.PI)){
+//            thetaP = getAngleTowardsLE(player) - (player.getAngle()% 2*Math.PI);
+//            if(thetaP > Math.PI){
+//                thetaP = 2*Math.PI - thetaP;
+//            }
+//        } else {
+//            thetaP = (player.getAngle() % 2*Math.PI) - getAngleTowardsLE(player);
+//            if(thetaP > Math.PI){
+//                thetaP = 2*Math.PI - thetaP;
+//            }
+//        }
+//        Gdx.app.log("ntp", (Math.PI - getAngleTowardsLE(player))+"");
+//        Gdx.app.log("player", (player.getAngle()% 2*Math.PI)+"");
+//        Gdx.app.log("thetap", thetaP+"");
+//        double b = 2*Math.sin(thetaP)*time;
+//        Gdx.app.log("b", b+"");
+//        double c = Math.pow(time, 2);
+//        Gdx.app.log("c", c+"");
+//
+//        double BtimeMinus = (-b-Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
+//        double BtimePlus = (-b+Math.sqrt(Math.pow(b, 2) - 4*a*c))/(2*a);
+//
+//        Gdx.app.log("minus", BtimeMinus+"");
+//        Gdx.app.log("plus", BtimePlus+"");
+        double bPlus = (Math.pow(time, 2) + Math.sqrt(9*Math.pow(time, 4)))/(4*time);
+        double bMinus = (Math.pow(time, 2) - Math.sqrt(9*Math.pow(time, 4)))/(4*time);
+        return (float)bPlus;
     }
 
     private float getDistanceToPlayer(Player player) {
