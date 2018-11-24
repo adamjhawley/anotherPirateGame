@@ -6,6 +6,7 @@ import lombok.Data;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 
+import javax.swing.text.MutableAttributeSet;
 import java.util.List;
 
 @Data
@@ -37,57 +38,108 @@ public class Enemy extends LivingEntity {
      */
     public void act(float deltaTime) {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-        float resAngle = resultantAngle(player);
-        resAngle = resAngle % (float)(2*Math.PI);
-        setAngle(resAngle);
+//        float resAngle = resultantAngle(player);
+//        resAngle = resAngle % (float)(2*Math.PI);
+//        setAngle(resAngle);
+//
+//        float f = f(player);
+//
+//        if((1-f) - f > 0.2){
+//            setAccelerating(true);
+//            setBraking(false);
+//        } else if(((1-f) - f > -0.2)){
+//            setAccelerating(false);
+//            setBraking(false);
+//        } else {
+//                setBraking(false);
+//                setAccelerating(true);
+//        }
+//        if(getSpeed() < getMaxSpeed()/5){
+//            setAccelerating(true);
+//            setBraking(false);
+//        }
 
-        float f = f(player);
-
-        if((1-f) - f > 0.2){
-            setAccelerating(true);
-            setBraking(false);
-        } else if(((1-f) - f > -0.2)){
-            setAccelerating(false);
-            setBraking(false);
-        } else {
-                setBraking(false);
-                setAccelerating(true);
-        }
-        if(getSpeed() < getMaxSpeed()/5){
-            setAccelerating(true);
-            setBraking(false);
-        }
-
-        fire(perfectShotAngle(player));
+        //Gdx.app.log("fire", Float.toString(perfectShotAngle(player)));
+        Gdx.app.log("angle", Float.toString(player.getAngle()));
+        Gdx.app.log("anglewithmod", Float.toString((float)(player.getAngle() % 2*Math.PI)));
+        ////////Error with angle mod might be the reason for everything going wrong so fix
+        ////////B is also coming out as minus which shouldnt happen
         super.act(deltaTime);
     }
 
     private float perfectShotAngle(Player player){
-        double thetaP;
-        double b = timeForPerfectShotToHit(player);
-        double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
-
-        if(getAngleTowardsLE(player) > (player.getAngle() % 2*Math.PI)){
-            thetaP = getAngleTowardsLE(player) - (player.getAngle()% 2*Math.PI);
-            if(thetaP > Math.PI){
-                thetaP = 2*Math.PI - thetaP;
-            }
+        boolean right;
+        double theta;
+        double thetaP = player.getAngle() % 2*Math.PI;
+        double thetaTP = getAngleTowardsLE(player);
+        Gdx.app.log("thetaP", thetaP+"");
+        Gdx.app.log("thetaTP", thetaTP+"");
+        if(thetaP<=thetaTP && thetaTP<=Math.PI){
+            theta = thetaP + (Math.PI - thetaTP);
+            right = true;
+        } else if((2*Math.PI - thetaP) <= (2*Math.PI - thetaTP) && (2*Math.PI - thetaTP) <= Math.PI){
+            theta = (2*Math.PI - thetaP) + (Math.PI - (2*Math.PI - thetaTP));
+            right = false;
+        } else if(thetaTP <= Math.PI && thetaP > thetaTP && (2*Math.PI - thetaP) >= (Math.PI - thetaTP)){
+            theta = (2*Math.PI - thetaP) - (Math.PI - thetaTP);
+            right = false;
+        } else if((2*Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && thetaP >= (Math.PI - (2*Math.PI - thetaTP))){
+            theta = thetaP - (Math.PI - (2*Math.PI - thetaTP));
+            right = true;
+        } else if(thetaTP <= Math.PI && thetaP > thetaTP && (2*Math.PI - thetaP) <= (Math.PI - thetaTP)){
+            theta = (Math.PI - thetaTP) - (2*Math.PI - thetaP);
+            right = true;
+        } else if((2*Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && (Math.PI - (2*Math.PI - thetaTP)) >= thetaP){
+            theta = (Math.PI - (2*Math.PI - thetaTP)) - thetaP;
+            right = false;
         } else {
-            thetaP = (player.getAngle() % 2*Math.PI) - getAngleTowardsLE(player);
-            if(thetaP > Math.PI){
-                thetaP = 2*Math.PI - thetaP;
-            }
+            theta = 0;
+            right = true;
+        }
+        Gdx.app.log("thetaP", theta+"");
+        if(right == true){
+            Gdx.app.log("right", "");
+        } else {
+            Gdx.app.log("left", "");
         }
 
-        double shotAngle = getAngleTowardsLE(player) + (Math.PI - Math.acos(1-(Math.pow(time, 2)/(2*Math.pow(b, 2)))) - thetaP);
+        double b = timeForPerfectShotToHit(player, (float)theta);
+        Gdx.app.log("b", b+"");
+        double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
+        Gdx.app.log("time", time+"");
+
+
+
+//        double shotAngle = getAngleTowardsLE(player) + (Math.PI - Math.acos(1-(Math.pow(time, 2)/(2*Math.pow(b, 2)))) - thetaP);
+//        double shotAngle = (Math.PI - Math.acos(1-(Math.pow(time, 2)/(2*Math.pow(b, 2)))) - theta);
+        double shotAngle = Math.acos(Math.pow(time, 2) / (2*b*time));
+        Gdx.app.log("shotangle", shotAngle+"");
+
+        if(right == true){
+            shotAngle = thetaTP - shotAngle;
+        } else {
+            shotAngle = thetaTP + shotAngle;
+        }
         return (float)shotAngle;
     }
 
-    private float timeForPerfectShotToHit(Player player){
+    private float timeForPerfectShotToHit(Player player, float theta){
 //        double a = Math.PI - 2;
 //        Gdx.app.log("a", a+"");
         double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
-        Gdx.app.log("time", time+"");
+//        double test = 2*Math.cos(theta);
+//        if(test < 0){
+//            test = -test;
+//        }
+//
+       double b = Math.pow(time, 2) / 2*Math.cos(theta);
+//        double b = Math.pow(time, 2) / test;
+        return (float)b;
+
+
+
+
+
 //        double thetaP;
 //
 //        if(getAngleTowardsLE(player) > (player.getAngle() % 2*Math.PI)){
@@ -114,9 +166,10 @@ public class Enemy extends LivingEntity {
 //
 //        Gdx.app.log("minus", BtimeMinus+"");
 //        Gdx.app.log("plus", BtimePlus+"");
-        double bPlus = (Math.pow(time, 2) + Math.sqrt(9*Math.pow(time, 4)))/(4*time);
-        double bMinus = (Math.pow(time, 2) - Math.sqrt(9*Math.pow(time, 4)))/(4*time);
-        return (float)bPlus;
+//        double bPlus = (Math.pow(time, 2) + Math.sqrt(9*Math.pow(time, 4)))/(4*time);
+//        double bMinus = (Math.pow(time, 2) - Math.sqrt(9*Math.pow(time, 4)))/(4*time);
+//        return (float)bPlus;
+
     }
 
     private float getDistanceToPlayer(Player player) {
