@@ -9,6 +9,7 @@ import uk.ac.york.sepr4.screen.GameScreen;
 import javax.print.attribute.standard.MediaSize;
 import javax.swing.text.MutableAttributeSet;
 import java.util.List;
+import com.badlogic.gdx.math.Rectangle;
 
 import static java.lang.Double.NaN;
 
@@ -22,6 +23,7 @@ public class Enemy extends LivingEntity {
     //Enemy-specific variables
     private float range;
     private float accuracy;
+    private int collided;
 
     public Enemy(Integer id, Texture texture){
         super(id, texture);
@@ -31,6 +33,7 @@ public class Enemy extends LivingEntity {
         super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
         this.range = range;
         this.accuracy = accuracy;
+        this.collided = 0;
     }
 
     /**
@@ -61,11 +64,31 @@ public class Enemy extends LivingEntity {
             setAccelerating(true);
             setBraking(false);
         }
+        if(goingToCollide(player)){//seeing as player is the only thing that can have it right now dont need to code loops for it
+            GameScreen.getInstance().getEntityManager().getPlayer().setAngle(getAngleTowardsLE(player));
+            setCollided(100);
+        }
+        if(collided > 0){ //should be deleted this code doesnt do anything other than prove collision
+            setAccelerating(true);
+            setBraking(false);
+            setAngle(getAngleTowardsLE(player) - (float)Math.PI);
+            collided -= 1;
+        }
 
 
-        fire(perfectShotAngle(player));
+        //fire(perfectShotAngle(player));
         //Need to workout some logic on whether to shoot tip(use B if over a certain value to stop shooting otherwise you get a weird line of shots)
         super.act(deltaTime);
+    }
+
+    private boolean goingToCollide(Player player){ //Has to be passed an array of all objects that cant be collided with or move function somewhere else
+        double pred_X = getX() + getSpeed()*Math.sin(getAngle());
+        double pred_Y = getY() - getSpeed()*Math.cos(getAngle());
+        Rectangle pred_Bounds = new Rectangle((float)pred_X, (float)pred_Y, getWidth()/2, getHeight()/2);
+        if(player.getBounds().overlaps(pred_Bounds)){ //Will have to loop over every object passed to it
+            return true; //Would also have to pass what its colliding with to find angle and distance to for the movement selection
+        }
+        return false;
     }
 
     private float convertToRealAngle(float angle){
