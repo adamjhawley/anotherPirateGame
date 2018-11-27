@@ -1,17 +1,10 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
-import uk.ac.york.sepr4.screen.GameScreen;
-
-import javax.print.attribute.standard.MediaSize;
-import javax.swing.text.MutableAttributeSet;
 import java.util.List;
-import com.badlogic.gdx.math.Rectangle;
-
-import static java.lang.Double.NaN;
 
 @Data
 public class Enemy extends LivingEntity {
@@ -23,7 +16,6 @@ public class Enemy extends LivingEntity {
     //Enemy-specific variables
     private float range;
     private float accuracy;
-    private int collided;
 
     public Enemy(Integer id, Texture texture){
         super(id, texture);
@@ -33,7 +25,6 @@ public class Enemy extends LivingEntity {
         super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
         this.range = range;
         this.accuracy = accuracy;
-        this.collided = 0;
     }
 
     /**
@@ -42,53 +33,56 @@ public class Enemy extends LivingEntity {
      *
      * @param deltaTime
      */
+
+    //Todo: Change all parameters that say player to hostile for more readable code
+
+    //Todo: Make a hostility thing using specficIdsHostileTo HostileToFactions sort of thing
+
+    //Todo: Make a better collision protocal for enemy specfic
+
+    //Todo: Create something that can give a array of all entitys within a certain distance to the living entity - Can also be used in player to check for collsions
+    //Todo: The samething but with projectiles this will only be used for within enemy i think though
+    //Todo: Add a dodge function that takes a single projectile and checks if it will hit and how much time it will take to hit
+
+    //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
+
     public void act(float deltaTime) {
-        Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-        float resAngle = resultantAngle(player);
-        resAngle = convertToRealAngle(resAngle);
-        setAngle(resAngle);
+//        Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
+//        float resAngle = resultantAngle(player);
+//        resAngle = convertToRealAngle(resAngle);
+//        setAngle(resAngle);
+//
+//        float f = f(player);
+//
+//        if((1-f) - f > 0.2){
+//            setAccelerating(true);
+//            setBraking(false);
+//        } else if(((1-f) - f > -0.2)){
+//            setAccelerating(false);
+//            setBraking(false);
+//        } else {
+//                setBraking(false);
+//                setAccelerating(true);
+//        }
+//        if(getSpeed() < getMaxSpeed()/5){
+//            setAccelerating(true);
+//            setBraking(false);
+//        }
+//        if(goingToCollide(player)){
+//            setCollided(100);
+//        }
+//        if(getCollided() > 0){
+//            setCollided(getCollided() - 1);
+//            setAngle(getAngleTowardsLE(player) - (float)Math.PI);
+//            setAccelerating(true);
+//            setBraking(false);
+//        } else {
+//            setAccelerating(false);
+//            setBraking(true);
+//        }
 
-        float f = f(player);
 
-        if((1-f) - f > 0.2){
-            setAccelerating(true);
-            setBraking(false);
-        } else if(((1-f) - f > -0.2)){
-            setAccelerating(false);
-            setBraking(false);
-        } else {
-                setBraking(false);
-                setAccelerating(true);
-        }
-        if(getSpeed() < getMaxSpeed()/5){
-            setAccelerating(true);
-            setBraking(false);
-        }
-        if(goingToCollide(player)){//seeing as player is the only thing that can have it right now dont need to code loops for it
-            GameScreen.getInstance().getEntityManager().getPlayer().setAngle(getAngleTowardsLE(player));
-            setCollided(100);
-        }
-        if(collided > 0){ //should be deleted this code doesnt do anything other than prove collision
-            setAccelerating(true);
-            setBraking(false);
-            setAngle(getAngleTowardsLE(player) - (float)Math.PI);
-            collided -= 1;
-        }
-
-
-        //fire(perfectShotAngle(player));
-        //Need to workout some logic on whether to shoot tip(use B if over a certain value to stop shooting otherwise you get a weird line of shots)
         super.act(deltaTime);
-    }
-
-    private boolean goingToCollide(Player player){ //Has to be passed an array of all objects that cant be collided with or move function somewhere else
-        double pred_X = getX() + getSpeed()*Math.sin(getAngle());
-        double pred_Y = getY() - getSpeed()*Math.cos(getAngle());
-        Rectangle pred_Bounds = new Rectangle((float)pred_X, (float)pred_Y, getWidth()/2, getHeight()/2);
-        if(player.getBounds().overlaps(pred_Bounds)){ //Will have to loop over every object passed to it
-            return true; //Would also have to pass what its colliding with to find angle and distance to for the movement selection
-        }
-        return false;
     }
 
     private float convertToRealAngle(float angle){
@@ -105,7 +99,8 @@ public class Enemy extends LivingEntity {
         return angle;
     }
 
-    private float perfectShotAngle(Player player){
+    //Works to perfectly so in act will have to have some logic if time is to much to not shoot
+    private float perfectShotAngle(LivingEntity player){
         boolean right;
         double theta;
         double thetaP = convertToRealAngle(player.getAngle());
@@ -159,7 +154,7 @@ public class Enemy extends LivingEntity {
         return convertToRealAngle((float)shotAngle);
     }
 
-    private float timeForPerfectShotToHit(Player player, float theta){
+    private float timeForPerfectShotToHit(LivingEntity player, float theta){
         double time = getDistanceToPlayer(player)/(getSpeed()+getSelectedProjectileType().getBaseSpeed());
 
         double b = time / (2*Math.cos(theta));
@@ -169,18 +164,18 @@ public class Enemy extends LivingEntity {
         return (float)b;
     }
 
-    private float getDistanceToPlayer(Player player) {
+    private float getDistanceToPlayer(LivingEntity player) {
         float dist = (float)Math.sqrt(Math.pow((player.getCentre().x - getCentre().x), 2) + Math.pow((player.getCentre().y - getCentre().y), 2));
         return dist;
     }
 
-    private float f(Player player){
+    private float f(LivingEntity player){
         double sigma = (double)this.standardDeviation;
         double fx = (1/(Math.sqrt(2*Math.PI)*sigma))*Math.pow(Math.E, -(Math.pow(((double)getDistanceToPlayer(player) - (double)this.mean), 2)/(2*Math.pow(sigma, 2))));
         return (float)fx*160f;
     }
 
-    private float resultantAngle(Player player){
+    private float resultantAngle(LivingEntity player){
         float f = f(player);
         float sigma = getAngleTowardsLE(player) - convertToRealAngle(player.getAngle());
 

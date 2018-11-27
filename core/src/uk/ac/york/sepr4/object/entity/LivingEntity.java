@@ -3,6 +3,7 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
@@ -22,6 +23,10 @@ public abstract class LivingEntity extends Entity {
     private boolean isAccelerating, isBraking;
     private Integer turningSpeed;
 
+    //Added by harry
+    private Integer collided;
+
+
     private ProjectileType selectedProjectileType;
     private float currentCooldown;
 
@@ -32,6 +37,8 @@ public abstract class LivingEntity extends Entity {
     public LivingEntity(Integer id, Texture texture) {
         this(id, texture, 0f, 0f, 100f,20.0, 20.0,   1, false, new ArrayList<ProjectileType>());
     }
+
+    //Todo: Make a better collision detection
 
     public LivingEntity(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes) {
         super(id, texture, angle, speed);
@@ -44,6 +51,8 @@ public abstract class LivingEntity extends Entity {
         this.currentCooldown = 0f;
         this.maxSpeed = maxSpeed;
         this.turningSpeed = turningSpeed;
+
+        this.collided = 0;
 
         this.healthBar = new HealthBar(this);
         this.isDying = false;
@@ -151,4 +160,17 @@ public abstract class LivingEntity extends Entity {
             }
         }
         return false;
-    }}
+    }
+
+    //Make this function more accurate
+    public boolean goingToCollide(Entity object){
+        double pred_X = getX() + getSpeed()*Math.sin(getAngle());
+        double pred_Y = getY() - getSpeed()*Math.cos(getAngle());
+        Rectangle pred_Bounds = new Rectangle((float)pred_X, (float)pred_Y, getWidth(), getHeight());
+        if(object.getBounds().overlaps(pred_Bounds)){
+            return true;
+        }
+        return false;
+    }
+
+}

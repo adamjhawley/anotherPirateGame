@@ -26,12 +26,17 @@ public class Player extends LivingEntity implements InputProcessor {
         this.xp = 0;
         this.inventory = new ArrayList<Item>();
 
+
         setPosition(pos.x, pos.y);
 
         //Setup default weapon
         setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
         addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
     }
+
+    //Todo: Create something that can give a array of all entitys within a certain distance to the living entity - Can also be used in player to check for collsions
+    //Todo: Create a collsion procedure once collision has been made
+
 
     @Override
     public void act(float deltaTime) {
