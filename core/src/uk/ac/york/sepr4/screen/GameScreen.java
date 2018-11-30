@@ -126,9 +126,10 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void startGame(){
         stage.addActor(entityManager.getOrCreatePlayer());
+        Vector2 vector2 = getPirateMap().getSpawnPoint();
         Enemy enemy = new EnemyBuilder()
                 .selectedProjectile(projectileManager.getDefaultWeaponType())
-                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(200f, 200f));
+                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
         entityManager.addEnemy(enemy);
     }
 
