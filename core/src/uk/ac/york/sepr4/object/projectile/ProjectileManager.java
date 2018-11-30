@@ -9,6 +9,7 @@ import uk.ac.york.sepr4.object.entity.LivingEntity;
 
 public class ProjectileManager {
 
+    //ToDo: Add a function that takes a square or circle and returns them
     @Getter
     private Array<ProjectileType> projectileTypeList;
 

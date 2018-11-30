@@ -1,6 +1,7 @@
 package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.screen.GameScreen;
@@ -8,6 +9,7 @@ import uk.ac.york.sepr4.screen.GameScreen;
 @Data
 public class EntityManager {
 
+    //ToDo: Add a function that takes a square or circle and returns all entitys within it
     private Player player;
 
     Array<Enemy> enemyList;
@@ -32,6 +34,19 @@ public class EntityManager {
 
     public void addEnemy(Enemy enemy){
         this.enemyList.add(enemy);
+    }
+
+    public Array<LivingEntity> getEnemiesInArea(Rectangle rectangle) {
+        Array<LivingEntity> entities = new Array<>();
+        for(Enemy enemy : enemyList) {
+            if(enemy.getBounds().overlaps(rectangle)){
+                entities.add(enemy);
+            }
+        }
+        if(player.getBounds().overlaps(rectangle)) {
+            entities.add(player);
+        }
+        return entities;
     }
 
     public Enemy getEnemy(Integer id) throws IllegalArgumentException { //Will need to be changed

@@ -1,9 +1,12 @@
 package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
+import uk.ac.york.sepr4.screen.GameScreen;
 import java.util.List;
 
 @Data
@@ -47,39 +50,41 @@ public class Enemy extends LivingEntity {
     //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
 
     public void act(float deltaTime) {
-//        Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-//        float resAngle = resultantAngle(player);
-//        resAngle = convertToRealAngle(resAngle);
-//        setAngle(resAngle);
-//
-//        float f = f(player);
-//
-//        if((1-f) - f > 0.2){
-//            setAccelerating(true);
-//            setBraking(false);
-//        } else if(((1-f) - f > -0.2)){
-//            setAccelerating(false);
-//            setBraking(false);
-//        } else {
-//                setBraking(false);
-//                setAccelerating(true);
-//        }
-//        if(getSpeed() < getMaxSpeed()/5){
-//            setAccelerating(true);
-//            setBraking(false);
-//        }
-//        if(goingToCollide(player)){
-//            setCollided(100);
-//        }
-//        if(getCollided() > 0){
-//            setCollided(getCollided() - 1);
-//            setAngle(getAngleTowardsLE(player) - (float)Math.PI);
-//            setAccelerating(true);
-//            setBraking(false);
-//        } else {
-//            setAccelerating(false);
-//            setBraking(true);
-//        }
+//        Rectangle radius = getBounds();
+//        radius.setWidth(radius.getWidth() + range);
+//        radius.setHeight(radius.getHeight() + range);
+
+        Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
+//        Array<LivingEntity> nearby = GameScreen.getInstance().getEntityManager().getEnemiesInArea(radius);
+        float resAngle = resultantAngle(player);
+        resAngle = convertToRealAngle(resAngle);
+        setAngle(resAngle);
+
+        float f = f(player);
+
+        if((1-f) - f > 0.2){
+            setAccelerating(true);
+            setBraking(false);
+        } else if(((1-f) - f > -0.2)){
+            setAccelerating(false);
+            setBraking(false);
+        } else {
+                setBraking(false);
+                setAccelerating(true);
+        }
+        if(getSpeed() < getMaxSpeed()/5){
+            setAccelerating(true);
+            setBraking(false);
+        }
+        if(goingToCollide(player)){
+            setCollided(100);
+        }
+        if(getCollided() > 0){
+            setCollided(getCollided() - 1);
+            setAngle(getAngleTowardsLE(player) - (float)Math.PI);
+            setAccelerating(true);
+            setBraking(false);
+        }
 
 
         super.act(deltaTime);
@@ -208,6 +213,11 @@ public class Enemy extends LivingEntity {
         float rsigma = sigma + getAngleTowardsLE(player);
         rsigma += f*(Math.PI);
         return  rsigma;
+    }
+
+    private boolean isProjectileOnCourseToHit(Projectile projectile){
+
+        return false;
     }
 
 
