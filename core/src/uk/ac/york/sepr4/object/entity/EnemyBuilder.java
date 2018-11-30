@@ -13,7 +13,7 @@ import java.util.Random;
 @Data
 public class EnemyBuilder {
 
-    private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 100f, accuracy = 0.5f;
+    private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 500f, accuracy = 0.5f;
     private Double health = 20.0, maxHealth = 20.0;
     private List<ProjectileType> projectileTypes = new ArrayList<ProjectileType>();
     private boolean isDead = false, onFire = false, isAccelerating, isBraking = false;

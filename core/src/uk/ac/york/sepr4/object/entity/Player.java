@@ -28,6 +28,7 @@ public class Player extends LivingEntity implements InputProcessor {
 
 
         setPosition(pos.x, pos.y);
+        setAngle((float)Math.PI);
 
         //Setup default weapon
         setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());

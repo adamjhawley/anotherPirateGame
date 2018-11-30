@@ -20,7 +20,7 @@ public class Enemy extends LivingEntity {
     private float range;
     private float accuracy;
 
-    public Enemy(Integer id, Texture texture){
+    public Enemy(Integer id, Texture texture) {
         super(id, texture);
     }
 
@@ -60,17 +60,27 @@ public class Enemy extends LivingEntity {
         resAngle = convertToRealAngle(resAngle);
         setAngle(resAngle);
 
-        float f = f(player);
+            float f = f(player);
 
-        if((1-f) - f > 0.2){
-            setAccelerating(true);
-            setBraking(false);
-        } else if(((1-f) - f > -0.2)){
-            setAccelerating(false);
-            setBraking(false);
-        } else {
+            if ((1 - f) - f > 0.2) {
+                setAccelerating(true);
+                setBraking(false);
+            } else if (((1 - f) - f > -0.2)) {
+                setAccelerating(false);
+                setBraking(false);
+            } else {
                 setBraking(false);
                 setAccelerating(true);
+            }
+            if (getSpeed() < getMaxSpeed() / 5) {
+                setAccelerating(true);
+                setBraking(false);
+            }
+
+            //fire(perfectShotAngle(player));
+        } else {
+            setBraking(true);
+            setAccelerating(false);
         }
         if(getSpeed() < getMaxSpeed()/5){
             setAccelerating(true);
@@ -187,32 +197,32 @@ public class Enemy extends LivingEntity {
         float tp;
         float rp;
 
-        if(sigma <= Math.PI/2){
-            tp = (float)(f*Math.cos(sigma) + (1-f));
-            rp = (float)(-f*Math.sin(sigma));
-        } else if(sigma <= Math.PI){
-            tp = (float)((1-f) - f*Math.sin(sigma - Math.PI/2));
-            rp = (float)(-f*Math.cos(sigma - Math.PI/2));
-        } else if(sigma <= (3*Math.PI)/2){
-            tp = (float)((1-f) - f*Math.cos(sigma - Math.PI));
-            rp = (float)(f*Math.sin(sigma - Math.PI));
+        if (sigma <= Math.PI / 2) {
+            tp = (float) (f * Math.cos(sigma) + (1 - f));
+            rp = (float) (-f * Math.sin(sigma));
+        } else if (sigma <= Math.PI) {
+            tp = (float) ((1 - f) - f * Math.sin(sigma - Math.PI / 2));
+            rp = (float) (-f * Math.cos(sigma - Math.PI / 2));
+        } else if (sigma <= (3 * Math.PI) / 2) {
+            tp = (float) ((1 - f) - f * Math.cos(sigma - Math.PI));
+            rp = (float) (f * Math.sin(sigma - Math.PI));
         } else {
-            tp = (float)((1-f) + f*Math.sin(sigma - (3*Math.PI)/2));
-            rp = (float)(f*Math.cos(sigma - (3*Math.PI)/2));
+            tp = (float) ((1 - f) + f * Math.sin(sigma - (3 * Math.PI) / 2));
+            rp = (float) (f * Math.cos(sigma - (3 * Math.PI) / 2));
         }
 
-        if(tp >= 0 && rp <= 0){
-            sigma = (float)Math.atan(-rp/tp);
-        } else if(tp <= 0 && rp <= 0){
-            sigma = (float)(Math.PI/2 + Math.atan(-tp/-rp));
-        } else if(tp <= 0 && rp >= 0){
-            sigma = (float)(Math.PI + Math.atan(rp/-tp));
+        if (tp >= 0 && rp <= 0) {
+            sigma = (float) Math.atan(-rp / tp);
+        } else if (tp <= 0 && rp <= 0) {
+            sigma = (float) (Math.PI / 2 + Math.atan(-tp / -rp));
+        } else if (tp <= 0 && rp >= 0) {
+            sigma = (float) (Math.PI + Math.atan(rp / -tp));
         } else {
-            sigma = (float)((3*Math.PI)/2 + Math.atan(tp/rp));
+            sigma = (float) ((3 * Math.PI) / 2 + Math.atan(tp / rp));
         }
         float rsigma = sigma + getAngleTowardsLE(player);
-        rsigma += f*(Math.PI);
-        return  rsigma;
+        rsigma += f * (Math.PI);
+        return rsigma;
     }
 
     private boolean isProjectileOnCourseToHit(Projectile projectile){

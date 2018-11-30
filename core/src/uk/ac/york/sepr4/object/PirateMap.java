@@ -6,7 +6,9 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import lombok.Getter;
+import uk.ac.york.sepr4.screen.GameScreen;
 
 import java.util.Optional;
 
@@ -35,8 +37,14 @@ public class PirateMap {
             Gdx.app.log("Pirate Map", "Map does NOT contain object layer!");
             this.objectsEnabled = false;
         }
+    }
 
-
+    public Vector2 getSpawnPoint() {
+        if(isObjectsEnabled()) {
+            return spawnPoint;
+        } else {
+            return new Vector2(50,50);
+        }
     }
 
     private boolean checkObjectLayer() {
@@ -54,12 +62,16 @@ public class PirateMap {
 
     private boolean checkSpawnObject() {
         MapObject mapObject = objectLayer.getObjects().get(spawnPointObject);
-        if(mapObject instanceof RectangleMapObject) {
+        if(mapObject != null && mapObject instanceof RectangleMapObject) {
             RectangleMapObject object = (RectangleMapObject) mapObject;
-            this.spawnPoint = new Vector2(object.getRectangle().x, object.getRectangle().y);
+            this.spawnPoint = scaleTiledVectorToMap(new Vector2(object.getRectangle().x, object.getRectangle().y));
             return true;
         }
         return false;
+    }
+
+    private Vector2 scaleTiledVectorToMap(Vector2 tiledVector) {
+        return tiledVector.scl(1/2f);
     }
 
 }

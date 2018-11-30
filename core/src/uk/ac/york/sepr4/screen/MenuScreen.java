@@ -69,6 +69,7 @@ public class MenuScreen implements Screen {
 //                pirateGame.switchScreen(ScreenType.PREFERENCES);
 //            }
 //        });
+        Gdx.input.setInputProcessor(stage);
 
     }
 
@@ -96,7 +97,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void resume() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override

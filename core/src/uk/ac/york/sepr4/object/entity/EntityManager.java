@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 
 @Data
@@ -27,7 +28,7 @@ public class EntityManager {
 
     public Player getOrCreatePlayer() {
         if(player == null) {
-            player = new Player(gameScreen.getSpawnPoint());
+            player = new Player(gameScreen.getPirateMap().getSpawnPoint());
         }
         return player;
     }
@@ -68,6 +69,39 @@ public class EntityManager {
         }
         enemyList.removeAll(toRemove, true);
         return toRemove;
+    }
+
+    public void handleStageEntities(Stage stage){
+        handleProjectiles(stage);
+        handleEnemies(stage);
+    }
+
+    /**
+     * Adds and removes projectiles as actors from the stage.
+     */
+    private void handleProjectiles(Stage stage) {
+        stage.getActors().removeAll(gameScreen.getProjectileManager().removeNonActiveProjectiles(), true);
+
+        for (Projectile projectile : gameScreen.getProjectileManager().getProjectileList()) {
+            if (!stage.getActors().contains(projectile, true)) {
+                Gdx.app.log("Test Log", "Adding new projectile to actors list.");
+                stage.addActor(projectile);
+            }
+        }
+    }
+
+    /**
+     * Adds and removes enemies as actors from the stage.
+     */
+    private void handleEnemies(Stage stage) {
+        stage.getActors().removeAll(removeDeadEnemies(), true);
+
+        for (Enemy enemy : getEnemyList()) {
+            if (!stage.getActors().contains(enemy, true)) {
+                Gdx.app.log("Test Log", "Adding new enemy to actors list.");
+                stage.addActor(enemy);
+            }
+        }
     }
 
 
