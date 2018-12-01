@@ -48,6 +48,7 @@ public class EntityManager {
 
     public Integer getNextEffectID(){return this.effects.size;};
 
+    //Takes the centre x,y of where you want the image to be
     public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height){
         Entity effect = new Entity(getNextEffectID(), texture, angle, speed) {};
         effect.setY(y - height/2);
@@ -127,6 +128,7 @@ public class EntityManager {
 
     /**
      * Removes all effects then adds all new effects
+     * Effects work on a frame by frame basis so need to be spawned in every frame
      */
     private void handleEffects(Stage stage) {
         stage.getActors().removeAll(this.lastFrameeffects, true);
