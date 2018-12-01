@@ -56,37 +56,36 @@ public class Enemy extends LivingEntity {
 
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
 //        Array<LivingEntity> nearby = GameScreen.getInstance().getEntityManager().getEnemiesInArea(radius);
-        float resAngle = resultantAngle(player);
-        resAngle = convertToRealAngle(resAngle);
-        setAngle(resAngle);
-
-        float f = f(player);
-
-        if ((1 - f) - f > 0.2) {
-            setAccelerating(true);
-            setBraking(false);
-        } else if (((1 - f) - f > -0.2)) {
-            setAccelerating(false);
-            setBraking(false);
-        } else {
-            setBraking(false);
-            setAccelerating(true);
-        }
-        if (getSpeed() < getMaxSpeed() / 5) {
-            setAccelerating(true);
-            setBraking(false);
-        }
-        if (goingToCollide(player)) {
-            setCollided(100);
-        }
-        if (getCollided() > 0) {
-            setCollided(getCollided() - 1);
-            setAngle(getAngleTowardsLE(player) - (float) Math.PI);
-            setAccelerating(true);
-            setBraking(false);
-        }
-
-
+//        float resAngle = resultantAngle(player);
+//        resAngle = convertToRealAngle(resAngle);
+//        setAngle(resAngle);
+//
+//        float f = f(player);
+//
+//        if ((1 - f) - f > 0.2) {
+//            setAccelerating(true);
+//            setBraking(false);
+//        } else if (((1 - f) - f > -0.2)) {
+//            setAccelerating(false);
+//            setBraking(false);
+//        } else {
+//            setBraking(false);
+//            setAccelerating(true);
+//        }
+//        if (getSpeed() < getMaxSpeed() / 5) {
+//            setAccelerating(true);
+//            setBraking(false);
+//        }
+//        if (goingToCollide(player)) {
+//            setCollided(100);
+//        }
+//        if (getCollided() > 0) {
+//            setCollided(getCollided() - 1);
+//            setAngle(getAngleTowardsLE(player) - (float) Math.PI);
+//            setAccelerating(true);
+//            setBraking(false);
+//        }
+        setAccelerating(true);
         super.act(deltaTime);
     }
 

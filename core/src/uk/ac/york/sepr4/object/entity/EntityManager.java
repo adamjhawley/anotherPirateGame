@@ -1,10 +1,12 @@
 package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 
@@ -16,11 +18,17 @@ public class EntityManager {
 
     Array<Enemy> enemyList;
 
+    //Added by harry for the death animation
+    Array<Entity> effects;
+    Array<Entity> lastFrameeffects; //Needed for clean up
+
     private GameScreen gameScreen;
 
     public EntityManager(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         this.enemyList = new Array<Enemy>();
+        this.effects = new Array<Entity>();
+        this.lastFrameeffects = new Array<Entity>();
     }
 
     public Integer getNextEnemyID() {
@@ -36,6 +44,17 @@ public class EntityManager {
 
     public void addEnemy(Enemy enemy){
         this.enemyList.add(enemy);
+    }
+
+    public Integer getNextEffectID(){return this.effects.size;};
+
+    public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height){
+        Entity effect = new Entity(getNextEffectID(), texture, angle, speed) {};
+        effect.setY(y - height/2);
+        effect.setX(x - width/2);
+        effect.setWidth(width);
+        effect.setHeight(height);
+        this.effects.add(effect);
     }
 
     public Array<LivingEntity> getEnemiesInArea(Rectangle rectangle) {
@@ -75,6 +94,7 @@ public class EntityManager {
     public void handleStageEntities(Stage stage){
         handleProjectiles(stage);
         handleEnemies(stage);
+        handleEffects(stage);
     }
 
     /**
@@ -104,6 +124,25 @@ public class EntityManager {
             }
         }
     }
+
+    /**
+     * Removes all effects then adds all new effects
+     */
+    private void handleEffects(Stage stage) {
+        stage.getActors().removeAll(this.lastFrameeffects, true);
+
+        Gdx.app.log("sizeofeffect", Integer.toString(this.effects.size));
+        for (Entity effect : getEffects()) {
+            if (!stage.getActors().contains(effect, true)) {
+                Gdx.app.log("Test Log", "Adding new effect to actors list.");
+                stage.addActor(effect);
+            }
+        }
+
+        this.lastFrameeffects = this.effects;
+        this.effects = new Array<Entity>();
+    }
+
 
 
 }

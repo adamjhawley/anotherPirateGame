@@ -1,5 +1,6 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -83,47 +84,48 @@ public abstract class LivingEntity extends Entity {
 
         //TODO: Very unsure about this logic
         if (this.isDying) {
-            //death animation started
+            setTexture(TextureManager.DEADENEMY);
             if (deathTimer < 1/6f) {
-                //for some reason the centre here is incorrect (explosion flies away)
-                //setX(getCentre().x);
-                //setY(getCentre().y);
-                setTexture(TextureManager.EXPLOSION1);
-                setWidth(40);
-                setHeight(40);
-
+                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40);
             } else if (deathTimer < 2/6f) {
-                setTexture(TextureManager.EXPLOSION2);
-            } else {
-                setTexture(TextureManager.EXPLOSION3);
+                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION2, 40, 40);
+            } else if (deathTimer < 1/2f){
+                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION3, 40, 40);
             }
-            if (deathTimer > 1/2f) {
+            if (deathTimer > 5){
                 this.isDead = true;
                 this.isDying = false;
             }
+
             deathTimer += deltaTime;
-        }
-
-        float speed = getSpeed();
-
-        if (isAccelerating) {
-            if (speed > maxSpeed) {
-                speed = maxSpeed;
-            } else {
-                speed += 40f * deltaTime;
+            if (getSpeed() > 0) {
+                setSpeed(getSpeed() -  40f * deltaTime);
             }
-        } else if (isBraking) {
-            if (speed > 0) {
-                speed -= 80f * deltaTime;
-            }
+            super.act(deltaTime);
+
         } else {
-            if (speed > 0) {
-                speed -= 20f * deltaTime;
-            }
-        }
-        setSpeed(speed);
 
-        super.act(deltaTime);
+            float speed = getSpeed();
+
+            if (isAccelerating) {
+                if (speed > maxSpeed) {
+                    speed = maxSpeed;
+                } else {
+                    speed += 40f * deltaTime;
+                }
+            } else if (isBraking) {
+                if (speed > 0) {
+                    speed -= 80f * deltaTime;
+                }
+            } else {
+                if (speed > 0) {
+                    speed -= 20f * deltaTime;
+                }
+            }
+            setSpeed(speed);
+
+            super.act(deltaTime);
+        }
 
     }
 
