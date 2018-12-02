@@ -126,11 +126,11 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void startGame(){
         stage.addActor(entityManager.getOrCreatePlayer());
-        Vector2 vector2 = getPirateMap().getSpawnPoint();
-        Enemy enemy = new EnemyBuilder()
-                .selectedProjectile(projectileManager.getDefaultWeaponType())
-                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
-        entityManager.addEnemy(enemy);
+//        Vector2 vector2 = getPirateMap().getSpawnPoint();
+//        Enemy enemy = new EnemyBuilder()
+//                .selectedProjectile(projectileManager.getDefaultWeaponType())
+//                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
+//        entityManager.addEnemy(enemy);
     }
 
     /**
@@ -227,7 +227,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
         for(Enemy enemy:getEntityManager().getEnemyList()) {
-            if(enemy.getBounds().overlaps(player.getBounds())) {
+            if(enemy.getRectBounds().overlaps(player.getRectBounds())) {
                 //Double actingMom = enemy.getSpeed() * Math.acos(enemy.getAngleTowardsLE(player));
                 //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/enemy.getSpeed()));
                 //enemy.setSpeed(enemy.getSpeed()/2);
@@ -238,7 +238,7 @@ public class GameScreen implements Screen, InputProcessor {
     private void checkProjectileCollisions() {
         Player player = entityManager.getOrCreatePlayer();
         for (Projectile projectile : projectileManager.getProjectileList()) {
-            if (projectile.getShooter() != player && projectile.getBounds().overlaps(player.getBounds())) {
+            if (projectile.getShooter() != player && projectile.getRectBounds().overlaps(player.getRectBounds())) {
                 //if bullet overlaps player and shooter not player
                 if (!player.damage(projectile.getProjectileType().getDamage())) {
                     //is dead
@@ -253,7 +253,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         for (Enemy enemy : entityManager.getEnemyList()) {
             for (Projectile projectile : projectileManager.getProjectileList()) {
-                if (projectile.getShooter() != enemy && projectile.getBounds().overlaps(enemy.getBounds())) {
+                if (projectile.getShooter() != enemy && projectile.getRectBounds().overlaps(enemy.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
                     if (!enemy.damage(projectile.getProjectileType().getDamage())) {
                         //is dead

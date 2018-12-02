@@ -61,11 +61,11 @@ public class EntityManager {
     public Array<LivingEntity> getEnemiesInArea(Rectangle rectangle) {
         Array<LivingEntity> entities = new Array<>();
         for(Enemy enemy : enemyList) {
-            if(enemy.getBounds().overlaps(rectangle)){
+            if(enemy.getRectBounds().overlaps(rectangle)){
                 entities.add(enemy);
             }
         }
-        if(player.getBounds().overlaps(rectangle)) {
+        if(player.getRectBounds().overlaps(rectangle)) {
             entities.add(player);
         }
         return entities;
@@ -133,7 +133,6 @@ public class EntityManager {
     private void handleEffects(Stage stage) {
         stage.getActors().removeAll(this.lastFrameeffects, true);
 
-        Gdx.app.log("sizeofeffect", Integer.toString(this.effects.size));
         for (Entity effect : getEffects()) {
             if (!stage.getActors().contains(effect, true)) {
                 Gdx.app.log("Test Log", "Adding new effect to actors list.");
