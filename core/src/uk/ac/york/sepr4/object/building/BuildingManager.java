@@ -1,11 +1,10 @@
 package uk.ac.york.sepr4.object.building;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Data;
-import uk.ac.york.sepr4.object.entity.Enemy;
+import uk.ac.york.sepr4.object.entity.NPCBoat;
 import uk.ac.york.sepr4.screen.GameScreen;
 
 import java.util.Optional;
@@ -39,10 +38,10 @@ public class BuildingManager {
         spawnDelta+=delta;
         if(spawnDelta >= 1f) {
             for (College college : this.colleges) {
-                Optional<Enemy> optionalEnemy = college.spawnEnemy(gameScreen.getEntityManager().getNextEnemyID());
+                Optional<NPCBoat> optionalEnemy = college.spawnEnemy(gameScreen.getEntityManager().getNextEnemyID());
                 if (optionalEnemy.isPresent()) {
                     Gdx.app.log("Building Manager", "Spawning an enemy at " + college.getName());
-                    gameScreen.getEntityManager().addEnemy(optionalEnemy.get());
+                    gameScreen.getEntityManager().addNPC(optionalEnemy.get());
                 }
             }
             spawnDelta = 0f;

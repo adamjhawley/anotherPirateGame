@@ -167,14 +167,6 @@ public abstract class LivingEntity extends Entity {
 
     }
 
-    public float getAngleTowardsLE(LivingEntity livingEntity) {
-        double d_angle = Math.atan(((livingEntity.getCentre().y - getCentre().y) / (livingEntity.getCentre().x - getCentre().x)));
-        if(livingEntity.getCentre().x < getCentre().x){
-            d_angle += Math.PI;
-        }
-        float angle = (float)d_angle + (float)Math.PI/2;
-        return angle;
-    }
 
     public void addProjectileType(ProjectileType projectileType) {
         this.projectileTypes.add(projectileType);

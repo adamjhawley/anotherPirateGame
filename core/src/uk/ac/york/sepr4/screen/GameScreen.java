@@ -1,10 +1,8 @@
 package uk.ac.york.sepr4.screen;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -13,8 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -126,11 +122,11 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void startGame(){
         stage.addActor(entityManager.getOrCreatePlayer());
-//        Vector2 vector2 = getPirateMap().getSpawnPoint();
-//        Enemy enemy = new EnemyBuilder()
-//                .selectedProjectile(projectileManager.getDefaultWeaponType())
-//                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
-//        entityManager.addEnemy(enemy);
+        Vector2 vector2 = getPirateMap().getSpawnPoint();
+        NPCBoat enemy = new NPCBuilder()
+                .selectedProjectile(projectileManager.getDefaultWeaponType())
+                .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
+        entityManager.addNPC(enemy);
     }
 
     /**
@@ -195,10 +191,10 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (Enemy enemy : entityManager.getEnemyList()) {
-            if (enemy.getHealth() < enemy.getMaxHealth()) {
-                if (!stage.getActors().contains(enemy.getHealthBar(), true)) {
-                    stage.addActor(enemy.getHealthBar());
+        for (NPCBoat NPCBoat : entityManager.getEnemyList()) {
+            if (NPCBoat.getHealth() < NPCBoat.getMaxHealth()) {
+                if (!stage.getActors().contains(NPCBoat.getHealthBar(), true)) {
+                    stage.addActor(NPCBoat.getHealthBar());
                 }
             }
         }
@@ -226,11 +222,11 @@ public class GameScreen implements Screen, InputProcessor {
 
     public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
-        for(Enemy enemy:getEntityManager().getEnemyList()) {
-            if(enemy.getRectBounds().overlaps(player.getRectBounds())) {
-                //Double actingMom = enemy.getSpeed() * Math.acos(enemy.getAngleTowardsLE(player));
-                //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/enemy.getSpeed()));
-                //enemy.setSpeed(enemy.getSpeed()/2);
+        for(NPCBoat NPCBoat :getEntityManager().getEnemyList()) {
+            if(NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
+                //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
+                //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
+                //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
             }
         }
     }
@@ -251,15 +247,15 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (Enemy enemy : entityManager.getEnemyList()) {
+        for (NPCBoat NPCBoat : entityManager.getEnemyList()) {
             for (Projectile projectile : projectileManager.getProjectileList()) {
-                if (projectile.getShooter() != enemy && projectile.getRectBounds().overlaps(enemy.getRectBounds())) {
+                if (projectile.getShooter() != NPCBoat && projectile.getRectBounds().overlaps(NPCBoat.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
-                    if (!enemy.damage(projectile.getProjectileType().getDamage())) {
+                    if (!NPCBoat.damage(projectile.getProjectileType().getDamage())) {
                         //is dead
-                        Gdx.app.log("Test Log", "Enemy died. ");
+                        Gdx.app.log("Test Log", "NPCBoat died. ");
                     }
-                    Gdx.app.log("Test Log", "Enemy damaged by projectile. ");
+                    Gdx.app.log("Test Log", "NPCBoat damaged by projectile. ");
                     //kill projectile
                     projectile.setActive(false);
                 }

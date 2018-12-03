@@ -1,10 +1,9 @@
 package uk.ac.york.sepr4.object.building;
 
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import uk.ac.york.sepr4.object.entity.Enemy;
-import uk.ac.york.sepr4.object.entity.EnemyBuilder;
+import uk.ac.york.sepr4.object.entity.NPCBoat;
+import uk.ac.york.sepr4.object.entity.NPCBuilder;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.Random;
 public class College extends Building {
 
     private boolean captured;
-    private Enemy boss;
+    private NPCBoat boss;
     private float spawnRange;
     private Double spawnChance, enemyDifficulty;
     private Integer maxEntities;
@@ -29,10 +28,10 @@ public class College extends Building {
         // Empty constructor for JSON DAO.
     }
 
-    public Optional<Enemy> spawnEnemy(Integer id) {
+    public Optional<NPCBoat> spawnEnemy(Integer id) {
         Random random = new Random();
         if(random.nextDouble() <= spawnChance){
-            return Optional.of(new EnemyBuilder().generateRandomEnemy(id, getRandomSpawnVector(), enemyDifficulty, projectileTypes));
+            return Optional.of(new NPCBuilder().generateRandomEnemy(id, getRandomSpawnVector(), enemyDifficulty, projectileTypes));
         }
         return Optional.empty();
     }

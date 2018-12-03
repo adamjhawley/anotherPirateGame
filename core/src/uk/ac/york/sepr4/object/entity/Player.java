@@ -24,7 +24,7 @@ public class Player extends LivingEntity implements InputProcessor {
         super(0, TextureManager.PLAYER);
         this.balance = 0;
         this.xp = 0;
-        this.inventory = new ArrayList<Item>();
+        this.inventory = new ArrayList<>();
 
 
         setPosition(pos.x, pos.y);

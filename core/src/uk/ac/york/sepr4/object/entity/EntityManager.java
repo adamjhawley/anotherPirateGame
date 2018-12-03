@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
-import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 
@@ -16,7 +15,7 @@ public class EntityManager {
     //ToDo: Add a function that takes a square or circle and returns all entitys within it
     private Player player;
 
-    Array<Enemy> enemyList;
+    Array<NPCBoat> enemyList;
 
     //Added by harry for the death animation
     Array<Entity> effects;
@@ -26,9 +25,9 @@ public class EntityManager {
 
     public EntityManager(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.enemyList = new Array<Enemy>();
-        this.effects = new Array<Entity>();
-        this.lastFrameeffects = new Array<Entity>();
+        this.enemyList = new Array<>();
+        this.effects = new Array<>();
+        this.lastFrameeffects = new Array<>();
     }
 
     public Integer getNextEnemyID() {
@@ -42,8 +41,8 @@ public class EntityManager {
         return player;
     }
 
-    public void addEnemy(Enemy enemy){
-        this.enemyList.add(enemy);
+    public void addNPC(NPCBoat NPCBoat){
+        this.enemyList.add(NPCBoat);
     }
 
     public Integer getNextEffectID(){return this.effects.size;};
@@ -58,11 +57,11 @@ public class EntityManager {
         this.effects.add(effect);
     }
 
-    public Array<LivingEntity> getEnemiesInArea(Rectangle rectangle) {
+    public Array<LivingEntity> getNPCInArea(Rectangle rectangle) {
         Array<LivingEntity> entities = new Array<>();
-        for(Enemy enemy : enemyList) {
-            if(enemy.getRectBounds().overlaps(rectangle)){
-                entities.add(enemy);
+        for(NPCBoat NPCBoat : enemyList) {
+            if(NPCBoat.getRectBounds().overlaps(rectangle)){
+                entities.add(NPCBoat);
             }
         }
         if(player.getRectBounds().overlaps(rectangle)) {
@@ -71,21 +70,21 @@ public class EntityManager {
         return entities;
     }
 
-    public Enemy getEnemy(Integer id) throws IllegalArgumentException { //Will need to be changed
-        Enemy enemy = enemyList.get(id);
-        if(enemy != null) {
-            return enemy;
+    public NPCBoat getEnemy(Integer id) throws IllegalArgumentException { //Will need to be changed
+        NPCBoat NPCBoat = enemyList.get(id);
+        if(NPCBoat != null) {
+            return NPCBoat;
         }
-        throw new IllegalArgumentException("No enemy found with given ID.");
+        throw new IllegalArgumentException("No NPCBoat found with given ID.");
     }
 
-    public Array<Enemy> removeDeadEnemies() {
-        Array<Enemy> toRemove = new Array<Enemy>();
-        for(Enemy enemy : enemyList) {
-            if(enemy.isDead()){
+    public Array<NPCBoat> removeDeadEnemies() {
+        Array<NPCBoat> toRemove = new Array<NPCBoat>();
+        for(NPCBoat NPCBoat : enemyList) {
+            if(NPCBoat.isDead()){
                 Gdx.app.log("Test", "3");
 
-                toRemove.add(enemy);
+                toRemove.add(NPCBoat);
             }
         }
         enemyList.removeAll(toRemove, true);
@@ -118,10 +117,10 @@ public class EntityManager {
     private void handleEnemies(Stage stage) {
         stage.getActors().removeAll(removeDeadEnemies(), true);
 
-        for (Enemy enemy : getEnemyList()) {
-            if (!stage.getActors().contains(enemy, true)) {
-                Gdx.app.log("Test Log", "Adding new enemy to actors list.");
-                stage.addActor(enemy);
+        for (NPCBoat NPCBoat : getEnemyList()) {
+            if (!stage.getActors().contains(NPCBoat, true)) {
+                Gdx.app.log("Test Log", "Adding new NPCBoat to actors list.");
+                stage.addActor(NPCBoat);
             }
         }
     }

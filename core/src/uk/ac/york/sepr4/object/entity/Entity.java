@@ -30,12 +30,22 @@ public abstract class Entity extends Actor {
 
     }
 
+
+    public float getAngleTowardsEntity(Entity entity) {
+        double d_angle = Math.atan(((entity.getCentre().y - getCentre().y) / (entity.getCentre().x - getCentre().x)));
+        if(entity.getCentre().x < getCentre().x){
+            d_angle += Math.PI;
+        }
+        float angle = (float)d_angle + (float)Math.PI/2;
+        return angle;
+    }
+
     public Vector2 getCentre() {
         return new Vector2(getX()+(getTexture().getWidth()/2f), getY()+(getTexture().getHeight()/2f));
     }
 
     public double distanceFrom(Entity entity){
-        return Math.sqrt(Math.pow((entity.getX() - this.getX()), 2) + Math.pow((entity.getY() - this.getY()), 2));
+        return (float) Math.sqrt(Math.pow((entity.getCentre().x - getCentre().x), 2) + Math.pow((entity.getCentre().y - getCentre().y), 2));
     }
 
     @Override
