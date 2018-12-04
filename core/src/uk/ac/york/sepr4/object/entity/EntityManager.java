@@ -94,7 +94,7 @@ public class EntityManager {
 
     public void handleStageEntities(Stage stage){
         handleProjectiles(stage);
-        handleEnemies(stage);
+        handleNPCs(stage);
         handleEffects(stage);
     }
 
@@ -113,9 +113,9 @@ public class EntityManager {
     }
 
     /**
-     * Adds and removes enemies as actors from the stage.
+     * Adds and removes NPCs as actors from the stage.
      */
-    private void handleEnemies(Stage stage) {
+    private void handleNPCs(Stage stage) {
         stage.getActors().removeAll(removeDeadEnemies(), true);
 
         for (NPCBoat NPCBoat : getEnemyList()) {

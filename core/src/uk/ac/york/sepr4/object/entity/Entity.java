@@ -32,24 +32,6 @@ public abstract class Entity extends Actor {
 
     }
 
-
-    public float getAngleTowardsEntity(Entity entity) {
-        double d_angle = Math.atan(((entity.getCentre().y - getCentre().y) / (entity.getCentre().x - getCentre().x)));
-        if(entity.getCentre().x < getCentre().x){
-            d_angle += Math.PI;
-        }
-        float angle = (float)d_angle + (float)Math.PI/2;
-        return angle;
-    }
-
-    public Vector2 getCentre() {
-        return new Vector2(getX()+(getTexture().getWidth()/2f), getY()+(getTexture().getHeight()/2f));
-    }
-
-    public double distanceFrom(Entity entity){
-        return (float) Math.sqrt(Math.pow((entity.getCentre().x - getCentre().x), 2) + Math.pow((entity.getCentre().y - getCentre().y), 2));
-    }
-
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
@@ -77,6 +59,23 @@ public abstract class Entity extends Actor {
             x += speed * deltaTime * Math.sin(angle);
 
             setPosition(x, y);
+    }
+
+    public float getAngleTowardsEntity(Entity entity) {
+        double d_angle = Math.atan(((entity.getCentre().y - getCentre().y) / (entity.getCentre().x - getCentre().x)));
+        if(entity.getCentre().x < getCentre().x){
+            d_angle += Math.PI;
+        }
+        float angle = (float)d_angle + (float)Math.PI/2;
+        return angle;
+    }
+
+    public Vector2 getCentre() {
+        return new Vector2(getX()+(getTexture().getWidth()/2f), getY()+(getTexture().getHeight()/2f));
+    }
+
+    public double distanceFrom(Entity entity){
+        return (float) Math.sqrt(Math.pow((entity.getCentre().x - getCentre().x), 2) + Math.pow((entity.getCentre().y - getCentre().y), 2));
     }
 
     public Rectangle getRectBounds() {
