@@ -2,36 +2,41 @@ package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import lombok.Getter;
 import uk.ac.york.sepr4.object.projectile.Projectile;
+import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 
 @Data
 public class EntityManager {
 
-    //ToDo: Add a function that takes a square or circle and returns all entitys within it
     private Player player;
 
-    Array<NPCBoat> enemyList;
-
-    //Added by harry for the death animation
-    Array<Entity> effects;
-    Array<Entity> lastFrameeffects; //Needed for clean up
+    Array<NPCBoat> NPCList;
 
     private GameScreen gameScreen;
 
+    @Getter
+    private AnimationManager animationManager;
+    @Getter
+    private ProjectileManager projectileManager;
+
     public EntityManager(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.enemyList = new Array<>();
-        this.effects = new Array<>();
-        this.lastFrameeffects = new Array<>();
+        this.NPCList = new Array<>();
+
+        this.projectileManager = new ProjectileManager(gameScreen, this);
+        this.animationManager = new AnimationManager(gameScreen, this);
     }
 
     public Integer getNextEnemyID() {
-        return this.enemyList.size;
+        return this.NPCList.size;
     }
 
     public Player getOrCreatePlayer() {
@@ -42,24 +47,13 @@ public class EntityManager {
     }
 
     public void addNPC(NPCBoat NPCBoat){
-        this.enemyList.add(NPCBoat);
-    }
-
-    public Integer getNextEffectID(){return this.effects.size;};
-
-    //Takes the centre x,y of where you want the image to be
-    public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height){
-        Entity effect = new Entity(getNextEffectID(), texture, angle, speed) {};
-        effect.setY(y - height/2);
-        effect.setX(x - width/2);
-        effect.setWidth(width);
-        effect.setHeight(height);
-        this.effects.add(effect);
+        this.NPCList.add(NPCBoat);
     }
 
     public Array<LivingEntity> getNPCInArea(Rectangle rectangle) {
         Array<LivingEntity> entities = new Array<>();
-        for(NPCBoat NPCBoat : enemyList) {
+        for(NPCBoat NPCBoat : NPCList) {
+            Intersector.overlaps(rectangle, NPCBoat.getRectBounds());
             if(NPCBoat.getRectBounds().overlaps(rectangle)){
                 entities.add(NPCBoat);
             }
@@ -71,53 +65,39 @@ public class EntityManager {
     }
 
     public NPCBoat getEnemy(Integer id) throws IllegalArgumentException { //Will need to be changed
-        NPCBoat NPCBoat = enemyList.get(id);
+        NPCBoat NPCBoat = NPCList.get(id);
         if(NPCBoat != null) {
             return NPCBoat;
         }
         throw new IllegalArgumentException("No NPCBoat found with given ID.");
     }
 
-    public Array<NPCBoat> removeDeadEnemies() {
+    public Array<NPCBoat> removeDeadNPCs() {
         Array<NPCBoat> toRemove = new Array<NPCBoat>();
-        for(NPCBoat NPCBoat : enemyList) {
+        for(NPCBoat NPCBoat : NPCList) {
             if(NPCBoat.isDead()){
-                Gdx.app.log("Test", "3");
-
                 toRemove.add(NPCBoat);
             }
         }
-        enemyList.removeAll(toRemove, true);
+        NPCList.removeAll(toRemove, true);
         return toRemove;
     }
 
-    public void handleStageEntities(Stage stage){
-        handleProjectiles(stage);
+    public void handleStageEntities(Stage stage, float delta){
+        projectileManager.handleProjectiles(stage);
         handleNPCs(stage);
-        handleEffects(stage);
+        animationManager.handleEffects(stage, delta);
     }
 
-    /**
-     * Adds and removes projectiles as actors from the stage.
-     */
-    private void handleProjectiles(Stage stage) {
-        stage.getActors().removeAll(gameScreen.getProjectileManager().removeNonActiveProjectiles(), true);
 
-        for (Projectile projectile : gameScreen.getProjectileManager().getProjectileList()) {
-            if (!stage.getActors().contains(projectile, true)) {
-                Gdx.app.log("Test Log", "Adding new projectile to actors list.");
-                stage.addActor(projectile);
-            }
-        }
-    }
 
     /**
      * Adds and removes NPCs as actors from the stage.
      */
     private void handleNPCs(Stage stage) {
-        stage.getActors().removeAll(removeDeadEnemies(), true);
+        stage.getActors().removeAll(removeDeadNPCs(), true);
 
-        for (NPCBoat NPCBoat : getEnemyList()) {
+        for (NPCBoat NPCBoat : getNPCList()) {
             if (!stage.getActors().contains(NPCBoat, true)) {
                 Gdx.app.log("Test Log", "Adding new NPCBoat to actors list.");
                 stage.addActor(NPCBoat);
@@ -125,23 +105,6 @@ public class EntityManager {
         }
     }
 
-    /**
-     * Removes all effects then adds all new effects
-     * Effects work on a frame by frame basis so need to be spawned in every frame
-     */
-    private void handleEffects(Stage stage) {
-        stage.getActors().removeAll(this.lastFrameeffects, true);
-
-        for (Entity effect : getEffects()) {
-            if (!stage.getActors().contains(effect, true)) {
-                //Gdx.app.log("Test Log", "Adding new effect to actors list.");
-                stage.addActor(effect);
-            }
-        }
-
-        this.lastFrameeffects = this.effects;
-        this.effects = new Array<Entity>();
-    }
 
 
 

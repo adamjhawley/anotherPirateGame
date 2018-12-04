@@ -39,7 +39,7 @@ public abstract class Entity extends Actor {
                 alpha * getColor().a * parentAlpha);
 
         float angleDegrees = getAngle() * 360 / 2 / 3.14f;
-        batch.draw(getTexture(), getX(), getY(), getWidth()/2, getHeight()/2,
+        batch.draw(getTexture(), getX(), getY(), getWidth() / 2, getHeight() / 2,
                 getWidth(), getHeight(), 1, 1, angleDegrees, 0, 0,
                 getTexture().getWidth(), getTexture().getHeight(), false, false);
     }
@@ -48,37 +48,35 @@ public abstract class Entity extends Actor {
     public void act(float deltaTime) {
         super.act(deltaTime);
 
-            float speed = getSpeed();
-            float angle = getAngle();
+        float speed = getSpeed();
+        float angle = getAngle();
 
-            float y = getY();
-            float x = getX();
-            y -= speed * deltaTime * Math.cos(angle);
-            x += speed * deltaTime * Math.sin(angle);
+        float y = getY();
+        float x = getX();
+        y -= speed * deltaTime * Math.cos(angle);
+        x += speed * deltaTime * Math.sin(angle);
 
-            setPosition(x, y);
+        setPosition(x, y);
     }
 
     public float getAngleTowardsEntity(Entity entity) {
         double d_angle = Math.atan(((entity.getCentre().y - getCentre().y) / (entity.getCentre().x - getCentre().x)));
-        if(entity.getCentre().x < getCentre().x){
+        if (entity.getCentre().x < getCentre().x) {
             d_angle += Math.PI;
         }
-        float angle = (float)d_angle + (float)Math.PI/2;
-        return angle;
+        return (float) d_angle + (float) Math.PI / 2;
     }
 
     public Vector2 getCentre() {
-        return new Vector2(getX()+(getTexture().getWidth()/2f), getY()+(getTexture().getHeight()/2f));
+        return new Vector2(getX() + (getTexture().getWidth() / 2f), getY() + (getTexture().getHeight() / 2f));
     }
 
-    public double distanceFrom(Entity entity){
+    public double distanceFrom(Entity entity) {
         return (float) Math.sqrt(Math.pow((entity.getCentre().x - getCentre().x), 2) + Math.pow((entity.getCentre().y - getCentre().y), 2));
     }
 
     public Rectangle getRectBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
-
     }
 
     public Ellipse getOvalBounds() {

@@ -1,11 +1,13 @@
 package uk.ac.york.sepr4.object.projectile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
+import uk.ac.york.sepr4.screen.GameScreen;
 
 public class ProjectileManager {
 
@@ -16,9 +18,11 @@ public class ProjectileManager {
     @Getter
     private Array<Projectile> projectileList;
 
+    private GameScreen gameScreen;
     private EntityManager entityManager;
 
-    public ProjectileManager(EntityManager entityManager) {
+    public ProjectileManager(GameScreen gameScreen, EntityManager entityManager) {
+        this.gameScreen = gameScreen;
         this.entityManager = entityManager;
         this.projectileList = new Array<Projectile>();
 
@@ -37,6 +41,20 @@ public class ProjectileManager {
     public void spawnProjectile(ProjectileType projectileType, LivingEntity livingEntity, float speed, float angle) {
         Projectile projectile = new Projectile(getNextProjectileID(), projectileType, livingEntity, speed, angle);
         projectileList.add(projectile);
+    }
+
+    /**
+     * Adds and removes projectiles as actors from the stage.
+     */
+    public void handleProjectiles(Stage stage) {
+        stage.getActors().removeAll(removeNonActiveProjectiles(), true);
+
+        for (Projectile projectile : getProjectileList()) {
+            if (!stage.getActors().contains(projectile, true)) {
+                Gdx.app.log("Test Log", "Adding new projectile to actors list.");
+                stage.addActor(projectile);
+            }
+        }
     }
 
     public Array<Projectile> removeNonActiveProjectiles() {

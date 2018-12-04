@@ -52,8 +52,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Getter
     private EntityManager entityManager;
     @Getter
-    private ProjectileManager projectileManager;
-    @Getter
     private QuestManager questManager;
     private BuildingManager buildingManager;
 
@@ -103,7 +101,6 @@ public class GameScreen implements Screen, InputProcessor {
 
         this.itemManager = new ItemManager();
         this.entityManager = new EntityManager(this);
-        this.projectileManager = new ProjectileManager(entityManager);
         this.questManager = new QuestManager(entityManager);
         this.buildingManager = new BuildingManager(this);
 
@@ -124,7 +121,7 @@ public class GameScreen implements Screen, InputProcessor {
         stage.addActor(entityManager.getOrCreatePlayer());
         Vector2 vector2 = getPirateMap().getSpawnPoint();
         NPCBoat enemy = new NPCBuilder()
-                .selectedProjectile(projectileManager.getDefaultWeaponType())
+                .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
                 .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
         entityManager.addNPC(enemy);
     }
@@ -155,7 +152,7 @@ public class GameScreen implements Screen, InputProcessor {
             return;
         }
 
-        entityManager.handleStageEntities(stage);
+        entityManager.handleStageEntities(stage, delta);
 
         if(pirateMap.isObjectsEnabled()) {
             buildingManager.spawnCollegeEnemies(delta);
@@ -191,7 +188,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (NPCBoat NPCBoat : entityManager.getEnemyList()) {
+        for (NPCBoat NPCBoat : entityManager.getNPCList()) {
             if (NPCBoat.getHealth() < NPCBoat.getMaxHealth()) {
                 if (!stage.getActors().contains(NPCBoat.getHealthBar(), true)) {
                     stage.addActor(NPCBoat.getHealthBar());
@@ -222,7 +219,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
-        for(NPCBoat NPCBoat :getEntityManager().getEnemyList()) {
+        for(NPCBoat NPCBoat :getEntityManager().getNPCList()) {
             if(NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
                 //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
                 //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
@@ -233,7 +230,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void checkProjectileCollisions() {
         Player player = entityManager.getOrCreatePlayer();
-        for (Projectile projectile : projectileManager.getProjectileList()) {
+        for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
             if (projectile.getShooter() != player && projectile.getRectBounds().overlaps(player.getRectBounds())) {
                 //if bullet overlaps player and shooter not player
                 if (!player.damage(projectile.getProjectileType().getDamage())) {
@@ -247,8 +244,8 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (NPCBoat NPCBoat : entityManager.getEnemyList()) {
-            for (Projectile projectile : projectileManager.getProjectileList()) {
+        for (NPCBoat NPCBoat : entityManager.getNPCList()) {
+            for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
                 if (projectile.getShooter() != NPCBoat && projectile.getRectBounds().overlaps(NPCBoat.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
                     if (!NPCBoat.damage(projectile.getProjectileType().getDamage())) {
@@ -265,7 +262,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public void resize(int width, int height) {
-        //TODO: Method exists more suited for this? (this works fine though)
         orthographicCamera.setToOrtho(false, (float) width, (float) height);
         orthographicCamera.update();
     }

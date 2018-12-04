@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.item.Item;
+import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import java.util.ArrayList;
@@ -31,13 +32,12 @@ public class Player extends LivingEntity implements InputProcessor {
         setAngle((float)Math.PI);
 
         //Setup default weapon
-        setSelectedProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
-        addProjectileType(GameScreen.getInstance().getProjectileManager().getDefaultWeaponType());
+        ProjectileManager projectileManager = GameScreen.getInstance().getEntityManager().getProjectileManager();
+        setSelectedProjectileType(projectileManager.getDefaultWeaponType());
+        addProjectileType(projectileManager.getDefaultWeaponType());
     }
 
-    //Todo: Create something that can give a array of all entitys within a certain distance to the living entity - Can also be used in player to check for collsions
     //Todo: Create a collsion procedure once collision has been made
-
 
     @Override
     public void act(float deltaTime) {
@@ -73,6 +73,11 @@ public class Player extends LivingEntity implements InputProcessor {
             setAngularSpeed(-getTurningSpeed());
             return true;
         }
+        if(keycode == Input.Keys.M) {
+            //minimap
+            GameScreen.getInstance().getOrthographicCamera().zoom = 5;
+            return true;
+        }
 
         for(ProjectileType projectileTypes : getProjectileTypes()) {
             if(keycode == projectileTypes.getKeyCode()) {
@@ -105,6 +110,11 @@ public class Player extends LivingEntity implements InputProcessor {
 
         if(keycode == Input.Keys.RIGHT) {
             setAngularSpeed(0);
+            return true;
+        }
+        if(keycode == Input.Keys.M) {
+            //minimap
+            GameScreen.getInstance().getOrthographicCamera().zoom = 1;
             return true;
         }
         return false;

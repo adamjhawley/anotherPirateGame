@@ -31,13 +31,10 @@ public abstract class LivingEntity extends Entity {
     private ArrayList<Float> waterTrailsAngle;
     private Integer delag;
 
-
     private ProjectileType selectedProjectileType;
     private float currentCooldown;
 
     private HealthBar healthBar;
-
-    private float deathTimer = -1f;
 
     public LivingEntity(Integer id, Texture texture) {
         this(id, texture, 0f, 0f, 100f,20.0, 20.0,   1, false, new ArrayList<ProjectileType>());
@@ -83,7 +80,6 @@ public abstract class LivingEntity extends Entity {
 
     public void kill(boolean silent) {
         //if not silent, act method will explode
-        this.deathTimer = 0f;
         this.isDying = !silent;
         this.isDead = silent;
     }
@@ -97,29 +93,10 @@ public abstract class LivingEntity extends Entity {
     public void act(float deltaTime) {
         setCurrentCooldown(getCurrentCooldown() + deltaTime);
 
+        AnimationManager animationManager = GameScreen.getInstance().getEntityManager().getAnimationManager();
+
         //TODO: Very unsure about this logic
-        if (this.isDying) {
-            setTexture(TextureManager.DEADENEMY);
-            if (deathTimer < 1/6f) {
-                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40);
-            } else if (deathTimer < 2/6f) {
-                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION2, 40, 40);
-            } else if (deathTimer < 1/2f){
-                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION3, 40, 40);
-            }
-            if (deathTimer > 5){
-                this.isDead = true;
-                this.isDying = false;
-            }
-
-            deathTimer += deltaTime;
-            if (getSpeed() > 0) {
-                setSpeed(getSpeed() -  40f * deltaTime);
-            }
-            super.act(deltaTime);
-
-        } else {
-
+        if (!this.isDying) {
             float speed = getSpeed();
 
             if (isAccelerating) {
@@ -153,20 +130,20 @@ public abstract class LivingEntity extends Entity {
 
             for(int i = 0; i<this.waterTrialsX.size()-1; i++){
                 if (!getRectBounds().contains(this.waterTrialsX.get(i), this.waterTrialsY.get(i))){
-                    GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(i) + 240*i*deltaTime*(float)Math.sin(this.waterTrailsAngle.get(i) - Math.PI/2), this.waterTrialsY.get(i) - 240*i*deltaTime*(float)Math.cos(this.waterTrailsAngle.get(i) - Math.PI/2), this.waterTrailsAngle.get(i), 0, TextureManager.MIDDLEBOATTRAIL, 20, 50);
-                    GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(i) + 240*i*deltaTime*(float)Math.sin(this.waterTrailsAngle.get(i) + Math.PI/2), this.waterTrialsY.get(i) - 240*i*deltaTime*(float)Math.cos(this.waterTrailsAngle.get(i) + Math.PI/2), this.waterTrailsAngle.get(i), 0, TextureManager.MIDDLEBOATTRAIL, 20, 50);
+                    animationManager.addEffect(this.waterTrialsX.get(i) + 240*i*deltaTime*(float)Math.sin(this.waterTrailsAngle.get(i) - Math.PI/2), this.waterTrialsY.get(i) - 240*i*deltaTime*(float)Math.cos(this.waterTrailsAngle.get(i) - Math.PI/2), this.waterTrailsAngle.get(i), 0, TextureManager.MIDDLEBOATTRAIL, 20, 50);
+                    animationManager.addEffect(this.waterTrialsX.get(i) + 240*i*deltaTime*(float)Math.sin(this.waterTrailsAngle.get(i) + Math.PI/2), this.waterTrialsY.get(i) - 240*i*deltaTime*(float)Math.cos(this.waterTrailsAngle.get(i) + Math.PI/2), this.waterTrailsAngle.get(i), 0, TextureManager.MIDDLEBOATTRAIL, 20, 50);
                 }
             }
             int endI = this.waterTrialsX.size()-1;
             if (!getRectBounds().contains(this.waterTrialsX.get(endI), this.waterTrialsY.get(endI))) {
-                GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(endI) + +240 * (endI - 1) * deltaTime * (float) Math.sin(this.waterTrailsAngle.get(endI) - Math.PI / 2), this.waterTrialsY.get(endI) - 240 * (endI - 1) * deltaTime * (float) Math.cos(this.waterTrailsAngle.get(endI) - Math.PI / 2), this.waterTrailsAngle.get(endI), 0, TextureManager.ENDBOATTRAIL, 20, 50);
-                GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(endI) + +240 * (endI - 1) * deltaTime * (float) Math.sin(this.waterTrailsAngle.get(endI) + Math.PI / 2), this.waterTrialsY.get(endI) - 240 * (endI - 1) * deltaTime * (float) Math.cos(this.waterTrailsAngle.get(endI) + Math.PI / 2), this.waterTrailsAngle.get(endI), 0, TextureManager.ENDBOATTRAIL, 20, 50);
+                animationManager.addEffect(this.waterTrialsX.get(endI) + +240 * (endI - 1) * deltaTime * (float) Math.sin(this.waterTrailsAngle.get(endI) - Math.PI / 2), this.waterTrialsY.get(endI) - 240 * (endI - 1) * deltaTime * (float) Math.cos(this.waterTrailsAngle.get(endI) - Math.PI / 2), this.waterTrailsAngle.get(endI), 0, TextureManager.ENDBOATTRAIL, 20, 50);
+                animationManager.addEffect(this.waterTrialsX.get(endI) + +240 * (endI - 1) * deltaTime * (float) Math.sin(this.waterTrailsAngle.get(endI) + Math.PI / 2), this.waterTrialsY.get(endI) - 240 * (endI - 1) * deltaTime * (float) Math.cos(this.waterTrailsAngle.get(endI) + Math.PI / 2), this.waterTrailsAngle.get(endI), 0, TextureManager.ENDBOATTRAIL, 20, 50);
             }
-            super.act(deltaTime);
         }
+        super.act(deltaTime);
+
 
     }
-
 
     public void addProjectileType(ProjectileType projectileType) {
         this.projectileTypes.add(projectileType);
@@ -187,7 +164,7 @@ public abstract class LivingEntity extends Entity {
         if(projectileType != null) {
             if (projectileType.getCooldown() <= getCurrentCooldown()) {
                 setCurrentCooldown(0f);
-                GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
+                GameScreen.getInstance().getEntityManager().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
                 return true;
             }
         }
