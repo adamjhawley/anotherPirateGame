@@ -29,12 +29,10 @@ public abstract class LivingEntity extends Entity {
 
     //Added by harry
     private Integer collided;
-//    private ArrayList<Float> waterTrialsX;
-//    private ArrayList<Float> waterTrialsY;
-//    private ArrayList<Float> waterTrailsAngle;
-    private Integer delag;
-    public static ShapeRenderer debugRenderer = new ShapeRenderer();
-    private Float tim;
+    private ArrayList<Float> waterTrialsX;
+    private ArrayList<Float> waterTrialsY;
+    private ArrayList<Float> waterTrialsX2;
+    private ArrayList<Float> waterTrialsY2;
 
 
     private ProjectileType selectedProjectileType;
@@ -45,7 +43,7 @@ public abstract class LivingEntity extends Entity {
     private float deathTimer = -1f;
 
     public LivingEntity(Integer id, Texture texture) {
-        this(id, texture, 0f, 0f, 100f,20.0, 20.0,   1, false, new ArrayList<ProjectileType>());
+        this(id, texture, 0f, 0f, 100f, 20.0, 20.0, 1, false, new ArrayList<ProjectileType>());
     }
 
     //Todo: Make a better collision detection
@@ -63,17 +61,18 @@ public abstract class LivingEntity extends Entity {
         this.turningSpeed = turningSpeed;
 
         this.collided = 0;
-//        this.waterTrialsX = new ArrayList<Float>();
-//        this.waterTrialsY = new ArrayList<Float>();
-//        this.waterTrailsAngle = new ArrayList<Float>();
-        this.delag = 0;
-        this.tim = 200f;
-//
-//        for(int i = 0; i<10; i++) {
-//            this.waterTrialsX.add(getCentre().x);
-//            this.waterTrialsY.add(getCentre().y);
-//            this.waterTrailsAngle.add(getAngle());
-//        }
+        this.waterTrialsX = new ArrayList<Float>();
+        this.waterTrialsY = new ArrayList<Float>();
+        this.waterTrialsX2 = new ArrayList<Float>();
+        this.waterTrialsY2 = new ArrayList<Float>();
+
+        for (int i = 0; i < 60; i++) {
+            this.waterTrialsX.add(getCentre().x);
+            this.waterTrialsY.add(getCentre().y);
+
+            this.waterTrialsX2.add(getCentre().x);
+            this.waterTrialsY2.add(getCentre().y);
+        }
 
 
         this.healthBar = new HealthBar(this);
@@ -106,21 +105,21 @@ public abstract class LivingEntity extends Entity {
         //TODO: Very unsure about this logic
         if (this.isDying) {
             setTexture(TextureManager.DEADENEMY);
-            if (deathTimer < 1/6f) {
-                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40);
-            } else if (deathTimer < 2/6f) {
-                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION2, 40, 40);
-            } else if (deathTimer < 1/2f){
-                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION3, 40, 40);
+            if (deathTimer < 1 / 6f) {
+                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40, 1);
+            } else if (deathTimer < 2 / 6f) {
+                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION2, 40, 40, 1);
+            } else if (deathTimer < 1 / 2f) {
+                GameScreen.getInstance().getEntityManager().addEffect(getCentre().x, getCentre().y, getAngle(), 0f, TextureManager.EXPLOSION3, 40, 40, 1);
             }
-            if (deathTimer > 5){
+            if (deathTimer > 5) {
                 this.isDead = true;
                 this.isDying = false;
             }
 
             deathTimer += deltaTime;
             if (getSpeed() > 0) {
-                setSpeed(getSpeed() -  40f * deltaTime);
+                setSpeed(getSpeed() - 40f * deltaTime);
             }
             super.act(deltaTime);
 
@@ -144,35 +143,82 @@ public abstract class LivingEntity extends Entity {
                 }
             }
             setSpeed(speed);
-
-//            //Water trails behind things in the water that move
-//            //need to add collisions with islands
-//            if(delag == 0) {
-//                arrayShiftForBoatTrails();
-//                this.waterTrialsY.set(0, getCentre().y);
-//                this.waterTrialsX.set(0, getCentre().x);
-//                this.waterTrailsAngle.set(0, getAngle() - (float)Math.PI);
-//                delag = 20;
-//            }
-//            delag -= 1;
-
-//
-//
-//            for(int i = 0; i<this.waterTrialsX.size()-1; i++){
-//                if (!getRectBounds().contains(this.waterTrialsX.get(i), this.waterTrialsY.get(i))){
-//                    GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(i) + 240*i*deltaTime*(float)Math.sin(this.waterTrailsAngle.get(i) - Math.PI/2), this.waterTrialsY.get(i) - 240*i*deltaTime*(float)Math.cos(this.waterTrailsAngle.get(i) - Math.PI/2), this.waterTrailsAngle.get(i), 0, TextureManager.MIDDLEBOATTRAIL, 20, 50);
-//                    GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(i) + 240*i*deltaTime*(float)Math.sin(this.waterTrailsAngle.get(i) + Math.PI/2), this.waterTrialsY.get(i) - 240*i*deltaTime*(float)Math.cos(this.waterTrailsAngle.get(i) + Math.PI/2), this.waterTrailsAngle.get(i), 0, TextureManager.MIDDLEBOATTRAIL, 20, 50);
-//                }
-//            }
-//            int endI = this.waterTrialsX.size()-1;
-//            if (!getRectBounds().contains(this.waterTrialsX.get(endI), this.waterTrialsY.get(endI))) {
-//                GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(endI) + +240 * (endI - 1) * deltaTime * (float) Math.sin(this.waterTrailsAngle.get(endI) - Math.PI / 2), this.waterTrialsY.get(endI) - 240 * (endI - 1) * deltaTime * (float) Math.cos(this.waterTrailsAngle.get(endI) - Math.PI / 2), this.waterTrailsAngle.get(endI), 0, TextureManager.ENDBOATTRAIL, 20, 50);
-//                GameScreen.getInstance().getEntityManager().addEffect(this.waterTrialsX.get(endI) + +240 * (endI - 1) * deltaTime * (float) Math.sin(this.waterTrailsAngle.get(endI) + Math.PI / 2), this.waterTrialsY.get(endI) - 240 * (endI - 1) * deltaTime * (float) Math.cos(this.waterTrailsAngle.get(endI) + Math.PI / 2), this.waterTrailsAngle.get(endI), 0, TextureManager.ENDBOATTRAIL, 20, 50);
-//            }
-
             super.act(deltaTime);
         }
 
+        arrayShiftForBoatTrails();
+        this.waterTrialsX.set(0, getXwithAngleandDistance(getCentre().x, (float) (getAngle() - 7 * Math.PI / 8), 50f));
+        this.waterTrialsY.set(0, getYwithAngleandDistance(getCentre().y, (float) (getAngle() - 7 * Math.PI / 8), 45f));
+
+        this.waterTrialsX2.set(0, getXwithAngleandDistance(getCentre().x, (float) (getAngle() + 7 * Math.PI / 8), 50f));
+        this.waterTrialsY2.set(0, getYwithAngleandDistance(getCentre().y, (float) (getAngle() + 7 * Math.PI / 8), 45f));
+
+        for (int i = 0; i < this.waterTrialsX.size() - 1; i++) {
+            float xM = getXmidPoint(this.waterTrialsX.get(i), this.waterTrialsX.get(i + 1));
+            float yM = getYmidPoint(this.waterTrialsY.get(i), this.waterTrialsY.get(i + 1));
+            float angleP = getAngleToPoint(this.waterTrialsX.get(i), this.waterTrialsY.get(i), this.waterTrialsX.get(i + 1), this.waterTrialsY.get(i + 1)) + (float)Math.PI/2;
+            float distance = getDistanceToPoint(this.waterTrialsX.get(i), this.waterTrialsY.get(i), this.waterTrialsX.get(i + 1), this.waterTrialsY.get(i + 1));
+
+            float xM2 = getXmidPoint(this.waterTrialsX2.get(i), this.waterTrialsX2.get(i + 1));
+            float yM2 = getYmidPoint(this.waterTrialsY2.get(i), this.waterTrialsY2.get(i + 1));
+            float angleP2 = getAngleToPoint(this.waterTrialsX2.get(i), this.waterTrialsY2.get(i), this.waterTrialsX2.get(i + 1), this.waterTrialsY2.get(i + 1)) + (float)Math.PI/2;
+            float distance2 = getDistanceToPoint(this.waterTrialsX2.get(i), this.waterTrialsY2.get(i), this.waterTrialsX2.get(i + 1), this.waterTrialsY2.get(i + 1));
+
+
+            if (distance > 0.1) {
+                if (i < this.waterTrialsX.size() / 4) {
+                    GameScreen.getInstance().getEntityManager().addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.5f);
+                    GameScreen.getInstance().getEntityManager().addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.5f);
+                } else if (i < this.waterTrialsX.size() / 2) {
+                    GameScreen.getInstance().getEntityManager().addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.3f);
+                    GameScreen.getInstance().getEntityManager().addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.3f);
+                } else if (i < 3 * this.waterTrialsX.size() / 4) {
+                    GameScreen.getInstance().getEntityManager().addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.2f);
+                    GameScreen.getInstance().getEntityManager().addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.2f);
+                } else {
+                    GameScreen.getInstance().getEntityManager().addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.1f);
+                    GameScreen.getInstance().getEntityManager().addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.1f);
+                }
+            }
+        }
+
+    }
+
+    public float getXmidPoint(float x1, float x2) {
+        if (x2 > x1){
+            return (x1+(x2-x1)/2);
+        } else {
+            return (x1-(x2-x1)/2);
+        }
+    }
+
+    public float getYmidPoint(float y1, float y2) {
+        if (y2 > y1){
+            return (y1+(y2-y1)/2);
+        } else {
+            return (y1-(y2-y1)/2);
+        }
+    }
+
+    public float getAngleToPoint(float x1, float y1, float x2, float y2) {
+        double d_angle = Math.atan(((y2 - y1) / (x2 - x1)));
+        if(x2 < x1){
+            d_angle += Math.PI;
+        }
+        float angle = (float)d_angle + (float)Math.PI/2;
+        return angle;
+    }
+
+    public float getDistanceToPoint(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+    }
+
+    public float getXwithAngleandDistance(float x1, float angle, float distance) {
+        return (float)(x1 + distance*Math.sin(angle));
+    }
+
+    public float getYwithAngleandDistance(float y1, float angle, float distance) {
+        return (float)(y1 - distance*Math.cos(angle));
     }
 
 
@@ -192,7 +238,7 @@ public abstract class LivingEntity extends Entity {
 
     public boolean fire(float angle) {
         ProjectileType projectileType = this.getSelectedProjectileType();
-        if(projectileType != null) {
+        if (projectileType != null) {
             if (projectileType.getCooldown() <= getCurrentCooldown()) {
                 setCurrentCooldown(0f);
                 GameScreen.getInstance().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
@@ -203,22 +249,24 @@ public abstract class LivingEntity extends Entity {
     }
 
     //ToDo:Make this function more accurate
-    public boolean goingToCollide(Entity object){
-        double pred_X = getX() + getSpeed()*Math.sin(getAngle());
-        double pred_Y = getY() - getSpeed()*Math.cos(getAngle());
-        Rectangle pred_Bounds = new Rectangle((float)pred_X, (float)pred_Y, getWidth(), getHeight());
-        if(object.getRectBounds().overlaps(pred_Bounds)){
+    public boolean goingToCollide(Entity object) {
+        double pred_X = getX() + getSpeed() * Math.sin(getAngle());
+        double pred_Y = getY() - getSpeed() * Math.cos(getAngle());
+        Rectangle pred_Bounds = new Rectangle((float) pred_X, (float) pred_Y, getWidth(), getHeight());
+        if (object.getRectBounds().overlaps(pred_Bounds)) {
             return true;
         }
         return false;
     }
 
-//    public void arrayShiftForBoatTrails(){
-//        for(int i = this.waterTrialsY.size() - 1; i>0; i--){
-//            this.waterTrialsY.set(i, this.waterTrialsY.get(i-1));
-//            this.waterTrialsX.set(i, this.waterTrialsX.get(i-1));
-//            this.waterTrailsAngle.set(i, this.waterTrailsAngle.get(i - 1));
-//        }
-//    }
+    public void arrayShiftForBoatTrails() {
+        for (int i = this.waterTrialsY.size() - 1; i > 0; i--) {
+            this.waterTrialsY.set(i, this.waterTrialsY.get(i - 1));
+            this.waterTrialsX.set(i, this.waterTrialsX.get(i - 1));
+
+            this.waterTrialsY2.set(i, this.waterTrialsY2.get(i - 1));
+            this.waterTrialsX2.set(i, this.waterTrialsX2.get(i - 1));
+        }
+    }
 
 }
