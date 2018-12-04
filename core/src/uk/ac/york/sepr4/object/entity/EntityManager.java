@@ -48,12 +48,13 @@ public class EntityManager {
     public Integer getNextEffectID(){return this.effects.size;};
 
     //Takes the centre x,y of where you want the image to be
-    public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height){
+    public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height, float alpha){
         Entity effect = new Entity(getNextEffectID(), texture, angle, speed) {};
         effect.setY(y - height/2);
         effect.setX(x - width/2);
         effect.setWidth(width);
         effect.setHeight(height);
+        effect.setAlpha(alpha);
         this.effects.add(effect);
     }
 
@@ -134,7 +135,7 @@ public class EntityManager {
 
         for (Entity effect : getEffects()) {
             if (!stage.getActors().contains(effect, true)) {
-                Gdx.app.log("Test Log", "Adding new effect to actors list.");
+                //Gdx.app.log("Test Log", "Adding new effect to actors list.");
                 stage.addActor(effect);
             }
         }
