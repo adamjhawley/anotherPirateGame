@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
 import lombok.Getter;
 import uk.ac.york.sepr4.screen.GameScreen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class PirateMap {
@@ -21,17 +23,22 @@ public class PirateMap {
     private final String spawnPointObject = "spawn";
 
     private MapLayer objectLayer;
+
     @Getter
     private Vector2 spawnPoint;
 
     @Getter
     private boolean objectsEnabled;
 
+    @Getter
+    private List<MapObject> collisionObjects;
+
     public PirateMap(TiledMap tiledMap) {
         this.tiledMap = tiledMap;
+        this.collisionObjects = new ArrayList<>();
 
         if(checkObjectLayer()) {
-            checkSpawnObject();
+            setCollisionObjects();
             this.objectsEnabled = true;
         } else {
             Gdx.app.log("Pirate Map", "Map does NOT contain object layer!");
@@ -47,9 +54,21 @@ public class PirateMap {
         }
     }
 
+    private void setCollisionObjects() {
+        for(MapLayer mapLayer : tiledMap.getLayers()) {
+            if(!mapLayer.getName().equals(objectLayerName)) {
+                mapLayer.getObjects().forEach(objects -> this.collisionObjects.add(objects));
+            }
+        }
+        Gdx.app.log("PirateMap", "Loaded " + this.collisionObjects.size() + " collision objects!");
+    }
+
     private boolean checkObjectLayer() {
         this.objectLayer = tiledMap.getLayers().get(objectLayerName);
-        return (this.objectLayer != null);
+        if(this.objectLayer != null) {
+            return setSpawnObject();
+        }
+        return false;
     }
 
     public Optional<RectangleMapObject> getRectObject(String objectName) {
@@ -60,7 +79,7 @@ public class PirateMap {
         return Optional.empty();
     }
 
-    private boolean checkSpawnObject() {
+    private boolean setSpawnObject() {
         MapObject mapObject = objectLayer.getObjects().get(spawnPointObject);
         if(mapObject != null && mapObject instanceof RectangleMapObject) {
             RectangleMapObject object = (RectangleMapObject) mapObject;

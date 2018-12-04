@@ -93,7 +93,7 @@ public class EntityManager {
 
     public void handleStageEntities(Stage stage){
         handleProjectiles(stage);
-        handleEnemies(stage);
+        handleNPCs(stage);
         handleEffects(stage);
     }
 
@@ -112,9 +112,9 @@ public class EntityManager {
     }
 
     /**
-     * Adds and removes enemies as actors from the stage.
+     * Adds and removes NPCs as actors from the stage.
      */
-    private void handleEnemies(Stage stage) {
+    private void handleNPCs(Stage stage) {
         stage.getActors().removeAll(removeDeadEnemies(), true);
 
         for (NPCBoat NPCBoat : getEnemyList()) {
@@ -134,7 +134,7 @@ public class EntityManager {
 
         for (Entity effect : getEffects()) {
             if (!stage.getActors().contains(effect, true)) {
-                Gdx.app.log("Test Log", "Adding new effect to actors list.");
+                //Gdx.app.log("Test Log", "Adding new effect to actors list.");
                 stage.addActor(effect);
             }
         }
