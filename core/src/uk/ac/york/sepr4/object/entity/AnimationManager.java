@@ -58,6 +58,7 @@ public class AnimationManager {
             LivingEntity livingEntity = entry.getKey();
             Float deathTimer = entry.getValue();
             livingEntity.setTexture(TextureManager.DEADENEMY);
+            livingEntity.setAlpha(1-(deathTimer/5));
             if (deathTimer < 1/6f) {
                 addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40,1);
             } else if (deathTimer < 2/6f) {

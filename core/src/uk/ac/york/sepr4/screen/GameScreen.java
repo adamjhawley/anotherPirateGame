@@ -30,7 +30,7 @@ import uk.ac.york.sepr4.object.projectile.ProjectileManager;
  * GameScreen is main game class. Holds data related to current player including the
  * {@link uk.ac.york.sepr4.object.building.BuildingManager}, {@link uk.ac.york.sepr4.object.item.ItemManager},
  * {@link uk.ac.york.sepr4.object.quest.QuestManager} and {@link uk.ac.york.sepr4.object.entity.EntityManager}
- *
+ * <p>
  * Responds to keyboard and mouse input by the player. InputMultiplexer used to combine input processing in both
  * this class (mouse clicks) and {@link uk.ac.york.sepr4.object.entity.Player} class (key press).
  */
@@ -67,10 +67,10 @@ public class GameScreen implements Screen, InputProcessor {
 
     /**
      * GameScreen Constructor
-     *
+     * <p>
      * Sets base game parameters, sets up camera, map, view port and stage(s).
      * Initializes Item, Entity, Building and Quest managers and InputMultiplexer.
-     *
+     * <p>
      * Adds the player as an actor to the stage.
      *
      * @param pirateGame
@@ -92,7 +92,7 @@ public class GameScreen implements Screen, InputProcessor {
         StretchViewport stretchViewport = new StretchViewport(w, h, orthographicCamera);
         batch = new SpriteBatch();
         stage = new Stage(stretchViewport, batch);
-        hudStage = new Stage(new FitViewport(w,h, new OrthographicCamera()));
+        hudStage = new Stage(new FitViewport(w, h, new OrthographicCamera()));
 
         // Locate and set up tile map.
         pirateMap = new PirateMap(new TmxMapLoader().load("PirateMap/PirateMap.tmx"));
@@ -117,13 +117,17 @@ public class GameScreen implements Screen, InputProcessor {
 
     }
 
-    private void startGame(){
+    private void startGame() {
         stage.addActor(entityManager.getOrCreatePlayer());
         Vector2 vector2 = getPirateMap().getSpawnPoint();
         NPCBoat enemy = new NPCBuilder()
                 .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
-                .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x+200f, vector2.y+200f));
+                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x + 1000f, vector2.y + 1000f));
+        NPCBoat enemy2 = new NPCBuilder()
+                .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
+                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x + 1200f, vector2.y + 1200f));
         entityManager.addNPC(enemy);
+        entityManager.addNPC(enemy2);
     }
 
     /**
@@ -147,14 +151,14 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Player player = entityManager.getOrCreatePlayer();
-        if(player.isDead()) {
+        if (player.isDead()) {
             pirateGame.switchScreen(ScreenType.MENU);
             return;
         }
 
         entityManager.handleStageEntities(stage, delta);
 
-        if(pirateMap.isObjectsEnabled()) {
+        if (pirateMap.isObjectsEnabled()) {
             buildingManager.spawnCollegeEnemies(delta);
         }
 
@@ -219,8 +223,8 @@ public class GameScreen implements Screen, InputProcessor {
 
     public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
-        for(NPCBoat NPCBoat :getEntityManager().getNPCList()) {
-            if(NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
+        for (NPCBoat NPCBoat : getEntityManager().getNPCList()) {
+            if (NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
                 //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
                 //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
                 //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
@@ -231,13 +235,16 @@ public class GameScreen implements Screen, InputProcessor {
     private void checkProjectileCollisions() {
         Player player = entityManager.getOrCreatePlayer();
         for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
-            if (projectile.getShooter() != player && projectile.getRectBounds().overlaps(player.getRectBounds())) {
+            if (projectile.getShooter() != player
+                    && projectile.getRectBounds().overlaps(player.getRectBounds())) {
                 //if bullet overlaps player and shooter not player
-                if (!player.damage(projectile.getProjectileType().getDamage())) {
-                    //is dead
-                    Gdx.app.log("Test Log", "Player died. ");
-                } else {
-                    Gdx.app.log("Test Log", "Player damaged by projectile. ");
+                if (!(player.isDying() || player.isDead())) {
+                    if (!player.damage(projectile.getProjectileType().getDamage())) {
+                        //is dead
+                        Gdx.app.log("Test Log", "Player died. ");
+                    } else {
+                        Gdx.app.log("Test Log", "Player damaged by projectile. ");
+                    }
                 }
                 //kill projectile
                 projectile.setActive(false);
@@ -248,13 +255,15 @@ public class GameScreen implements Screen, InputProcessor {
             for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
                 if (projectile.getShooter() != NPCBoat && projectile.getRectBounds().overlaps(NPCBoat.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
-                    if (!NPCBoat.damage(projectile.getProjectileType().getDamage())) {
-                        //is dead
-                        Gdx.app.log("Test Log", "NPCBoat died. ");
+                    if (!(NPCBoat.isDying() || NPCBoat.isDead())) {
+                        if (!NPCBoat.damage(projectile.getProjectileType().getDamage())) {
+                            //is dead
+                            Gdx.app.log("Test Log", "NPCBoat died. ");
+                        }
+                        Gdx.app.log("Test Log", "NPCBoat damaged by projectile. ");
+                        //kill projectile
+                        projectile.setActive(false);
                     }
-                    Gdx.app.log("Test Log", "NPCBoat damaged by projectile. ");
-                    //kill projectile
-                    projectile.setActive(false);
                 }
             }
         }
@@ -308,7 +317,7 @@ public class GameScreen implements Screen, InputProcessor {
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float) (-Math.atan2(player.getCentre().x - clickLoc.x, player.getCentre().y - clickLoc.y));
             Gdx.app.log("Test Log", "Firing: Click at (rad) " + fireAngle);
-            if(!player.fire(fireAngle)) {
+            if (!player.fire(fireAngle)) {
                 Gdx.app.log("Test Log", "Error firing!");
             }
             return true;

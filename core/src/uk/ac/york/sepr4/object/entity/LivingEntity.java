@@ -1,19 +1,13 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
-import com.badlogic.gdx.math.Vector2;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +65,6 @@ public abstract class LivingEntity extends Entity {
             this.waterTrialsY2.add(getCentre().y);
         }
 
-
         this.healthBar = new HealthBar(this);
         this.isDying = false;
     }
@@ -79,8 +72,6 @@ public abstract class LivingEntity extends Entity {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-
-        //TODO: Draw bow wave?
     }
 
     public void kill(boolean silent) {
@@ -100,7 +91,6 @@ public abstract class LivingEntity extends Entity {
 
         AnimationManager animationManager = GameScreen.getInstance().getEntityManager().getAnimationManager();
 
-        //TODO: Very unsure about this logic
         if (!this.isDying) {
             float speed = getSpeed();
 
@@ -158,7 +148,6 @@ public abstract class LivingEntity extends Entity {
                 }
             }
         }
-        super.act(deltaTime);
 
 
     }
@@ -227,7 +216,7 @@ public abstract class LivingEntity extends Entity {
         return false;
     }
 
-    //ToDo:Make this function more accurate
+    //TODO:Make this function more accurate
     public boolean goingToCollide(Entity object) {
         double pred_X = getX() + getSpeed() * Math.sin(getAngle());
         double pred_Y = getY() - getSpeed() * Math.cos(getAngle());

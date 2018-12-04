@@ -6,10 +6,8 @@ import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Data
@@ -17,7 +15,7 @@ public class NPCBuilder {
 
     private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 500f, accuracy = 0.5f;
     private Double health = 20.0, maxHealth = 20.0;
-    private List<ProjectileType> projectileTypes = new ArrayList<ProjectileType>();
+    private List<ProjectileType> projectileTypes = new ArrayList<>();
     private boolean isDead = false, onFire = false, isAccelerating, isBraking = false;
     private Integer turningSpeed = 10;
     private Texture texture = TextureManager.ENEMY;
@@ -29,9 +27,9 @@ public class NPCBuilder {
     public NPCBoat buildEnemy(Integer id, Vector2 pos) {
         NPCBoat NPCBoat;
         if(allied  == null){
-            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, Optional.empty());
+            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, null);
         } else {
-            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, Optional.of(allied));
+            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, allied);
         }
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
@@ -44,7 +42,7 @@ public class NPCBuilder {
     }
 
     public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, Optional.empty());
+        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, null);
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
+import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.item.Item;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
@@ -21,11 +22,14 @@ public class Player extends LivingEntity implements InputProcessor {
     private List<Item> inventory;
     private float angularSpeed;
 
+    private List<College> captured;
+
     public Player(Vector2 pos) {
         super(0, TextureManager.PLAYER);
         this.balance = 0;
         this.xp = 0;
         this.inventory = new ArrayList<>();
+        this.captured = new ArrayList<>();
 
 
         setPosition(pos.x, pos.y);

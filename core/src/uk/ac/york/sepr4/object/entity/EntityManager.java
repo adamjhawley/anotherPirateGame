@@ -50,10 +50,9 @@ public class EntityManager {
         this.NPCList.add(NPCBoat);
     }
 
-    public Array<LivingEntity> getNPCInArea(Rectangle rectangle) {
+    public Array<LivingEntity> getLivingEntitiesInArea(Rectangle rectangle) {
         Array<LivingEntity> entities = new Array<>();
         for(NPCBoat NPCBoat : NPCList) {
-            Intersector.overlaps(rectangle, NPCBoat.getRectBounds());
             if(NPCBoat.getRectBounds().overlaps(rectangle)){
                 entities.add(NPCBoat);
             }

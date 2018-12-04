@@ -1,11 +1,11 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.object.building.College;
-import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
@@ -21,18 +21,24 @@ public class NPCBoat extends LivingEntity {
     private float accuracy;
 
     private boolean hostile;
-    private Optional<College> allied;
+    private College allied;
+    private Optional<LivingEntity> lastTarget;
 
-    public NPCBoat(Integer id, Texture texture) {
-        super(id, texture);
-    }
+    private float targetCheck;
 
-    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, Optional<College> allied) {
+    //public NPCBoat(Integer id, Texture texture) {
+    //    super(id, texture);
+    //}
+
+    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, College allied) {
         super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
         this.range = range;
         this.accuracy = accuracy;
         this.hostile = hostile;
         this.allied = allied;
+
+        this.lastTarget = Optional.empty();
+        this.targetCheck = 4f;
     }
 
     /**
@@ -53,11 +59,15 @@ public class NPCBoat extends LivingEntity {
     //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
     public void act(float deltaTime) {
 
-        if(hostile) {
-
-            Optional<LivingEntity> optionalTarget = getNearestTarget();
-            if(optionalTarget.isPresent()) {
+        if (this.hostile) {
+            if(targetCheck < 5f){
+                targetCheck += deltaTime;
+            }
+            Optional<LivingEntity> optionalTarget = getTarget();
+            if (optionalTarget.isPresent()) {
                 LivingEntity target = optionalTarget.get();
+                this.lastTarget = optionalTarget;
+
                 float resAngle = AIUtil.resultantAngle(this, target);
                 resAngle = AIUtil.convertToRealAngle(resAngle);
                 setAngle(resAngle);
@@ -97,47 +107,102 @@ public class NPCBoat extends LivingEntity {
         super.act(deltaTime);
     }
 
+    public Optional<College> getAllied() {
+        if (this.allied == null) {
+            return Optional.empty();
+        }
+        return Optional.of(allied);
+    }
+
+    private boolean validTarget(Optional<LivingEntity> optionalLivingEntity) {
+        if (optionalLivingEntity.isPresent()) {
+            LivingEntity livingEntity = optionalLivingEntity.get();
+            if (!(livingEntity.isDying() || livingEntity.isDead())) {
+                if (livingEntity.distanceFrom(this) <= range) {
+                    //if last target exists, not dead and is still in range
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Optional<LivingEntity> getTarget() {
+        if (validTarget(this.lastTarget)) {
+            //Gdx.app.log("Target", "Last");
+            return this.lastTarget;
+        } else {
+            if(targetCheck > 5f) {
+                //Gdx.app.log("Target", "Nearest");
+                targetCheck = 0f;
+                return getNearestTarget();
+            } else {
+                return Optional.empty();
+            }
+        }
+    }
+
+    private boolean areAllied(LivingEntity livingEntity) {
+        if (livingEntity instanceof Player) {
+            Player player = (Player) livingEntity;
+            if (getAllied().isPresent()) {
+                return player.getCaptured().contains(getAllied().get());
+            }
+        } else {
+            //must be an NPCBoat
+            NPCBoat npcBoat = (NPCBoat) livingEntity;
+            if (npcBoat.getAllied().isPresent() && getAllied().isPresent()) {
+                return (npcBoat.getAllied().get().equals(getAllied().get()));
+            }
+        }
+
+        return false;
+    }
+
+    private Array<LivingEntity> getLivingEntitiesInRange() {
+        Array<LivingEntity> nearby = GameScreen.getInstance().getEntityManager().getLivingEntitiesInArea(getRangeArea());
+        if(nearby.contains(this, false)) {
+            nearby.removeValue(this, false);
+        }
+        return nearby;
+    }
+
     private Optional<LivingEntity> getNearestTarget() {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
-        Array<LivingEntity> nearby = GameScreen.getInstance().getEntityManager().getNPCInArea(getRangeArea());
-
-        if(nearby.contains(player, false)){
-            //if player is in range - target
-            return Optional.of(player);
-        } else {
-            if(nearby.size > 0){
+        Array<LivingEntity> nearby = getLivingEntitiesInRange();
+        if (!areAllied(player)) {
+            //not allied - target player
+            if (nearby.contains(player, false)) {
+                //if player is in range - target
+                return Optional.of(player);
+            }
+        }
+            //player has captured this NPC's allied college
+            if (nearby.size > 0) {
                 Optional<LivingEntity> nearest = Optional.empty();
-                for(LivingEntity livingEntity : nearby) {
-                    if(livingEntity instanceof NPCBoat) {
-                        Optional<College> targeAlliance = ((NPCBoat) livingEntity).getAllied();
-                        if(targeAlliance.isPresent()) {
-                            if(allied.isPresent()) {
-                                if(!targeAlliance.get().equals(allied.get())){
-                                    if(nearest.isPresent()){
-                                        if(nearest.get().distanceFrom(this) > livingEntity.distanceFrom(this)){
-                                            //closest enemy
-                                            nearest = Optional.of(livingEntity);
-                                        }
-                                    } else {
-                                        nearest = Optional.of(livingEntity);
-                                    }
-                                }
+                for (LivingEntity livingEntity : nearby) {
+                    if (!areAllied(livingEntity)) {
+                        if (nearest.isPresent()) {
+                            if (nearest.get().distanceFrom(this) > livingEntity.distanceFrom(this)) {
+                                //closest enemy
+                                nearest = Optional.of(livingEntity);
                             }
+                        } else {
+                            nearest = Optional.of(livingEntity);
                         }
                     }
                 }
                 return nearest;
             }
-        }
+
         return Optional.empty();
     }
 
     private Rectangle getRangeArea() {
         Rectangle radius = getRectBounds();
-        radius.set(radius.x-range, radius.y-range, radius.width+2*range, radius.height+2*range);
+        radius.set(radius.x - range, radius.y - range, radius.width + 2 * range, radius.height + 2 * range);
         return radius;
     }
-
 
 
 }
