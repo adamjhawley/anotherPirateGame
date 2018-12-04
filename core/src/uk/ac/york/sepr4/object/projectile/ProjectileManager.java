@@ -1,12 +1,15 @@
 package uk.ac.york.sepr4.object.projectile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
+import uk.ac.york.sepr4.object.entity.NPCBoat;
 import uk.ac.york.sepr4.screen.GameScreen;
 
 public class ProjectileManager {
@@ -43,6 +46,16 @@ public class ProjectileManager {
         projectileList.add(projectile);
     }
 
+    public Array<Projectile> getProjectileInArea(Rectangle rectangle) {
+        Array<Projectile> projectiles = new Array<>();
+        for(Projectile projectile : projectileList) {
+            Intersector.overlaps(rectangle, projectile.getRectBounds());
+            if(projectile.getRectBounds().overlaps(rectangle)){
+                projectiles.add(projectile);
+            }
+        }
+        return projectiles;
+    }
     /**
      * Adds and removes projectiles as actors from the stage.
      */
