@@ -59,52 +59,53 @@ public class NPCBoat extends LivingEntity {
     //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
     public void act(float deltaTime) {
 
-        if (this.hostile) {
-            if(targetCheck < 5f){
-                targetCheck += deltaTime;
+        if(!this.isDying()) {
+            if (this.hostile) {
+                if (targetCheck < 5f) {
+                    targetCheck += deltaTime;
+                }
+                Optional<LivingEntity> optionalTarget = getTarget();
+                if (optionalTarget.isPresent()) {
+                    LivingEntity target = optionalTarget.get();
+                    this.lastTarget = optionalTarget;
+
+                    float resAngle = AIUtil.resultantAngle(this, target);
+                    resAngle = AIUtil.convertToRealAngle(resAngle);
+                    setAngle(resAngle);
+
+                    float f = AIUtil.f(this, target);
+
+                    if ((1 - f) - f > 0.2) {
+                        setAccelerating(true);
+                        setBraking(false);
+                    } else if (((1 - f) - f > -0.2)) {
+                        setAccelerating(false);
+                        setBraking(false);
+                    } else {
+                        setBraking(false);
+                        setAccelerating(true);
+                    }
+                    if (getSpeed() < getMaxSpeed() / 5) {
+                        setAccelerating(true);
+                        setBraking(false);
+                    }
+                    if (goingToCollide(target)) {
+                        setCollided(100);
+                    }
+                    if (getCollided() > 0) {
+                        setCollided(getCollided() - 1);
+                        setAngle(getAngleTowardsEntity(target) - (float) Math.PI);
+                        setAccelerating(true);
+                        setBraking(false);
+                    }
+                    setAccelerating(true);
+                }
+
+            } else {
+                // move in area?
             }
-            Optional<LivingEntity> optionalTarget = getTarget();
-            if (optionalTarget.isPresent()) {
-                LivingEntity target = optionalTarget.get();
-                this.lastTarget = optionalTarget;
-
-                float resAngle = AIUtil.resultantAngle(this, target);
-                resAngle = AIUtil.convertToRealAngle(resAngle);
-                setAngle(resAngle);
-
-                float f = AIUtil.f(this, target);
-
-                if ((1 - f) - f > 0.2) {
-                    setAccelerating(true);
-                    setBraking(false);
-                } else if (((1 - f) - f > -0.2)) {
-                    setAccelerating(false);
-                    setBraking(false);
-                } else {
-                    setBraking(false);
-                    setAccelerating(true);
-                }
-                if (getSpeed() < getMaxSpeed() / 5) {
-                    setAccelerating(true);
-                    setBraking(false);
-                }
-                if (goingToCollide(target)) {
-                    setCollided(100);
-                }
-                if (getCollided() > 0) {
-                    setCollided(getCollided() - 1);
-                    setAngle(getAngleTowardsEntity(target) - (float) Math.PI);
-                    setAccelerating(true);
-                    setBraking(false);
-                }
-                setAccelerating(true);
-            }
-
-        } else {
-            // move in area?
         }
-
-        super.act(deltaTime);
+            super.act(deltaTime);
     }
 
     public Optional<College> getAllied() {
@@ -132,6 +133,7 @@ public class NPCBoat extends LivingEntity {
             //Gdx.app.log("Target", "Last");
             return this.lastTarget;
         } else {
+            this.lastTarget = Optional.empty();
             if(targetCheck > 5f) {
                 //Gdx.app.log("Target", "Nearest");
                 targetCheck = 0f;
