@@ -25,7 +25,7 @@ public class TextureManager {
     public static Texture ORANGEFIRE = new Texture(Gdx.files.internal(path+"fire1.png"));
     public static Texture REDFIRE = new Texture(Gdx.files.internal(path+"fire2.png"));
 
-    public static Texture ENDBOATTRAIL = new Texture(Gdx.files.internal(path+"EndOfBoatTrail.png"));
-    public static Texture MIDDLEBOATTRAIL = new Texture(Gdx.files.internal(path+"Middleboattrail.png"));
+    public static Texture MIDDLEBOATTRAIL1 = new Texture(Gdx.files.internal(path+"Middleboattrail.png"));
+
 
 }

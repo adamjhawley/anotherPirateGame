@@ -16,12 +16,14 @@ public abstract class Entity extends Actor {
     private Integer id;
     private float angle, speed;
     private Texture texture;
+    private float alpha;
 
     public Entity(Integer id, Texture texture, float angle, float speed) {
         this.id = id;
         this.angle = angle;
         this.speed = speed;
         this.texture = texture;
+        this.alpha = 1;
 
         // Stops texture glitches when moving
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
@@ -33,7 +35,7 @@ public abstract class Entity extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        float alpha = 1;
+        float alpha = this.alpha;
 
         batch.setColor(getColor().r, getColor().g, getColor().b,
                 alpha * getColor().a * parentAlpha);

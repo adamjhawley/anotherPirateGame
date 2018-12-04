@@ -36,12 +36,13 @@ public class AnimationManager {
     public Integer getNextEffectID(){return this.effects.size;}
 
     //Takes the centre x,y of where you want the image to be
-    public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height){
+    public void addEffect(float x, float y, float angle, float speed, Texture texture, int width, int height, float alpha){
         Entity effect = new Entity(getNextEffectID(), texture, angle, speed) {};
         effect.setY(y - height/2);
         effect.setX(x - width/2);
         effect.setWidth(width);
         effect.setHeight(height);
+        effect.setAlpha(alpha);
         this.effects.add(effect);
     }
 
@@ -58,11 +59,11 @@ public class AnimationManager {
             Float deathTimer = entry.getValue();
             livingEntity.setTexture(TextureManager.DEADENEMY);
             if (deathTimer < 1/6f) {
-                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40);
+                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION1, 40, 40,1);
             } else if (deathTimer < 2/6f) {
-                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION2, 40, 40);
+                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION2, 40, 40, 1);
             } else if (deathTimer < 1/2f){
-                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION3, 40, 40);
+                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), 0f, TextureManager.EXPLOSION3, 40, 40,1);
             }
             if (deathTimer > 5){
                 livingEntity.setDead(true);
