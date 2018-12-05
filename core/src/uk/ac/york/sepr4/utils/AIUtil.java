@@ -1,7 +1,11 @@
 package uk.ac.york.sepr4.utils;
 
+import com.sun.javafx.scene.control.skin.IntegerFieldSkin;
+import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
 import uk.ac.york.sepr4.object.projectile.Projectile;
+
+import com.badlogic.gdx.utils.Array;
 
 public class AIUtil {
 
@@ -22,6 +26,125 @@ public class AIUtil {
         }
         return angle;
     }
+
+    public static Array<Entity> getEntitysPossibleCollide(Entity target, Array<Entity> entitys){
+        Array<Entity> possibleCollisionEntitys = new Array<Entity>();
+        for (Entity entity : entitys){
+            float theta1 = (float)(target.getAngle() + Math.PI/2);
+            float theta2 = (float)(entity.getAngle() + Math.PI/2);
+            Integer boundsSelection1 = subGetEntitysPossibleBoundsSelection(theta1);
+            Integer boundsSelection2 = subGetEntitysPossibleBoundsSelection(theta2);
+            float m1 = subGetEntitysPossibleCollideMCalc(theta1);
+            float m2 = subGetEntitysPossibleCollideMCalc(theta2);
+
+            float x1 = target.getCentre().x;
+            float x2 = entity.getCentre().x;
+            float y1 = entity.getCentre().y;
+            float y2 = entity.getCentre().y;
+
+            if (!(m1 == Float.NaN && m2 == Float.NaN)){
+                float x = (y2-x2*m2-y1+x1*m1)/(m1 - m2);
+                float y = m1*x + (y1 - m1*x1);
+                if (subGetEntitysPossibleBoundsCollisonCheck(y1, y, x1, x, boundsSelection1) && subGetEntitysPossibleBoundsCollisonCheck(y2, y, x2, x, boundsSelection2)){
+                    possibleCollisionEntitys.add(entity);
+                }
+            } else if (m1 == Float.NaN){
+                float x = x1;
+                float y = m2*x1 + (y2 - m2*x2);
+                if (subGetEntitysPossibleBoundsCollisonCheck(y1, y, x1, x, boundsSelection1) && subGetEntitysPossibleBoundsCollisonCheck(y2, y, x2, x, boundsSelection2)){
+                    possibleCollisionEntitys.add(entity);
+                }
+            } else if (m2 == Float.NaN){
+                float x = x2;
+                float y = m1*x2 + (y1 - m1*x1);
+                if (subGetEntitysPossibleBoundsCollisonCheck(y1, y, x1, x, boundsSelection1) && subGetEntitysPossibleBoundsCollisonCheck(y2, y, x2, x, boundsSelection2)){
+                    possibleCollisionEntitys.add(entity);
+                }
+            }
+        }
+        return possibleCollisionEntitys;
+    }
+
+    private static float subGetEntitysPossibleCollideMCalc(float theta){
+        if(theta == 0){
+            return 0;
+        } else if (theta > 0 && theta < Math.PI/2){
+            return (float)Math.tan(theta);
+        } else if (theta == Math.PI/2){
+            return Float.NaN;
+        } else if (theta > Math.PI/2 && theta < Math.PI){
+            return (float)-Math.tan(theta);
+        } else if (theta == Math.PI){
+            return 0;
+        } else if (theta > Math.PI && theta < 3*Math.PI/2){
+            return (float)Math.tan(theta);
+        } else if (theta == 3*Math.PI){
+            return Float.NaN;
+        } else {
+            return (float)-Math.tan(theta);
+        }
+    }
+
+    private static Integer subGetEntitysPossibleBoundsSelection(float theta){
+        if(theta == 0){
+            return 0;
+        } else if (theta > 0 && theta < Math.PI/2){
+            return 1;
+        } else if (theta == Math.PI/2){
+            return 2;
+        } else if (theta > Math.PI/2 && theta < Math.PI){
+            return 3;
+        } else if (theta == Math.PI){
+            return 4;
+        } else if (theta > Math.PI && theta < 3*Math.PI/2){
+            return 5;
+        } else if (theta == 3*Math.PI){
+            return 6;
+        } else {
+            return 7;
+        }
+    }
+
+    private static boolean subGetEntitysPossibleBoundsCollisonCheck(float y1, float y, float x1, float x, Integer boundsSelection){
+        if (boundsSelection == 0){
+            if (y==y1 && x>x1){
+                return true;
+            }
+        } else if (boundsSelection == 1){
+            if (y>y1 && x>x1){
+                return true;
+            }
+        } else if (boundsSelection == 2){
+            if (y>y1 && x==x1){
+                return true;
+            }
+        } else if (boundsSelection == 3){
+            if (y>y1 && x<x1){
+                return true;
+            }
+        } else if (boundsSelection == 4){
+            if (y==y1 && x<x1){
+                return true;
+            }
+        } else if (boundsSelection == 5){
+            if (y<y1 && x<x1){
+                return true;
+            }
+        } else if (boundsSelection == 6){
+            if (y<y1 && x==x1){
+                return true;
+            }
+        } else {
+            if (y<y1 && x>x1){
+                return true;
+            }
+        }
+        return false;
+
+
+    }
+
+
 
     //Works to perfectly so in act will have to have some logic if time is to much to not shoot
     public static float perfectShotAngle(LivingEntity source, LivingEntity target) {

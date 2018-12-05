@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.object.building.College;
+import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
@@ -166,6 +167,11 @@ public class NPCBoat extends LivingEntity {
         if(nearby.contains(this, false)) {
             nearby.removeValue(this, false);
         }
+        return nearby;
+    }
+
+    private Array<Projectile> getProjectilesInRange(){
+        Array<Projectile> nearby = GameScreen.getInstance().getEntityManager().getProjectileManager().getProjectileInArea(getRangeArea());
         return nearby;
     }
 
