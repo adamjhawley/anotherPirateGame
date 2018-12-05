@@ -3,8 +3,10 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
+import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
@@ -27,6 +29,10 @@ public abstract class LivingEntity extends Entity {
     private ArrayList<Float> waterTrialsY;
     private ArrayList<Float> waterTrialsX2;
     private ArrayList<Float> waterTrialsY2;
+
+    //Added by harry
+    public Array<Float> xForCollision;
+    public Array<Float> yForCollision;
 
     private ProjectileType selectedProjectileType;
     private float currentCooldown;
@@ -64,6 +70,9 @@ public abstract class LivingEntity extends Entity {
             this.waterTrialsX2.add(getCentre().x);
             this.waterTrialsY2.add(getCentre().y);
         }
+
+        this.xForCollision = new Array<Float>();
+        this.yForCollision = new Array<Float>();
 
         this.healthBar = new HealthBar(this);
         this.isDying = false;
@@ -237,4 +246,19 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
+    public void addX(float x){
+        this.xForCollision.add(x);
+    }
+
+    public void addY(float y){
+        this.yForCollision.add(y);
+    }
+
+    public void deleteX(){
+        this.xForCollision = new Array<Float>();
+    }
+
+    public void deleteY(){
+        this.yForCollision = new Array<Float>();
+    }
 }

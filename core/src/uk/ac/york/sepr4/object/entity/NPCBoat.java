@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import lombok.Getter;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
@@ -13,6 +14,7 @@ import uk.ac.york.sepr4.utils.AIUtil;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.zip.DeflaterOutputStream;
 
 @Data
 public class NPCBoat extends LivingEntity {
@@ -60,6 +62,13 @@ public class NPCBoat extends LivingEntity {
     //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
     public void act(float deltaTime) {
 
+        this.deleteX();
+        this.deleteY();
+        if (getProjectilesToDodge(getProjectilesInRange()).size == 0){
+            Gdx.app.log("", getProjectilesInRange().size + "");
+        }
+        //When callng for dodges make sure to remeber to clean up the array in living entity because otherwise it will keep them because they wont be deleted
+        //possible make it more efficent so only test projectiles that have already been checked
         if(!this.isDying()) {
             if (this.hostile) {
                 if (targetCheck < 5f) {
@@ -173,6 +182,24 @@ public class NPCBoat extends LivingEntity {
     private Array<Projectile> getProjectilesInRange(){
         Array<Projectile> nearby = GameScreen.getInstance().getEntityManager().getProjectileManager().getProjectileInArea(getRangeArea());
         return nearby;
+    }
+
+    //This is the main call for projectiles to dodge
+    private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles){
+        Array<Entity> projectilesToDodge = new Array<Entity>();
+        Array<Entity> projectilesEntity = new Array<Entity>();
+        for (Projectile projectile : projectiles){
+            projectilesEntity.add(projectile);
+        }
+        projectilesEntity = AIUtil.getEntitysPossibleCollide(this, projectilesEntity, true);
+        for(int i = 0; i<projectilesEntity.size; i++){
+            float timeThis = getDistanceToPoint(this.getCentre().x, this.getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i));
+            float timeProjectile = getDistanceToPoint(projectilesEntity.get(i).getCentre().x, projectilesEntity.get(i).getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i));
+            if (timeProjectile - timeThis <= 1 && timeProjectile - timeThis >= -1){
+                projectilesToDodge.add(projectilesEntity.get(i));
+            }
+        }
+        return projectilesToDodge;
     }
 
     private Optional<LivingEntity> getNearestTarget() {

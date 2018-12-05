@@ -27,8 +27,11 @@ public class AIUtil {
         return angle;
     }
 
-    public static Array<Entity> getEntitysPossibleCollide(Entity target, Array<Entity> entitys){
+
+    public static Array<Entity> getEntitysPossibleCollide(LivingEntity target, Array<Entity> entitys, boolean isProjectile){
         Array<Entity> possibleCollisionEntitys = new Array<Entity>();
+        float x;
+        float y;
         for (Entity entity : entitys){
             float theta1 = (float)(target.getAngle() + Math.PI/2);
             float theta2 = (float)(entity.getAngle() + Math.PI/2);
@@ -43,22 +46,34 @@ public class AIUtil {
             float y2 = entity.getCentre().y;
 
             if (!(m1 == Float.NaN && m2 == Float.NaN)){
-                float x = (y2-x2*m2-y1+x1*m1)/(m1 - m2);
-                float y = m1*x + (y1 - m1*x1);
+                x = (y2-x2*m2-y1+x1*m1)/(m1 - m2);
+                y = m1*x + (y1 - m1*x1);
                 if (subGetEntitysPossibleBoundsCollisonCheck(y1, y, x1, x, boundsSelection1) && subGetEntitysPossibleBoundsCollisonCheck(y2, y, x2, x, boundsSelection2)){
                     possibleCollisionEntitys.add(entity);
+                }
+                if (isProjectile){
+                    target.addX(x);
+                    target.addY(y);
                 }
             } else if (m1 == Float.NaN){
-                float x = x1;
-                float y = m2*x1 + (y2 - m2*x2);
+                x = x1;
+                y = m2*x1 + (y2 - m2*x2);
                 if (subGetEntitysPossibleBoundsCollisonCheck(y1, y, x1, x, boundsSelection1) && subGetEntitysPossibleBoundsCollisonCheck(y2, y, x2, x, boundsSelection2)){
                     possibleCollisionEntitys.add(entity);
                 }
+                if (isProjectile){
+                    target.addX(x);
+                    target.addY(y);
+                }
             } else if (m2 == Float.NaN){
-                float x = x2;
-                float y = m1*x2 + (y1 - m1*x1);
+                x = x2;
+                y = m1*x2 + (y1 - m1*x1);
                 if (subGetEntitysPossibleBoundsCollisonCheck(y1, y, x1, x, boundsSelection1) && subGetEntitysPossibleBoundsCollisonCheck(y2, y, x2, x, boundsSelection2)){
                     possibleCollisionEntitys.add(entity);
+                }
+                if (isProjectile){
+                    target.addX(x);
+                    target.addY(y);
                 }
             }
         }
