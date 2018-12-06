@@ -62,60 +62,63 @@ public class NPCBoat extends LivingEntity {
     //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
     public void act(float deltaTime) {
 
-        this.deleteX();
-        this.deleteY();
-        if (getProjectilesToDodge(getProjectilesInRange()).size == 0){
-            Gdx.app.log("", getProjectilesInRange().size + "");
-        }
+//        this.deleteX();
+//        this.deleteY();
+//        if (getProjectilesToDodge(getProjectilesInRange()).size == 0){
+//        }
         //When callng for dodges make sure to remeber to clean up the array in living entity because otherwise it will keep them because they wont be deleted
         //possible make it more efficent so only test projectiles that have already been checked
-        if(!this.isDying()) {
-            if (this.hostile) {
-                if (targetCheck < 5f) {
-                    targetCheck += deltaTime;
-                }
-                Optional<LivingEntity> optionalTarget = getTarget();
-                if (optionalTarget.isPresent()) {
-                    LivingEntity target = optionalTarget.get();
-                    this.lastTarget = optionalTarget;
 
-                    float resAngle = AIUtil.resultantAngle(this, target);
-                    resAngle = AIUtil.convertToRealAngle(resAngle);
-                    setAngle(resAngle);
-
-                    float f = AIUtil.f(this, target);
-
-                    if ((1 - f) - f > 0.2) {
-                        setAccelerating(true);
-                        setBraking(false);
-                    } else if (((1 - f) - f > -0.2)) {
-                        setAccelerating(false);
-                        setBraking(false);
-                    } else {
-                        setBraking(false);
-                        setAccelerating(true);
-                    }
-                    if (getSpeed() < getMaxSpeed() / 5) {
-                        setAccelerating(true);
-                        setBraking(false);
-                    }
-                    if (goingToCollide(target)) {
-                        setCollided(100);
-                    }
-                    if (getCollided() > 0) {
-                        setCollided(getCollided() - 1);
-                        setAngle(getAngleTowardsEntity(target) - (float) Math.PI);
-                        setAccelerating(true);
-                        setBraking(false);
-                    }
-                    setAccelerating(true);
-                }
-
-            } else {
-                // move in area?
-            }
+        if (getProjectilesToDodge(getProjectilesInRange()).size > 0) {
+            Gdx.app.log("hit", "");
         }
-            super.act(deltaTime);
+//        if(!this.isDying()) {
+//            if (this.hostile) {
+//                if (targetCheck < 5f) {
+//                    targetCheck += deltaTime;
+//                }
+//                Optional<LivingEntity> optionalTarget = getTarget();
+//                if (optionalTarget.isPresent()) {
+//                    LivingEntity target = optionalTarget.get();
+//                    this.lastTarget = optionalTarget;
+//
+//                    float resAngle = AIUtil.resultantAngle(this, target);
+//                    resAngle = AIUtil.convertToRealAngle(resAngle);
+//                    setAngle(resAngle);
+//
+//                    float f = AIUtil.f(this, target);
+//
+//                    if ((1 - f) - f > 0.2) {
+//                        setAccelerating(true);
+//                        setBraking(false);
+//                    } else if (((1 - f) - f > -0.2)) {
+//                        setAccelerating(false);
+//                        setBraking(false);
+//                    } else {
+//                        setBraking(false);
+//                        setAccelerating(true);
+//                    }
+//                    if (getSpeed() < getMaxSpeed() / 5) {
+//                        setAccelerating(true);
+//                        setBraking(false);
+//                    }
+//                    if (goingToCollide(target)) {
+//                        setCollided(100);
+//                    }
+//                    if (getCollided() > 0) {
+//                        setCollided(getCollided() - 1);
+//                        setAngle(getAngleTowardsEntity(target) - (float) Math.PI);
+//                        setAccelerating(true);
+//                        setBraking(false);
+//                    }
+////                    setAccelerating(true);
+//                }
+//
+//            } else {
+//                // move in area?
+//            }
+//        }
+        super.act(deltaTime);
     }
 
     public Optional<College> getAllied() {
@@ -144,7 +147,7 @@ public class NPCBoat extends LivingEntity {
             return this.lastTarget;
         } else {
             this.lastTarget = Optional.empty();
-            if(targetCheck > 5f) {
+            if (targetCheck > 5f) {
                 //Gdx.app.log("Target", "Nearest");
                 targetCheck = 0f;
                 return getNearestTarget();
@@ -173,34 +176,54 @@ public class NPCBoat extends LivingEntity {
 
     private Array<LivingEntity> getLivingEntitiesInRange() {
         Array<LivingEntity> nearby = GameScreen.getInstance().getEntityManager().getLivingEntitiesInArea(getRangeArea());
-        if(nearby.contains(this, false)) {
+        if (nearby.contains(this, false)) {
             nearby.removeValue(this, false);
         }
         return nearby;
     }
 
-    private Array<Projectile> getProjectilesInRange(){
+    private Array<Projectile> getProjectilesInRange() {
         Array<Projectile> nearby = GameScreen.getInstance().getEntityManager().getProjectileManager().getProjectileInArea(getRangeArea());
         return nearby;
     }
 
-    //This is the main call for projectiles to dodge
-    private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles){
+    private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles) {
         Array<Entity> projectilesToDodge = new Array<Entity>();
-        Array<Entity> projectilesEntity = new Array<Entity>();
-        for (Projectile projectile : projectiles){
-            projectilesEntity.add(projectile);
-        }
-        projectilesEntity = AIUtil.getEntitysPossibleCollide(this, projectilesEntity, true);
-        for(int i = 0; i<projectilesEntity.size; i++){
-            float timeThis = getDistanceToPoint(this.getCentre().x, this.getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i));
-            float timeProjectile = getDistanceToPoint(projectilesEntity.get(i).getCentre().x, projectilesEntity.get(i).getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i));
-            if (timeProjectile - timeThis <= 1 && timeProjectile - timeThis >= -1){
-                projectilesToDodge.add(projectilesEntity.get(i));
+        for (Projectile projectile : projectiles) {
+            if (AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() < Math.PI / 16 && AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() > -Math.PI / 8) {
+                projectilesToDodge.add(projectile);
+            } else if (AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() > (2*Math.PI - Math.PI / 16) && AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() < (2*Math.PI + Math.PI / 8)){
+                projectilesToDodge.add(projectile);
             }
         }
         return projectilesToDodge;
     }
+
+
+//    //This is the main call for projectiles to dodge
+//    private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles){
+//        Array<Entity> projectilesToDodge = new Array<Entity>();
+//        Array<Entity> projectilesEntity = new Array<Entity>();
+//        for (Projectile projectile : projectiles){
+//            projectilesEntity.add(projectile);
+//        }
+//        //Working
+//        projectilesEntity = AIUtil.getEntitysPossibleCollide(this, projectilesEntity, true);
+//        for(int i = 0; i<projectilesEntity.size; i++) {
+//            Gdx.app.log("Entity array", projectilesEntity.get(i).__str__());
+//            float timeThis = getDistanceToPoint(this.getCentre().x, this.getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i)) / this.getSpeed();
+//            float timeProjectile = getDistanceToPoint(projectilesEntity.get(i).getCentre().x, projectilesEntity.get(i).getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i)) / projectilesEntity.get(i).getSpeed();
+//            if (timeProjectile - timeThis <= 100 && timeProjectile - timeThis >= -100) {
+//                projectilesToDodge.add(projectilesEntity.get(i));
+//            }
+//        }
+//        if (projectilesEntity.size != 0){Gdx.app.log("this", this.__str__()); Gdx.app.log("sizeToDodge", projectilesToDodge.size+"");}
+//        for (int i = 0; i<xForCollision.size; i++){
+//            Gdx.app.log("","X:" + Float.toString(xForCollision.get(i)) + " Y:" + Float.toString(yForCollision.get(i)));
+//        }
+//
+//        return projectilesToDodge;
+//    }
 
     private Optional<LivingEntity> getNearestTarget() {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
@@ -212,23 +235,23 @@ public class NPCBoat extends LivingEntity {
                 return Optional.of(player);
             }
         }
-            //player has captured this NPC's allied college
-            if (nearby.size > 0) {
-                Optional<LivingEntity> nearest = Optional.empty();
-                for (LivingEntity livingEntity : nearby) {
-                    if (!areAllied(livingEntity)) {
-                        if (nearest.isPresent()) {
-                            if (nearest.get().distanceFrom(this) > livingEntity.distanceFrom(this)) {
-                                //closest enemy
-                                nearest = Optional.of(livingEntity);
-                            }
-                        } else {
+        //player has captured this NPC's allied college
+        if (nearby.size > 0) {
+            Optional<LivingEntity> nearest = Optional.empty();
+            for (LivingEntity livingEntity : nearby) {
+                if (!areAllied(livingEntity)) {
+                    if (nearest.isPresent()) {
+                        if (nearest.get().distanceFrom(this) > livingEntity.distanceFrom(this)) {
+                            //closest enemy
                             nearest = Optional.of(livingEntity);
                         }
+                    } else {
+                        nearest = Optional.of(livingEntity);
                     }
                 }
-                return nearest;
             }
+            return nearest;
+        }
 
         return Optional.empty();
     }

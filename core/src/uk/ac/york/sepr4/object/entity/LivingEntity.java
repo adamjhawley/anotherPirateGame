@@ -30,9 +30,9 @@ public abstract class LivingEntity extends Entity {
     private ArrayList<Float> waterTrialsX2;
     private ArrayList<Float> waterTrialsY2;
 
-    //Added by harry
-    public Array<Float> xForCollision;
-    public Array<Float> yForCollision;
+//    //Added by harry
+//    public Array<Float> xForCollision;
+//    public Array<Float> yForCollision;
 
     private ProjectileType selectedProjectileType;
     private float currentCooldown;
@@ -71,8 +71,8 @@ public abstract class LivingEntity extends Entity {
             this.waterTrialsY2.add(getCentre().y);
         }
 
-        this.xForCollision = new Array<Float>();
-        this.yForCollision = new Array<Float>();
+//        this.xForCollision = new Array<Float>();
+//        this.yForCollision = new Array<Float>();
 
         this.healthBar = new HealthBar(this);
         this.isDying = false;
@@ -205,7 +205,7 @@ public abstract class LivingEntity extends Entity {
 
     //return true if still alive
     public boolean damage(Double damage) {
-        this.health = this.health - damage;
+//        this.health = this.health - damage;
         if (this.health <= 0) {
             kill(false);
             return false;
@@ -246,19 +246,19 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-    public void addX(float x){
-        this.xForCollision.add(x);
-    }
-
-    public void addY(float y){
-        this.yForCollision.add(y);
-    }
-
-    public void deleteX(){
-        this.xForCollision = new Array<Float>();
-    }
-
-    public void deleteY(){
-        this.yForCollision = new Array<Float>();
-    }
+//    public void addX(float x){
+//        this.xForCollision.add(x);
+//    }
+//
+//    public void addY(float y){
+//        this.yForCollision.add(y);
+//    }
+//
+//    public void deleteX(){
+//        this.xForCollision.clear();
+//    }
+//
+//    public void deleteY(){
+//        this.yForCollision.clear();
+//    }
 }

@@ -85,4 +85,8 @@ public abstract class Entity extends Actor {
         return new Ellipse(getX(), getY(), getWidth(), getHeight());
     }
 
+    public String __str__(){
+        return ("X:" + Float.toString(this.getCentre().x) + " Y:" + Float.toString(this.getCentre().y) + " ANG:" + Float.toString(this.getAngle()) + " SPD:" + Float.toString(this.getSpeed()));
+    }
+
 }
