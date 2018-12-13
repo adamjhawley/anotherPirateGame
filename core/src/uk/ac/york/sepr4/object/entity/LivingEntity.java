@@ -229,7 +229,7 @@ public abstract class LivingEntity extends Entity {
     public boolean goingToCollide(Entity object) {
         double pred_X = getX() + getSpeed() * Math.sin(getAngle());
         double pred_Y = getY() - getSpeed() * Math.cos(getAngle());
-        Rectangle pred_Bounds = new Rectangle((float) pred_X, (float) pred_Y, getWidth(), getHeight());
+        Rectangle pred_Bounds = new Rectangle((float) pred_X, (float) pred_Y, getWidth()/2, getHeight()/2);
         if (object.getRectBounds().overlaps(pred_Bounds)) {
             return true;
         }

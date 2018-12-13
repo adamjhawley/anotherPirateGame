@@ -72,22 +72,55 @@ public class NPCBoat extends LivingEntity {
         if (getProjectilesToDodge(getProjectilesInRange()).size > 0) {
             Gdx.app.log("hit", "");
         }
-//        if(!this.isDying()) {
-//            if (this.hostile) {
-//                if (targetCheck < 5f) {
-//                    targetCheck += deltaTime;
-//                }
-//                Optional<LivingEntity> optionalTarget = getTarget();
-//                if (optionalTarget.isPresent()) {
-//                    LivingEntity target = optionalTarget.get();
-//                    this.lastTarget = optionalTarget;
-//
+        if(!this.isDying()) {
+            if (this.hostile) {
+                if (targetCheck < 5f) {
+                    targetCheck += deltaTime;
+                }
+                Optional<LivingEntity> optionalTarget = getTarget();
+                if (optionalTarget.isPresent()) {
+                    LivingEntity target = optionalTarget.get();
+                    this.lastTarget = optionalTarget;
+                    //Todo: Finish the control logic of enemy to make it better
+                    //******************Think about during coding of AI fire logic
+                    //Weapon ready
+                    //Fired how long ago
+                    //How long the shot would take
+                    //always fire at target
+                    //Dont fire if going to hit allie
+
+                    //********************Think about in AI's movement
+                    //*****
+                    //On collsion course with target
+                    //on collsion course with island
+                    //need to dodge
+                    //*****
+                    //smoothen the turns
+                    //try to keep moving
+                    //keep away from hostiles except for target so if can stay away from them
+                    //stay sort of close towards allies
+
+                    //******************Special conditions
+                    //If going to collide with object try to hit side on with less speed (diffrence between them)
+                    //If colldided try to get away from the collider
+                    //Stunned
+                    //Force action - From like items
+
+                    //******************Things to make AI winnable
+                    //Accuracy
+                    //Chance to do actions like above
+                    //special conditions have to do no matter what - possibilty of fireing when in special conditions
+
+
+
+
+
 //                    float resAngle = AIUtil.resultantAngle(this, target);
 //                    resAngle = AIUtil.convertToRealAngle(resAngle);
 //                    setAngle(resAngle);
 //
 //                    float f = AIUtil.f(this, target);
-//
+
 //                    if ((1 - f) - f > 0.2) {
 //                        setAccelerating(true);
 //                        setBraking(false);
@@ -112,12 +145,12 @@ public class NPCBoat extends LivingEntity {
 //                        setBraking(false);
 //                    }
 ////                    setAccelerating(true);
-//                }
-//
-//            } else {
-//                // move in area?
-//            }
-//        }
+                }
+
+            } else {
+                // move in area?
+            }
+        }
         super.act(deltaTime);
     }
 
@@ -190,11 +223,35 @@ public class NPCBoat extends LivingEntity {
     private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles) {
         Array<Entity> projectilesToDodge = new Array<Entity>();
         for (Projectile projectile : projectiles) {
-            if (AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() < Math.PI / 16 && AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() > -Math.PI / 8) {
-                projectilesToDodge.add(projectile);
-            } else if (AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() > (2*Math.PI - Math.PI / 16) && AIUtil.perfectAngleToCollide(projectile, this) - projectile.getAngle() < (2*Math.PI + Math.PI / 8)){
-                projectilesToDodge.add(projectile);
+            //will need to add future simulation somehow
+            float thetaToThisInFuture = AIUtil.perfectAngleToCollide(projectile, this);
+            float thetaActual = AIUtil.convertToRealAngle(projectile.getAngle());
+            float dist = (float)projectile.distanceFrom(this);
+            boolean isTriangle = true;
+            float theta;
+            if(thetaToThisInFuture < thetaActual && thetaActual-thetaToThisInFuture < Math.PI/2){
+                theta = thetaActual-thetaToThisInFuture;
+            } else if(thetaActual < thetaToThisInFuture && thetaToThisInFuture-thetaActual < Math.PI/2){
+                theta = thetaToThisInFuture-thetaActual;
+            } else if(thetaActual < thetaToThisInFuture && (2*Math.PI - thetaToThisInFuture) + thetaActual < Math.PI/2){
+                theta = (float)(2*Math.PI - thetaToThisInFuture) + thetaActual;
+            } else if(thetaToThisInFuture < thetaActual && (2*Math.PI - thetaActual) + thetaToThisInFuture < Math.PI/2){
+                theta = (float)(2*Math.PI - thetaActual) + thetaToThisInFuture;
+            } else {
+                theta = 0;
+                isTriangle = false;
             }
+
+            if (isTriangle == true){
+                float opp = (float)Math.tan(theta)*dist;
+                if(opp < 0){
+                    opp = -opp;
+                }
+                if (opp < Math.max(3*this.getRectBounds().height/4, 3*this.getRectBounds().width/4)){
+                    projectilesToDodge.add(projectile);
+                }
+            }
+
         }
         return projectilesToDodge;
     }

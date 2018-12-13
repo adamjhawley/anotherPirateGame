@@ -1,6 +1,6 @@
 package uk.ac.york.sepr4.utils;
 
-import com.sun.javafx.scene.control.skin.IntegerFieldSkin;
+
 import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
 import uk.ac.york.sepr4.object.projectile.Projectile;
@@ -293,6 +293,7 @@ public class AIUtil {
         return (float) fx * 160f;
     }
 
+    //change to go over a loop of things rather than target
     public static float resultantAngle(LivingEntity source, LivingEntity target) {
         float f = f(source, target);
         float sigma = source.getAngleTowardsEntity(target) - convertToRealAngle(target.getAngle());
@@ -327,9 +328,4 @@ public class AIUtil {
         rsigma += f * (Math.PI);
         return rsigma;
     }
-
-//    public static boolean isProjectileOnCourseToHit(Projectile projectile) {
-//
-//        return false;
-//    }
 }
