@@ -62,13 +62,6 @@ public class NPCBoat extends LivingEntity {
     //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
     public void act(float deltaTime) {
 
-//        this.deleteX();
-//        this.deleteY();
-//        if (getProjectilesToDodge(getProjectilesInRange()).size == 0){
-//        }
-        //When callng for dodges make sure to remeber to clean up the array in living entity because otherwise it will keep them because they wont be deleted
-        //possible make it more efficent so only test projectiles that have already been checked
-
         if (getProjectilesToDodge(getProjectilesInRange()).size > 0) {
             Gdx.app.log("hit", "");
         }
@@ -119,8 +112,8 @@ public class NPCBoat extends LivingEntity {
 //                    resAngle = AIUtil.convertToRealAngle(resAngle);
 //                    setAngle(resAngle);
 //
-//                    float f = AIUtil.f(this, target);
-
+//                    float f = AIUtil.f((float)this.distanceFrom(target));
+//
 //                    if ((1 - f) - f > 0.2) {
 //                        setAccelerating(true);
 //                        setBraking(false);
@@ -144,7 +137,8 @@ public class NPCBoat extends LivingEntity {
 //                        setAccelerating(true);
 //                        setBraking(false);
 //                    }
-////                    setAccelerating(true);
+//                    setAccelerating(true);
+                    fire(AIUtil.perfectShotAngle(this, target));
                 }
 
             } else {
@@ -223,7 +217,6 @@ public class NPCBoat extends LivingEntity {
     private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles) {
         Array<Entity> projectilesToDodge = new Array<Entity>();
         for (Projectile projectile : projectiles) {
-            //will need to add future simulation somehow
             float thetaToThisInFuture = AIUtil.perfectAngleToCollide(projectile, this);
             float thetaActual = AIUtil.convertToRealAngle(projectile.getAngle());
             float dist = (float)projectile.distanceFrom(this);
@@ -255,32 +248,6 @@ public class NPCBoat extends LivingEntity {
         }
         return projectilesToDodge;
     }
-
-
-//    //This is the main call for projectiles to dodge
-//    private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles){
-//        Array<Entity> projectilesToDodge = new Array<Entity>();
-//        Array<Entity> projectilesEntity = new Array<Entity>();
-//        for (Projectile projectile : projectiles){
-//            projectilesEntity.add(projectile);
-//        }
-//        //Working
-//        projectilesEntity = AIUtil.getEntitysPossibleCollide(this, projectilesEntity, true);
-//        for(int i = 0; i<projectilesEntity.size; i++) {
-//            Gdx.app.log("Entity array", projectilesEntity.get(i).__str__());
-//            float timeThis = getDistanceToPoint(this.getCentre().x, this.getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i)) / this.getSpeed();
-//            float timeProjectile = getDistanceToPoint(projectilesEntity.get(i).getCentre().x, projectilesEntity.get(i).getCentre().y, this.xForCollision.get(i), this.yForCollision.get(i)) / projectilesEntity.get(i).getSpeed();
-//            if (timeProjectile - timeThis <= 100 && timeProjectile - timeThis >= -100) {
-//                projectilesToDodge.add(projectilesEntity.get(i));
-//            }
-//        }
-//        if (projectilesEntity.size != 0){Gdx.app.log("this", this.__str__()); Gdx.app.log("sizeToDodge", projectilesToDodge.size+"");}
-//        for (int i = 0; i<xForCollision.size; i++){
-//            Gdx.app.log("","X:" + Float.toString(xForCollision.get(i)) + " Y:" + Float.toString(yForCollision.get(i)));
-//        }
-//
-//        return projectilesToDodge;
-//    }
 
     private Optional<LivingEntity> getNearestTarget() {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();

@@ -30,10 +30,6 @@ public abstract class LivingEntity extends Entity {
     private ArrayList<Float> waterTrialsX2;
     private ArrayList<Float> waterTrialsY2;
 
-//    //Added by harry
-//    public Array<Float> xForCollision;
-//    public Array<Float> yForCollision;
-
     private ProjectileType selectedProjectileType;
     private float currentCooldown;
 
@@ -245,20 +241,4 @@ public abstract class LivingEntity extends Entity {
             this.waterTrialsX2.set(i, this.waterTrialsX2.get(i - 1));
         }
     }
-
-//    public void addX(float x){
-//        this.xForCollision.add(x);
-//    }
-//
-//    public void addY(float y){
-//        this.yForCollision.add(y);
-//    }
-//
-//    public void deleteX(){
-//        this.xForCollision.clear();
-//    }
-//
-//    public void deleteY(){
-//        this.yForCollision.clear();
-//    }
 }
