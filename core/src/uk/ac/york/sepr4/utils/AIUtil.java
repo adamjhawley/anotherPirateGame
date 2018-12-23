@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Array;
 public class AIUtil {
 
     //Weightings for AI behaviour
+    //Todo: Move these to the NPC so can be adjusted per boat
     private static float standardDeviation = 50f;
     private static float mean = 250f;
 
@@ -27,7 +28,7 @@ public class AIUtil {
         return angle;
     }
 
-    //Convert other two to use these functions because they are the same just allow entity in them aswell you will ned to pass basespeed of the livingentitys projectile
+    //Todo: Create one function that does the same thing just uses speeds rather than using getProjectileSpeed
     public static float perfectAngleToCollide(Entity source, Entity target) {
         boolean right;
         double theta;
@@ -81,7 +82,6 @@ public class AIUtil {
 
         return convertToRealAngle((float) shotAngle);
     }
-
     public static float timeForPerfectAngleToCollide(Entity source, Entity target, float theta) {
         double time = source.distanceFrom(target) / (source.getSpeed() + source.getSpeed());
 
@@ -92,7 +92,7 @@ public class AIUtil {
         return (float) b;
     }
 
-    //Works to perfectly so in act will have to have some logic if time is to much to not shoot
+    //Todo: Create one function that does the same thing just uses speeds rather than using getProjectileSpeed
     public static float perfectShotAngle(LivingEntity source, LivingEntity target) {
         boolean right;
         double theta;
@@ -146,7 +146,6 @@ public class AIUtil {
 
         return convertToRealAngle((float) shotAngle);
     }
-
     public static float timeForPerfectShotToHit(LivingEntity source, LivingEntity target, float theta) {
         double time = source.distanceFrom(target) / (source.getSpeed() + source.getSelectedProjectileType().getBaseSpeed());
 
@@ -157,59 +156,55 @@ public class AIUtil {
         return (float) b;
     }
 
-    public static float f(float dist) {
+
+    //Functions for knowing the force due the distance
+    public static float normalDistFromMean(float dist) {
         double sigma = (double) standardDeviation;
         double fx = (1 / (Math.sqrt(2 * Math.PI) * sigma)) * Math.pow(Math.E, -(Math.pow((dist - (double) mean), 2) / (2 * Math.pow(sigma, 2))));
         return (float) fx * 160f;
     }
-
-    //change to go over a loop of things rather than target
-    public static float resultantAngle(LivingEntity source, LivingEntity target) {
-        float f = f((float)source.distanceFrom(target));
-        float sigma = source.getAngleTowardsEntity(target) - convertToRealAngle(target.getAngle());
-
-        float tp;
-        float rp;
-
-        if (sigma <= Math.PI / 2) {
-            tp = (float) (f * Math.cos(sigma) + (1 - f));
-            rp = (float) (-f * Math.sin(sigma));
-        } else if (sigma <= Math.PI) {
-            tp = (float) ((1 - f) - f * Math.sin(sigma - Math.PI / 2));
-            rp = (float) (-f * Math.cos(sigma - Math.PI / 2));
-        } else if (sigma <= (3 * Math.PI) / 2) {
-            tp = (float) ((1 - f) - f * Math.cos(sigma - Math.PI));
-            rp = (float) (f * Math.sin(sigma - Math.PI));
+    public static float straightLineGraphOneIfCloser(float dist) {
+        if(dist <= 100f){
+            return 1f;
+        } else if (dist<= 200f){
+            return -0.01f*(dist-100f);
         } else {
-            tp = (float) ((1 - f) + f * Math.sin(sigma - (3 * Math.PI) / 2));
-            rp = (float) (f * Math.cos(sigma - (3 * Math.PI) / 2));
+            return 0f;
         }
-
-        if (tp >= 0 && rp <= 0) {
-            sigma = (float) Math.atan(-rp / tp);
-        } else if (tp <= 0 && rp <= 0) {
-            sigma = (float) (Math.PI / 2 + Math.atan(-tp / -rp));
-        } else if (tp <= 0 && rp >= 0) {
-            sigma = (float) (Math.PI + Math.atan(rp / -tp));
-        } else {
-            sigma = (float) ((3 * Math.PI) / 2 + Math.atan(tp / rp));
-        }
-        float rsigma = sigma + source.getAngleTowardsEntity(target);
-        rsigma += f * (Math.PI);
-        return rsigma;
     }
+    //********************
 
-    public static float resultantAngleArray(LivingEntity source, LivingEntity target, Array<Entity> entitiesToAvoid, Array<Entity> entitiesToGoTowards, Array<Entity> entitiesToDodge, Array<Entity> entitiesToStayFFrom){
-        float tp;
-        float rp;
+    public static Array<Float> resultantForce(Array<Float> angles, Array<Float> forces){
+        Array<Float> force_angle = new Array<Float>();
+        float N = 0, E = 0;
+        double sigma;
+        for (int i = 0; i<angles.size; i++){
+            if (convertToRealAngle(angles.get(i)) <= Math.PI/2){
+                E += forces.get(i)*Math.sin(angles.get(i));
+                N -= forces.get(i)*Math.cos(angles.get(i));
+            } else if (convertToRealAngle(angles.get(i)) <= Math.PI){
+                E += forces.get(i)*Math.cos(angles.get(i) - Math.PI/2);
+                N += forces.get(i)*Math.sin(angles.get(i) - Math.PI/2);
+            } else if (convertToRealAngle(angles.get(i)) <= 3*Math.PI/2){
+                E -= forces.get(i)*Math.sin(angles.get(i) - Math.PI);
+                N += forces.get(i)*Math.cos(angles.get(i) - Math.PI);
+            } else {
+                E -= forces.get(i)*Math.cos(angles.get(i) - 3*Math.PI/2);
+                N -= forces.get(i)*Math.sin(angles.get(i) - 3*Math.PI/2);
+            }
+        }
+        if (N >= 0 && E <= 0) {
+            sigma = Math.atan(-E / N);
+        } else if (N <= 0 && E <= 0) {
+            sigma = (Math.PI / 2 + Math.atan(-N / -E));
+        } else if (N <= 0 && E >= 0) {
+            sigma = (Math.PI + Math.atan(E / -N));
+        } else {
+            sigma = ((3 * Math.PI) / 2 + Math.atan(N / E));
+        }
 
-        //First section for target which will most likely be highest rated
-        float f = f((float)source.distanceFrom(target));
-        float sigma = source.getAngleTowardsEntity(target) - convertToRealAngle(target.getAngle());
-
-        //*********************************************************************
-
-
-        return 0;
+        force_angle.add((float)Math.sqrt(N*N + E*E));
+        force_angle.add((float)sigma);
+        return force_angle;
     }
 }

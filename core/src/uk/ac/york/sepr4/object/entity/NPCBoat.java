@@ -29,10 +29,6 @@ public class NPCBoat extends LivingEntity {
 
     private float targetCheck;
 
-    //public NPCBoat(Integer id, Texture texture) {
-    //    super(id, texture);
-    //}
-
     public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, College allied) {
         super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
         this.range = range;
@@ -51,16 +47,12 @@ public class NPCBoat extends LivingEntity {
      * @param deltaTime
      */
 
-    //Todo: Make a hostility thing using specficIdsHostileTo HostileToFactions sort of thing
-
-    //Todo: Make a better collision protocal for enemy specfic
-
-    //Todo: Create something that can give a array of all entitys within a certain distance to the living entity - Can also be used in player to check for collsions
-    //Todo: The samething but with projectiles this will only be used for within enemy i think though
-    //Todo: Add a dodge function that takes a single projectile and checks if it will hit and how much time it will take to hit
-
-    //Todo: Use all the functions to create a better act function to actually give the AI a good feel to the game
     public void act(float deltaTime) {
+
+        Array<Float> forces = new Array<Float>();
+        forces.clear();
+        Array<Float> angles = new Array<Float>();
+        angles.clear();
 
         if (getProjectilesToDodge(getProjectilesInRange()).size > 0) {
             Gdx.app.log("hit", "");
@@ -104,41 +96,25 @@ public class NPCBoat extends LivingEntity {
                     //Chance to do actions like above
                     //special conditions have to do no matter what - possibilty of fireing when in special conditions
 
+                    //************ This is just for the target
+                    forces.add(1 - AIUtil.normalDistFromMean((float)this.distanceFrom(target)));
+                    angles.add((float)(this.getAngleTowardsEntity(target) - Math.PI));
 
+                    forces.add(AIUtil.normalDistFromMean((float)this.distanceFrom(target)));
+                    angles.add((float)(AIUtil.convertToRealAngle(target.getAngle()) - Math.PI));
 
+                    Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
+                    livingEntities.removeValue(target, false);
 
+                    for(LivingEntity livingEntity : livingEntities){
+                        forces.add(AIUtil.straightLineGraphOneIfCloser((float)this.distanceFrom(livingEntity)));
+                        angles.add((float)(this.getAngleTowardsEntity(livingEntity) + Math.PI));
+                    }
 
-//                    float resAngle = AIUtil.resultantAngle(this, target);
-//                    resAngle = AIUtil.convertToRealAngle(resAngle);
-//                    setAngle(resAngle);
-//
-//                    float f = AIUtil.f((float)this.distanceFrom(target));
-//
-//                    if ((1 - f) - f > 0.2) {
-//                        setAccelerating(true);
-//                        setBraking(false);
-//                    } else if (((1 - f) - f > -0.2)) {
-//                        setAccelerating(false);
-//                        setBraking(false);
-//                    } else {
-//                        setBraking(false);
-//                        setAccelerating(true);
-//                    }
-//                    if (getSpeed() < getMaxSpeed() / 5) {
-//                        setAccelerating(true);
-//                        setBraking(false);
-//                    }
-//                    if (goingToCollide(target)) {
-//                        setCollided(100);
-//                    }
-//                    if (getCollided() > 0) {
-//                        setCollided(getCollided() - 1);
-//                        setAngle(getAngleTowardsEntity(target) - (float) Math.PI);
-//                        setAccelerating(true);
-//                        setBraking(false);
-//                    }
-//                    setAccelerating(true);
-                    fire(AIUtil.perfectShotAngle(this, target));
+                    Gdx.app.log("", this.__str__());
+                    //*************
+
+                    setAngle(AIUtil.resultantForce(angles, forces).get(1));
                 }
 
             } else {
@@ -285,6 +261,5 @@ public class NPCBoat extends LivingEntity {
         radius.set(radius.x - range, radius.y - range, radius.width + 2 * range, radius.height + 2 * range);
         return radius;
     }
-
 
 }

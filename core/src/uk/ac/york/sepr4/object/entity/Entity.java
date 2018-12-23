@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import lombok.Data;
 
-
 @Data
 public abstract class Entity extends Actor {
 
@@ -61,12 +60,13 @@ public abstract class Entity extends Actor {
         setPosition(x, y);
     }
 
+
     public float getAngleTowardsEntity(Entity entity) {
         double d_angle = Math.atan(((entity.getCentre().y - getCentre().y) / (entity.getCentre().x - getCentre().x)));
         if (entity.getCentre().x < getCentre().x) {
             d_angle += Math.PI;
         }
-        return (float) d_angle + (float) Math.PI / 2;
+        return (float) (d_angle + Math.PI / 2);
     }
 
     public Vector2 getCentre() {
@@ -79,10 +79,6 @@ public abstract class Entity extends Actor {
 
     public Rectangle getRectBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
-    }
-
-    public Ellipse getOvalBounds() {
-        return new Ellipse(getX(), getY(), getWidth(), getHeight());
     }
 
     public String __str__(){
