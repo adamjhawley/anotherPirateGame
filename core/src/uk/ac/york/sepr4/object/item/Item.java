@@ -3,7 +3,7 @@ package uk.ac.york.sepr4.object.item;
 import lombok.Data;
 
 @Data
-public abstract class Item {
+public class Item {
 
     private String name;
     private String lore;

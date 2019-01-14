@@ -104,17 +104,23 @@ public class NPCBoat extends LivingEntity {
                     angles.add((float)(AIUtil.convertToRealAngle(target.getAngle()) - Math.PI));
 
                     Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
-                    livingEntities.removeValue(target, false);
+                    //livingEntities.removeValue(target, false);
 
                     for(LivingEntity livingEntity : livingEntities){
                         forces.add(AIUtil.straightLineGraphOneIfCloser((float)this.distanceFrom(livingEntity)));
+
                         angles.add((float)(this.getAngleTowardsEntity(livingEntity) + Math.PI));
                     }
 
-                    Gdx.app.log("", this.__str__());
-                    //*************
+                    // Gdx.app.log("", this.__str__());
 
-                    setAngle(AIUtil.resultantForce(angles, forces).get(1));
+                    float ang = AIUtil.resultantForce(angles, forces).get(1);
+                    if(!Float.isNaN(ang)) {
+                        //TODO: Get weird error here (second call of the above gets NaN once (and only once))
+                        setAngle(ang);
+                    } else {
+                        Gdx.app.log("error", "angle nan");
+                    }
                 }
 
             } else {

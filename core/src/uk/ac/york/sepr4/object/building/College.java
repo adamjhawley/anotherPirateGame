@@ -2,36 +2,45 @@ package uk.ac.york.sepr4.object.building;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import lombok.Data;
 import uk.ac.york.sepr4.object.entity.NPCBoat;
 import uk.ac.york.sepr4.object.entity.NPCBuilder;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+@Data
 public class College extends Building {
 
-    private boolean captured;
     private NPCBoat boss;
     private float spawnRange;
     private Double spawnChance, enemyDifficulty;
-    private Integer maxEntities;
+    private Integer maxEntities = 5;
 
     private List<String> projectileTypesStr;
     private List<ProjectileType> projectileTypes;
 
-    private List<String> requiresCollegeStr;
+    private List<String> requiresCollegeStr = new ArrayList<>();
     private List<College> requiresCollege;
 
     public College() {
         // Empty constructor for JSON DAO.
     }
 
-    public Optional<NPCBoat> spawnEnemy(Integer id) {
+    /***
+     * 
+     * @param id
+     * @return
+     */
+    public Optional<NPCBoat> spawnCollegeNPC(Integer id) {
         Random random = new Random();
         if(random.nextDouble() <= spawnChance){
-            return Optional.of(new NPCBuilder().generateRandomEnemy(id, getRandomSpawnVector(), enemyDifficulty, projectileTypes));
+            NPCBoat boat = new NPCBuilder().generateRandomEnemy(id, getRandomSpawnVector(), enemyDifficulty, projectileTypes);
+            boat.setAllied(this);
+            return Optional.of(boat);
         }
         return Optional.empty();
     }

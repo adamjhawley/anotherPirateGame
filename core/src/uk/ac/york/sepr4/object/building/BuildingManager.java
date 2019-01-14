@@ -17,8 +17,16 @@ public class BuildingManager {
 
     private GameScreen gameScreen;
 
+    //time till next spawn attempt
     private float spawnDelta;
 
+    /***
+     * This class handles instances of buildings (Colleges and Departments)
+     *
+     * It is responsible for loading from file and making sure the map object relating to this building is present.
+     * There is a method which arranges spawning of college enemies.
+     * @param gameScreen
+     */
     public BuildingManager(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
         this.spawnDelta = 0f;

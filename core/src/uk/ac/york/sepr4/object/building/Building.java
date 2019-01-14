@@ -1,9 +1,9 @@
 package uk.ac.york.sepr4.object.building;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import lombok.Data;
 import uk.ac.york.sepr4.object.PirateMap;
-
 import java.util.Optional;
 
 @Data
@@ -18,6 +18,8 @@ public abstract class Building {
         if(objectOptional.isPresent()) {
             this.mapObject = objectOptional.get();
             return true;
+        } else {
+            Gdx.app.log("Building", "Could not load map object for building: " + name);
         }
         return false;
     }

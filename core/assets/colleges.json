@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "class": "uk.ac.york.sepr4.object.building.College",
+    "name": "Halifax College",
+    "mapObjectStr": "halifax",
+    "spawnRange": 100
+  }
+]

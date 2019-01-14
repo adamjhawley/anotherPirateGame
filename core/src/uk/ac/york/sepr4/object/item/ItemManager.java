@@ -8,14 +8,12 @@ import lombok.Data;
 @Data
 public class ItemManager {
 
-    private Array<EquipItem> equipItems;
-    private Array<Item> consumeItems;
+    private Array<Item> items;
 
     public ItemManager() {
         Json json = new Json();
-        equipItems = json.fromJson(Array.class, EquipItem.class, Gdx.files.internal("equip_items.json"));
-       // consumeItems = json.fromJson(Array.class, ConsumeItem.class, Gdx.files.internal("consume_items.json"));
-        for(EquipItem item : equipItems){
+        items = json.fromJson(Array.class, Item.class, Gdx.files.internal("items.json"));
+        for(Item item : items){
             System.out.println(item.getName());
             //System.out.println(item.getAttribute().getHealth());
 

@@ -72,9 +72,13 @@ public class PirateMap {
     }
 
     public Optional<RectangleMapObject> getRectObject(String objectName) {
-        MapObject mapObject = objectLayer.getObjects().get(objectName);
-        if(mapObject instanceof RectangleMapObject) {
-            return Optional.of((RectangleMapObject) mapObject);
+        try {
+            MapObject mapObject = objectLayer.getObjects().get(objectName);
+            if(mapObject instanceof RectangleMapObject) {
+                return Optional.of((RectangleMapObject) mapObject);
+            }
+        } catch (NullPointerException e) {
+
         }
         return Optional.empty();
     }
