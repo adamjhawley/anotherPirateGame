@@ -25,7 +25,7 @@ public class NPCBuilder {
     public NPCBuilder(){}
 
     public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, allied);
+        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, allied, 250, 50);
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
 
