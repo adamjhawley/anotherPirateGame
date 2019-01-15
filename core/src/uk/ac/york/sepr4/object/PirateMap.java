@@ -114,15 +114,18 @@ public class PirateMap {
         return false;
     }
 
-    public Optional<RectangleMapObject> getRectObject(String objectName) {
+    /***
+     * Gets a map (not collision) object with the specified name.
+     * @param objectName
+     * @return
+     */
+    public Optional<RectangleMapObject> getMapObject(String objectName) {
         try {
             MapObject mapObject = objectLayer.getObjects().get(objectName);
             if (mapObject instanceof RectangleMapObject) {
                 return Optional.of((RectangleMapObject) mapObject);
             }
-        } catch (NullPointerException e) {
-
-        }
+        } catch (NullPointerException e) {}
         return Optional.empty();
     }
 
@@ -130,14 +133,13 @@ public class PirateMap {
         MapObject mapObject = objectLayer.getObjects().get(spawnPointObject);
         if (mapObject != null && mapObject instanceof RectangleMapObject) {
             RectangleMapObject object = (RectangleMapObject) mapObject;
-            Gdx.app.log("pm", object.getRectangle().x+", "+object.getRectangle().y);
             this.spawnPoint = scaleTiledVectorToMap(new Vector2(object.getRectangle().x, object.getRectangle().y));
             return true;
         }
         return false;
     }
 
-    private Vector2 scaleTiledVectorToMap(Vector2 tiledVector) {
+    public Vector2 scaleTiledVectorToMap(Vector2 tiledVector) {
         return tiledVector.scl(1 / 2f);
     }
 

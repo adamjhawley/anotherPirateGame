@@ -5,10 +5,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Data;
 
+import java.util.Random;
+
 @Data
 public class ItemManager {
 
     private Array<Item> items;
+
+
+    private Integer baseXP = 10, baseGold = 100;
 
     public ItemManager() {
         Json json = new Json();
@@ -19,6 +24,14 @@ public class ItemManager {
 
         }
 
+    }
+
+    public Reward generateReward(Double enemyDifficulty) {
+        Double scale = enemyDifficulty + 1;
+
+        Integer xp =  (baseXP * scale.intValue());
+
+        return new Reward(baseXP * scale.intValue(), baseGold*scale.intValue());
     }
 
 }

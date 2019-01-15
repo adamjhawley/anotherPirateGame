@@ -3,6 +3,9 @@
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Halifax College",
     "mapObjectStr": "halifax",
-    "spawnRange": 100
+    "bossName": "Oleg",
+    "bossDifficulty": 0.5,
+    "spawnRange": 100,
+    "spawnChance": 1.0
   }
 ]

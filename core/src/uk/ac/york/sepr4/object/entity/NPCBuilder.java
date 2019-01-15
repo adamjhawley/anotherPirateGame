@@ -25,19 +25,36 @@ public class NPCBuilder {
 
     public NPCBuilder(){}
 
-    public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed,
+    public NPCBoss buildBoss(Integer id, Vector2 pos, String name) {
+        NPCBoss npcBoss = new NPCBoss(id, texture, name, angle, speed,
                 maxSpeed, health, maxHealth,turningSpeed, onFire,
                 projectileTypes, range, accuracy , false, allied,
                 idealDistFromTarget, gradientFromNormalDist);
-        NPCBoat.setX(pos.x);
-        NPCBoat.setY(pos.y);
+        npcBoss.setX(pos.x);
+        npcBoss.setY(pos.y);
 
         if(selectedProjectile != null) {
-            NPCBoat.setSelectedProjectileType(this.selectedProjectile);
-            NPCBoat.addProjectileType(this.selectedProjectile);
+            npcBoss.setSelectedProjectileType(this.selectedProjectile);
+            npcBoss.addProjectileType(this.selectedProjectile);
         }
-        return NPCBoat;
+        npcBoss.setTexture(TextureManager.BOSS);
+
+        return npcBoss;
+    }
+
+    public NPCBoat buildNPC(Integer id, Vector2 pos) {
+        NPCBoat npcBoat = new NPCBoat(id, texture, angle, speed,
+                maxSpeed, health, maxHealth,turningSpeed, onFire,
+                projectileTypes, range, accuracy , false, allied,
+                idealDistFromTarget, gradientFromNormalDist);
+        npcBoat.setX(pos.x);
+        npcBoat.setY(pos.y);
+
+        if(selectedProjectile != null) {
+            npcBoat.setSelectedProjectileType(this.selectedProjectile);
+            npcBoat.addProjectileType(this.selectedProjectile);
+        }
+        return npcBoat;
     }
 
     public NPCBuilder allied(College allied) {

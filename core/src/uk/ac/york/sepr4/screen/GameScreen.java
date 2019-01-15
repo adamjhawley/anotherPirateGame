@@ -68,7 +68,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private ShapeRenderer shapeRenderer;
 
-    private static final boolean COLLISION_DEBUG = true;
+    private static final boolean DEBUG = true;
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -85,6 +85,11 @@ public class GameScreen implements Screen, InputProcessor {
      * @param pirateGame
      */
     public GameScreen(PirateGame pirateGame) {
+
+        if(DEBUG) {
+            Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        }
+
         // Local widths and heights.
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
@@ -171,6 +176,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         if (pirateMap.isObjectsEnabled()) {
             buildingManager.spawnCollegeEnemies(delta);
+            buildingManager.checkBossSpawn();
         }
 
         handleHealthBars();
@@ -187,13 +193,12 @@ public class GameScreen implements Screen, InputProcessor {
 
 
         //debug
-        if(COLLISION_DEBUG) {
+        if(DEBUG) {
             shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.RED);
 
             for (Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
-                //Gdx.app.log("Test", polygonMapObject.getName());
                 shapeRenderer.polygon(polygonMapObject.getTransformedVertices());
             }
             shapeRenderer.end();
@@ -249,6 +254,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
+        //player/npc collision check
         for (NPCBoat NPCBoat : getEntityManager().getNPCList()) {
             if (NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
                 //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
@@ -256,10 +262,15 @@ public class GameScreen implements Screen, InputProcessor {
                 //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
             }
         }
-        for(Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
-            if(polygonMapObject.getBoundingRectangle().overlaps(player.getRectBounds())) {
-                //Gdx.app.log("GameScreen", "Collision");
-                player.setAngle((float)(2*Math.PI - player.getAngle()));
+        //player/map collision check
+        //TODO: Improve to make player a polygon
+        for(Polygon polygon : getPirateMap().getCollisionObjects()) {
+            float[] points = polygon.getTransformedVertices();
+            for (int i=0;i<points.length;i+=2){
+                if(player.getRectBounds().contains(points[i],points[i+1])){
+                    Gdx.app.log("GameScreen", "Collision");
+                    player.setAngle((float)(2*Math.PI - player.getAngle()));
+                }
             }
         }
     }
