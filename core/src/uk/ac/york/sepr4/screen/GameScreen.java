@@ -66,8 +66,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     private static GameScreen gameScreen;
 
-
     private ShapeRenderer shapeRenderer;
+
+    private static final boolean COLLISION_DEBUG = true;
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -186,15 +187,17 @@ public class GameScreen implements Screen, InputProcessor {
 
 
         //debug
-        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
+        if(COLLISION_DEBUG) {
+            shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.RED);
 
-        for(Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
-            //Gdx.app.log("Test", polygonMapObject.getName());
-            shapeRenderer.polygon(polygonMapObject.getTransformedVertices());
+            for (Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
+                //Gdx.app.log("Test", polygonMapObject.getName());
+                shapeRenderer.polygon(polygonMapObject.getTransformedVertices());
+            }
+            shapeRenderer.end();
         }
-        shapeRenderer.end();
 
 
         stage.act(delta);

@@ -89,6 +89,7 @@ public class PirateMap {
                                         polygon.setPosition((x+(oldPoly.getX()/64))*32f, (y+(oldPoly.getY())/64)*32f);
                                         //TODO: LibGDX fault. LoadObject does not correctly get tile rotation.
                                         //Rotation value is always 0 (even on rotated tiles).
+                                        //Simple replace with non-rotated tiles in map editor.
                                         polygon.setRotation(polygonMapObject.getPolygon().getRotation());
                                         polygon.setScale(1/2f, 1/2f);
                                         //Gdx.app.log("Polygon", ""+polygonMapObject.getPolygon().getBoundingRectangle().x + ", "+polygonMapObject.getPolygon().getBoundingRectangle().y);
