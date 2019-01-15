@@ -23,16 +23,23 @@ public class NPCBoat extends LivingEntity {
     private float range;
     private float accuracy;
 
+    private float idealDistFromTarget;
+    private float gradientForNormalDist;
+
     private boolean hostile;
     private College allied;
     private Optional<LivingEntity> lastTarget;
 
     private float targetCheck;
 
-    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, College allied) {
+    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, College allied, float idealDistFromTarget, float gradientForNormalDist) {
         super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
         this.range = range;
         this.accuracy = accuracy;
+
+        this.idealDistFromTarget = idealDistFromTarget;
+        this.gradientForNormalDist = gradientForNormalDist;
+
         this.hostile = hostile;
         this.allied = allied;
 
@@ -40,24 +47,12 @@ public class NPCBoat extends LivingEntity {
         this.targetCheck = 4f;
     }
 
-    /**
-     * Overriding Actor's 'act' function.
-     * Calculates the direction of travel for the enemy depending on the location of the player.
-     *
-     * @param deltaTime
-     */
-
     public void act(float deltaTime) {
-
+        setAccelerating(true);
         Array<Float> forces = new Array<Float>();
-        forces.clear();
         Array<Float> angles = new Array<Float>();
-        angles.clear();
 
-        if (getProjectilesToDodge(getProjectilesInRange()).size > 0) {
-            Gdx.app.log("hit", "");
-        }
-        if(!this.isDying()) {
+        if (!this.isDying()) {
             if (this.hostile) {
                 if (targetCheck < 5f) {
                     targetCheck += deltaTime;
@@ -97,30 +92,87 @@ public class NPCBoat extends LivingEntity {
                     //special conditions have to do no matter what - possibilty of fireing when in special conditions
 
                     //************ This is just for the target
-                    forces.add(1 - AIUtil.normalDistFromMean((float)this.distanceFrom(target)));
-                    angles.add((float)(this.getAngleTowardsEntity(target) - Math.PI));
-
-                    forces.add(AIUtil.normalDistFromMean((float)this.distanceFrom(target)));
-                    angles.add((float)(AIUtil.convertToRealAngle(target.getAngle()) - Math.PI));
-
-                    Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
-                    //livingEntities.removeValue(target, false);
-
-                    for(LivingEntity livingEntity : livingEntities){
-                        forces.add(AIUtil.straightLineGraphOneIfCloser((float)this.distanceFrom(livingEntity)));
-
-                        angles.add((float)(this.getAngleTowardsEntity(livingEntity) + Math.PI));
+                    if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
+                        forces.add(1 - AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target)));
+                    } else {
+                        forces.add(1 - AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target) - (float) Math.PI));
                     }
+                    //TODO: Trying to work out how to have a force that makes you want to go to AwayP rather than always P because at the normals of the target boat flips around cause it wants to got P but wants to stay at the mean dist
 
-                    // Gdx.app.log("", this.__str__());
+//                    float angle;
+//                    if (getAngleTowardsEntity(target) >= 0f && getAngleTowardsEntity(target) < Math.PI/2){
+//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI/2));
+//                        } else {
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI));
+//                        }
+//                    } else if (getAngleTowardsEntity(target) >= Math.PI/2 && getAngleTowardsEntity(target) < Math.PI){
+//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
+//                            angle = AIUtil.convertToRealAngle(target.getAngle());
+//                        } else {
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI/2));
+//                        }
+//                    } else if (getAngleTowardsEntity(target) >= Math.PI && getAngleTowardsEntity(target) < 3*Math.PI/2){
+//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
+//                            angle  = AIUtil.convertToRealAngle(target.getAngle());
+//                        } else {
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() + Math.PI/2));
+//                        }
+//                    } else {
+//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() + Math.PI/2));
+//                        } else {
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI));
+//                        }
+//                    }
+//                    float angle;
+//                    if (getAngleTowardsEntity(target) >= 0f && getAngleTowardsEntity(target) < Math.PI/2){
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI));
+//                    } else if (getAngleTowardsEntity(target) >= Math.PI/2 && getAngleTowardsEntity(target) < Math.PI){
+//                            angle = AIUtil.convertToRealAngle(target.getAngle());
+//                    } else if (getAngleTowardsEntity(target) >= Math.PI && getAngleTowardsEntity(target) < 3*Math.PI/2){
+//                            angle  = AIUtil.convertToRealAngle(target.getAngle());
+//                    } else {
+//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() + Math.PI));
+//                    }
+
+//                    if (target.getSpeed()/target.getMaxSpeed() > 0.2) {
+//                        forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+//                        angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+//                    } else {
+//                        if (AIUtil.angleDiffrenceBetweenTwoAngles(target.getAngle(), getAngle()) <= Math.PI/2){
+//                            forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+//                            angles.add(AIUtil.convertToRealAngle(getAngle()));
+//                        } else {
+//                            forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+//                            angles.add(AIUtil.convertToRealAngle(getAngle()));
+//                        }
+                        forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+                        angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+//                    }
+                    //TODO: You were here next thing to do is to stop the boats turning to quickly then do the logic for the ai
+//                    Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
+//
+//                    for(LivingEntity livingEntity : livingEntities){
+//                        forces.add(AIUtil.straightLineGraphOneIfCloser((float)this.distanceFrom(livingEntity), this.gradientForNormalDist, this.idealDistFromTarget));
+//
+//                        angles.add((float)(this.getAngleTowardsEntity(livingEntity) + Math.PI));
+//                    }
 
                     float ang = AIUtil.resultantForce(angles, forces).get(1);
-                    if(!Float.isNaN(ang)) {
-                        //TODO: Get weird error here (second call of the above gets NaN once (and only once))
-                        setAngle(ang);
-                    } else {
-                        Gdx.app.log("error", "angle nan");
-                    }
+//                    if (ang > AIUtil.convertToRealAngle(getAngle())){
+//                        setAngle(AIUtil.convertToRealAngle(getAngle() + AIUtil.angleDiffrenceBetweenTwoAngles(getAngle(), ang)/64));
+//                    } else {
+//                        setAngle(AIUtil.convertToRealAngle(getAngle() - AIUtil.angleDiffrenceBetweenTwoAngles(getAngle(), ang)/64));
+//                    }
+//                    if (!(getAngleTowardsEntity(target) > 6.1f || getAngleTowardsEntity(target) < 0.1f)){
+//                        setAngle(ang);
+//                    }
+                    setAngle(ang);
+
+
                 }
 
             } else {
@@ -199,30 +251,30 @@ public class NPCBoat extends LivingEntity {
     private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles) {
         Array<Entity> projectilesToDodge = new Array<Entity>();
         for (Projectile projectile : projectiles) {
-            float thetaToThisInFuture = AIUtil.perfectAngleToCollide(projectile, this);
+            float thetaToThisInFuture = AIUtil.perfectAngleToCollide(projectile, this, projectile.getSpeed());
             float thetaActual = AIUtil.convertToRealAngle(projectile.getAngle());
-            float dist = (float)projectile.distanceFrom(this);
+            float dist = (float) projectile.distanceFrom(this);
             boolean isTriangle = true;
             float theta;
-            if(thetaToThisInFuture < thetaActual && thetaActual-thetaToThisInFuture < Math.PI/2){
-                theta = thetaActual-thetaToThisInFuture;
-            } else if(thetaActual < thetaToThisInFuture && thetaToThisInFuture-thetaActual < Math.PI/2){
-                theta = thetaToThisInFuture-thetaActual;
-            } else if(thetaActual < thetaToThisInFuture && (2*Math.PI - thetaToThisInFuture) + thetaActual < Math.PI/2){
-                theta = (float)(2*Math.PI - thetaToThisInFuture) + thetaActual;
-            } else if(thetaToThisInFuture < thetaActual && (2*Math.PI - thetaActual) + thetaToThisInFuture < Math.PI/2){
-                theta = (float)(2*Math.PI - thetaActual) + thetaToThisInFuture;
+            if (thetaToThisInFuture < thetaActual && thetaActual - thetaToThisInFuture < Math.PI / 2) {
+                theta = thetaActual - thetaToThisInFuture;
+            } else if (thetaActual < thetaToThisInFuture && thetaToThisInFuture - thetaActual < Math.PI / 2) {
+                theta = thetaToThisInFuture - thetaActual;
+            } else if (thetaActual < thetaToThisInFuture && (2 * Math.PI - thetaToThisInFuture) + thetaActual < Math.PI / 2) {
+                theta = (float) (2 * Math.PI - thetaToThisInFuture) + thetaActual;
+            } else if (thetaToThisInFuture < thetaActual && (2 * Math.PI - thetaActual) + thetaToThisInFuture < Math.PI / 2) {
+                theta = (float) (2 * Math.PI - thetaActual) + thetaToThisInFuture;
             } else {
                 theta = 0;
                 isTriangle = false;
             }
 
-            if (isTriangle == true){
-                float opp = (float)Math.tan(theta)*dist;
-                if(opp < 0){
+            if (isTriangle == true) {
+                float opp = (float) Math.tan(theta) * dist;
+                if (opp < 0) {
                     opp = -opp;
                 }
-                if (opp < Math.max(3*this.getRectBounds().height/4, 3*this.getRectBounds().width/4)){
+                if (opp < Math.max(3 * this.getRectBounds().height / 4, 3 * this.getRectBounds().width / 4)) {
                     projectilesToDodge.add(projectile);
                 }
             }

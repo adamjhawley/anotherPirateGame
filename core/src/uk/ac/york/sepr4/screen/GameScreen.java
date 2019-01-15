@@ -123,7 +123,7 @@ public class GameScreen implements Screen, InputProcessor {
         NPCBoat enemy = new NPCBuilder()
                 .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
                 .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x + 200f, vector2.y + 200f));
-        //entityManager.addNPC(enemy);
+        entityManager.addNPC(enemy);
         NPCBoat enemy2 = new NPCBuilder()
                 .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
                 .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x + 400f, vector2.y + 400f));

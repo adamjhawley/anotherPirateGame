@@ -1,6 +1,7 @@
 package uk.ac.york.sepr4.utils;
 
 
+import com.badlogic.gdx.Gdx;
 import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
 import uk.ac.york.sepr4.object.projectile.Projectile;
@@ -8,12 +9,6 @@ import uk.ac.york.sepr4.object.projectile.Projectile;
 import com.badlogic.gdx.utils.Array;
 
 public class AIUtil {
-
-    //Weightings for AI behaviour
-    //Todo: Move these to the NPC so can be adjusted per boat
-    private static float standardDeviation = 50f;
-    private static float mean = 250f;
-
     public static float convertToRealAngle(float angle) {
         if (angle >= 0) {
             while (angle >= 0) {
@@ -25,44 +20,64 @@ public class AIUtil {
                 angle += 2 * Math.PI;
             }
         }
+        if (angle < 0){
+            angle = 0f;
+        }
         return angle;
     }
 
-    //Todo: Create one function that does the same thing just uses speeds rather than using getProjectileSpeed
-    public static float perfectAngleToCollide(Entity source, Entity target) {
-        boolean right;
+    public static float thetaForAngleDiffrence(double thetaP, double thetaTP){
         double theta;
+        if (thetaP <= thetaTP && thetaTP <= Math.PI) {
+            theta = thetaP + (Math.PI - thetaTP);
+        } else if ((2 * Math.PI - thetaP) <= (2 * Math.PI - thetaTP) && (2 * Math.PI - thetaTP) <= Math.PI) {
+            theta = (2 * Math.PI - thetaP) + (Math.PI - (2 * Math.PI - thetaTP));
+        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) >= (Math.PI - thetaTP)) {
+            theta = (2 * Math.PI - thetaP) - (Math.PI - thetaTP);
+        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && thetaP >= (Math.PI - (2 * Math.PI - thetaTP))) {
+            theta = thetaP - (Math.PI - (2 * Math.PI - thetaTP));
+        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) <= (Math.PI - thetaTP)) {
+            theta = (Math.PI - thetaTP) - (2 * Math.PI - thetaP);
+        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && (Math.PI - (2 * Math.PI - thetaTP)) >= thetaP) {
+            theta = (Math.PI - (2 * Math.PI - thetaTP)) - thetaP;
+        } else {
+            theta = 0;
+        }
+        return (float)theta;
+    }
+
+    public static boolean rightForAngleDiffrence(double thetaP, double thetaTP){
+        boolean right;
+        if (thetaP <= thetaTP && thetaTP <= Math.PI) {
+            right = true;
+        } else if ((2 * Math.PI - thetaP) <= (2 * Math.PI - thetaTP) && (2 * Math.PI - thetaTP) <= Math.PI) {
+            right = false;
+        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) >= (Math.PI - thetaTP)) {
+            right = false;
+        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && thetaP >= (Math.PI - (2 * Math.PI - thetaTP))) {
+            right = true;
+        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) <= (Math.PI - thetaTP)) {
+            right = true;
+        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && (Math.PI - (2 * Math.PI - thetaTP)) >= thetaP) {
+            right = false;
+        } else {
+            right = true;
+        }
+        return right;
+    }
+
+    //Todo: Create one function that does the same thing just uses speeds rather than using getProjectileSpeed
+    public static float perfectAngleToCollide(Entity source, Entity target, double addedSpeed) {
         double thetaP = convertToRealAngle(target.getAngle());
         double thetaTP = source.getAngleTowardsEntity(target);
 
-        if (thetaP <= thetaTP && thetaTP <= Math.PI) {
-            theta = thetaP + (Math.PI - thetaTP);
-            right = true;
-        } else if ((2 * Math.PI - thetaP) <= (2 * Math.PI - thetaTP) && (2 * Math.PI - thetaTP) <= Math.PI) {
-            theta = (2 * Math.PI - thetaP) + (Math.PI - (2 * Math.PI - thetaTP));
-            right = false;
-        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) >= (Math.PI - thetaTP)) {
-            theta = (2 * Math.PI - thetaP) - (Math.PI - thetaTP);
-            right = false;
-        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && thetaP >= (Math.PI - (2 * Math.PI - thetaTP))) {
-            theta = thetaP - (Math.PI - (2 * Math.PI - thetaTP));
-            right = true;
-        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) <= (Math.PI - thetaTP)) {
-            theta = (Math.PI - thetaTP) - (2 * Math.PI - thetaP);
-            right = true;
-        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && (Math.PI - (2 * Math.PI - thetaTP)) >= thetaP) {
-            theta = (Math.PI - (2 * Math.PI - thetaTP)) - thetaP;
-            right = false;
-        } else {
-            theta = 0;
-            right = true;
-        }
+        boolean right = rightForAngleDiffrence(thetaP, thetaTP);
+        double theta = thetaForAngleDiffrence(thetaP, thetaTP);
 
-        double b = timeForPerfectAngleToCollide(source, target, (float) theta);
-        double time = source.distanceFrom(target) / (source.getSpeed() + source.getSpeed());
+        double b = timeForPerfectAngleToCollide(source, target, (float)theta, addedSpeed);
+        double time = source.distanceFrom(target) / (source.getSpeed() + addedSpeed);
 
-
-        double SE = (source.getSpeed() + source.getSpeed());
+        double SE = (source.getSpeed() + addedSpeed);
         double SP = target.getSpeed();
 
         double PM = b * SP;
@@ -82,8 +97,9 @@ public class AIUtil {
 
         return convertToRealAngle((float) shotAngle);
     }
-    public static float timeForPerfectAngleToCollide(Entity source, Entity target, float theta) {
-        double time = source.distanceFrom(target) / (source.getSpeed() + source.getSpeed());
+
+    public static float timeForPerfectAngleToCollide(Entity source, Entity target, float theta, double addedSpeed) {
+        double time = source.distanceFrom(target) / (source.getSpeed() + addedSpeed);
 
         double b = time / (2 * Math.cos(theta));
         if (b < 0) {
@@ -91,88 +107,39 @@ public class AIUtil {
         }
         return (float) b;
     }
-
-    //Todo: Create one function that does the same thing just uses speeds rather than using getProjectileSpeed
-    public static float perfectShotAngle(LivingEntity source, LivingEntity target) {
-        boolean right;
-        double theta;
-        double thetaP = convertToRealAngle(target.getAngle());
-        double thetaTP = source.getAngleTowardsEntity(target);
-
-        if (thetaP <= thetaTP && thetaTP <= Math.PI) {
-            theta = thetaP + (Math.PI - thetaTP);
-            right = true;
-        } else if ((2 * Math.PI - thetaP) <= (2 * Math.PI - thetaTP) && (2 * Math.PI - thetaTP) <= Math.PI) {
-            theta = (2 * Math.PI - thetaP) + (Math.PI - (2 * Math.PI - thetaTP));
-            right = false;
-        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) >= (Math.PI - thetaTP)) {
-            theta = (2 * Math.PI - thetaP) - (Math.PI - thetaTP);
-            right = false;
-        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && thetaP >= (Math.PI - (2 * Math.PI - thetaTP))) {
-            theta = thetaP - (Math.PI - (2 * Math.PI - thetaTP));
-            right = true;
-        } else if (thetaTP <= Math.PI && thetaP > thetaTP && (2 * Math.PI - thetaP) <= (Math.PI - thetaTP)) {
-            theta = (Math.PI - thetaTP) - (2 * Math.PI - thetaP);
-            right = true;
-        } else if ((2 * Math.PI - thetaTP) <= Math.PI && thetaTP > thetaP && (Math.PI - (2 * Math.PI - thetaTP)) >= thetaP) {
-            theta = (Math.PI - (2 * Math.PI - thetaTP)) - thetaP;
-            right = false;
-        } else {
-            theta = 0;
-            right = true;
-        }
-
-        double b = timeForPerfectShotToHit(source, target, (float) theta);
-        double time = source.distanceFrom(target) / (source.getSpeed() + source.getSelectedProjectileType().getBaseSpeed());
-
-
-        double SE = (source.getSpeed() + source.getSelectedProjectileType().getBaseSpeed());
-        double SP = target.getSpeed();
-
-        double PM = b * SP;
-        double EP = time * SE;
-        double ME = b * SE;
-
-        double shotAngle = Math.acos(((ME * ME) + (EP * EP) - (PM * PM)) / (2 * ME * EP));
-
-        if (right == true) {
-            shotAngle = thetaTP - shotAngle;
-        } else {
-            shotAngle = thetaTP + shotAngle;
-        }
-        if (((ME * ME) + (EP * EP) - (PM * PM)) / (2 * ME * EP) > 1 || ((ME * ME) + (EP * EP) - (PM * PM)) / (2 * ME * EP) < -1) {
-            shotAngle = thetaTP;
-        }
-
-        return convertToRealAngle((float) shotAngle);
-    }
-    public static float timeForPerfectShotToHit(LivingEntity source, LivingEntity target, float theta) {
-        double time = source.distanceFrom(target) / (source.getSpeed() + source.getSelectedProjectileType().getBaseSpeed());
-
-        double b = time / (2 * Math.cos(theta));
-        if (b < 0) {
-            b = -b;
-        }
-        return (float) b;
-    }
-
 
     //Functions for knowing the force due the distance
-    public static float normalDistFromMean(float dist) {
-        double sigma = (double) standardDeviation;
-        double fx = (1 / (Math.sqrt(2 * Math.PI) * sigma)) * Math.pow(Math.E, -(Math.pow((dist - (double) mean), 2) / (2 * Math.pow(sigma, 2))));
-        return (float) fx * 160f;
-    }
-    public static float straightLineGraphOneIfCloser(float dist) {
-        if(dist <= 100f){
+    public static float normalDistFromMean(float dist, float standardDeviation, float mean) {
+        //Formula for a normal distbution to find the height
+        double fx = (1 / (Math.sqrt(2 * Math.PI) * (double)standardDeviation)) * Math.pow(Math.E, -(Math.pow((dist - (double) mean), 2) / (2 * Math.pow((double)standardDeviation, 2))));
+        //Just incase it goes over 1 for error stops
+        if(fx/(1 / (Math.sqrt(2 * Math.PI) * (double)standardDeviation)) * Math.pow(Math.E, -(1 / (2 * Math.pow((double)standardDeviation, 2)))) > 1){
             return 1f;
-        } else if (dist<= 200f){
-            return -0.01f*(dist-100f);
+        }
+        //Is fx/by max fx when the dist = mean
+        return (float) (fx/(1 / (Math.sqrt(2 * Math.PI) * (double)standardDeviation)) * Math.pow(Math.E, -(1 / (2 * Math.pow((double)standardDeviation, 2)))));
+    }
+    public static float straightLineGraphOneIfCloser(float dist, float lowestdist, float startdist) {
+        if(dist <= lowestdist){
+            return 1f;
+        } else if (dist<= startdist){
+            return 0.01f*(dist-lowestdist); //possible problem
         } else {
             return 0f;
         }
     }
     //********************
+
+    //Returns the diffrence between 2 angles where angle 1 is the one with the respect
+    public static float angleDiffrenceBetweenTwoAngles(float angle1, float angle2){
+        angle1 = convertToRealAngle(angle1);
+        angle2 = convertToRealAngle(angle2);
+        if (convertToRealAngle(angle2 - angle1) > Math.PI){
+            return (float)(2* Math.PI - convertToRealAngle(angle2 - angle1));
+        } else {
+            return convertToRealAngle(angle2 - angle1);
+        }
+    }
 
     public static Array<Float> resultantForce(Array<Float> angles, Array<Float> forces){
         Array<Float> force_angle = new Array<Float>();

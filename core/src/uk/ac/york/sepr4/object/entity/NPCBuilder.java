@@ -27,9 +27,9 @@ public class NPCBuilder {
     public NPCBoat buildEnemy(Integer id, Vector2 pos) {
         NPCBoat NPCBoat;
         if(allied  == null){
-            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, null);
+            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, null, 250f, 50f);
         } else {
-            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, allied);
+            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, allied, 250f, 50f);
         }
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
@@ -42,7 +42,7 @@ public class NPCBuilder {
     }
 
     public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, null);
+        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, null, 250f, 50f);
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
 

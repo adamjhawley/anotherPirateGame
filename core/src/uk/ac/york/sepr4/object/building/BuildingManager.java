@@ -46,7 +46,7 @@ public class BuildingManager {
         spawnDelta+=delta;
         if(spawnDelta >= 1f) {
             for (College college : this.colleges) {
-                Optional<NPCBoat> optionalEnemy = college.spawnEnemy(gameScreen.getEntityManager().getNextEnemyID());
+                Optional<NPCBoat> optionalEnemy = college.spawnCollegeNPC(gameScreen.getEntityManager().getNextEnemyID());
                 if (optionalEnemy.isPresent()) {
                     Gdx.app.log("Building Manager", "Spawning an enemy at " + college.getName());
                     gameScreen.getEntityManager().addNPC(optionalEnemy.get());
