@@ -48,6 +48,8 @@ public class Player extends LivingEntity implements InputProcessor {
         float angle = getAngle();
         angle += ((angularSpeed * deltaTime) * (getSpeed() / getMaxSpeed())) % (float)(2*Math.PI);;
 
+       // Gdx.app.log("", this.__str__());
+
         setAngle(angle);
         super.act(deltaTime);
     }
@@ -79,7 +81,7 @@ public class Player extends LivingEntity implements InputProcessor {
         }
         if(keycode == Input.Keys.M) {
             //minimap
-            GameScreen.getInstance().getOrthographicCamera().zoom = 5;
+            GameScreen.getInstance().getOrthographicCamera().zoom = 10;
             return true;
         }
 

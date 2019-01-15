@@ -24,25 +24,8 @@ public class NPCBuilder {
 
     public NPCBuilder(){}
 
-    public NPCBoat buildEnemy(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat;
-        if(allied  == null){
-            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, null, 250f, 50f);
-        } else {
-            NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , true, allied, 250f, 50f);
-        }
-        NPCBoat.setX(pos.x);
-        NPCBoat.setY(pos.y);
-
-        if(selectedProjectile != null) {
-            NPCBoat.setSelectedProjectileType(this.selectedProjectile);
-            NPCBoat.addProjectileType(this.selectedProjectile);
-        }
-        return NPCBoat;
-    }
-
     public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, null, 250f, 50f);
+        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, allied);
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
 
@@ -104,7 +87,7 @@ public class NPCBuilder {
         return this;
     }
 
-    public NPCBoat generateRandomEnemy(Integer id, Vector2 pos, Double difficulty, List<ProjectileType> projectileTypes) {
+    public NPCBoat generateRandomEnemy(Integer id, Vector2 pos, College allied, Double difficulty, List<ProjectileType> projectileTypes) {
         NPCBuilder builder = new NPCBuilder();
         Random random = new Random();
         builder.projectileTypes = projectileTypes;
@@ -112,8 +95,9 @@ public class NPCBuilder {
         builder.maxSpeed((float)(difficulty*random.nextDouble())+maxSpeed);
         builder.turningSpeed((int)Math.round(difficulty*random.nextDouble())+turningSpeed);
         builder.health((float)(difficulty*random.nextDouble())+maxHealth);
+        builder.allied(allied);
 
-        return builder.buildEnemy(id, pos);
+        return builder.buildNPC(id, pos);
     }
 
 }

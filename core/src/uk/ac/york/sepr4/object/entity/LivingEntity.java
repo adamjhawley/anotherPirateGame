@@ -33,7 +33,7 @@ public abstract class LivingEntity extends Entity {
     private HealthBar healthBar;
 
     public LivingEntity(Integer id, Texture texture) {
-        this(id, texture, 0f, 0f, 100f, 20.0, 20.0, 1, false, new ArrayList<ProjectileType>());
+        this(id, texture, 0f, 0f, 500f, 20.0, 20.0, 2, false, new ArrayList<ProjectileType>());
     }
 
     //Todo: Make a better collision detection

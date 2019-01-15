@@ -1,12 +1,17 @@
 package uk.ac.york.sepr4.screen;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -61,6 +66,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     private static GameScreen gameScreen;
 
+
+    private ShapeRenderer shapeRenderer;
+
     public static GameScreen getInstance() {
         return gameScreen;
     }
@@ -111,6 +119,8 @@ public class GameScreen implements Screen, InputProcessor {
         this.hud = new HUD(this);
         hudStage.addActor(this.hud.getTable());
 
+        shapeRenderer = new ShapeRenderer();
+
         Gdx.input.setInputProcessor(inputMultiplexer);
 
         startGame();
@@ -122,11 +132,11 @@ public class GameScreen implements Screen, InputProcessor {
         Vector2 vector2 = getPirateMap().getSpawnPoint();
         NPCBoat enemy = new NPCBuilder()
                 .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
-                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x + 200f, vector2.y + 200f));
-        entityManager.addNPC(enemy);
+                .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x + 200f, vector2.y + 200f));
+        //entityManager.addNPC(enemy);
         NPCBoat enemy2 = new NPCBuilder()
                 .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
-                .buildEnemy(entityManager.getNextEnemyID(), new Vector2(vector2.x + 400f, vector2.y + 400f));
+                .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x + 400f, vector2.y + 400f));
         //entityManager.addNPC(enemy2);
     }
 
@@ -173,6 +183,20 @@ public class GameScreen implements Screen, InputProcessor {
         batch.setProjectionMatrix(orthographicCamera.combined);
         tiledMapRenderer.setView(orthographicCamera);
         tiledMapRenderer.render();
+
+
+        //debug
+        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        Gdx.app.log("RENDER","START");
+
+        for(Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
+            //Gdx.app.log("Test", polygonMapObject.getName());
+            shapeRenderer.polygon(polygonMapObject.getTransformedVertices());
+        }
+        shapeRenderer.end();
+
 
         stage.act(delta);
         stage.draw();
@@ -228,6 +252,12 @@ public class GameScreen implements Screen, InputProcessor {
                 //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
                 //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
                 //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
+            }
+        }
+        for(Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
+            if(polygonMapObject.getBoundingRectangle().overlaps(player.getRectBounds())) {
+                Gdx.app.log("GameScreen", "Collision");
+                player.setAngle((float)(2*Math.PI - player.getAngle()));
             }
         }
     }

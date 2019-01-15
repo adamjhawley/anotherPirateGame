@@ -31,15 +31,14 @@ public class College extends Building {
     }
 
     /***
-     * 
+     *
      * @param id
      * @return
      */
     public Optional<NPCBoat> spawnCollegeNPC(Integer id) {
         Random random = new Random();
         if(random.nextDouble() <= spawnChance){
-            NPCBoat boat = new NPCBuilder().generateRandomEnemy(id, getRandomSpawnVector(), enemyDifficulty, projectileTypes);
-            boat.setAllied(this);
+            NPCBoat boat = new NPCBuilder().generateRandomEnemy(id, getRandomSpawnVector(), this, enemyDifficulty, projectileTypes);
             return Optional.of(boat);
         }
         return Optional.empty();

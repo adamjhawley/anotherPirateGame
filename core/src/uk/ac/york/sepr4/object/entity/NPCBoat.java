@@ -84,8 +84,11 @@ public class NPCBoat extends LivingEntity {
 //                    }
 
                     float ang = AIUtil.resultantForce(angles, forces).get(1);
-                    setAngle(ang);
-
+                    if(!Float.isNaN(ang)) {
+                        setAngle(ang);
+                    } else {
+                        Gdx.app.error("NPCBoat", "Angle NaN!");
+                    }
 
                 }
 

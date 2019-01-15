@@ -18,6 +18,7 @@ public class EntityManager {
 
     private Player player;
 
+    //NPCBoat ID should also be location in list.
     Array<NPCBoat> NPCList;
 
     private GameScreen gameScreen;
@@ -46,8 +47,21 @@ public class EntityManager {
         return player;
     }
 
-    public void addNPC(NPCBoat NPCBoat){
-        this.NPCList.add(NPCBoat);
+    public void addNPC(NPCBoat npcBoat){
+        if(!npcIDExists(npcBoat)) {
+            this.NPCList.add(npcBoat);
+        } else {
+            Gdx.app.error("EntityManager", "Tried to add an NPC with ID that already exists!");
+        }
+    }
+
+    private boolean npcIDExists(NPCBoat npcBoat) {
+        for(NPCBoat npc : NPCList) {
+            if (npc.getId().equals(npcBoat.getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Array<LivingEntity> getLivingEntitiesInArea(Rectangle rectangle) {
@@ -63,7 +77,7 @@ public class EntityManager {
         return entities;
     }
 
-    public NPCBoat getEnemy(Integer id) throws IllegalArgumentException { //Will need to be changed
+    public NPCBoat getNPC(Integer id) throws IllegalArgumentException { //Will need to be changed
         NPCBoat NPCBoat = NPCList.get(id);
         if(NPCBoat != null) {
             return NPCBoat;

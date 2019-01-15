@@ -3,57 +3,29 @@
  <image source="tiles_sheet.png" trans="ff00ff" width="1024" height="384"/>
  <tile id="0">
   <objectgroup draworder="index">
-   <object id="1" x="3" y="63">
-    <polygon points="0,0 0,-21 9,-44 61,-62 61,0"/>
-   </object>
-  </objectgroup>
- </tile>
- <tile id="1">
-  <objectgroup draworder="index">
-   <object id="1" x="0" y="1">
-    <polygon points="0,0 22,0 41,4 65,0 63,62 0,61"/>
-   </object>
-  </objectgroup>
- </tile>
- <tile id="2">
-  <objectgroup draworder="index">
-   <object id="1" x="1" y="3">
-    <polygon points="0,0 20,0 41,6 61,62 0,60"/>
+   <object id="1" x="3" y="64">
+    <polygon points="-1.34398,0 -0.537591,-21.5376 7.65602,-43.1936 61,-62 61,0"/>
    </object>
   </objectgroup>
  </tile>
  <tile id="16">
   <objectgroup draworder="index">
    <object id="1" x="3" y="64">
-    <polygon points="0,0 -2,-24 2,-40 0,-62 0,-63 59,-64 61,-1"/>
-   </object>
-  </objectgroup>
- </tile>
- <tile id="18">
-  <objectgroup draworder="index">
-   <object id="1" x="1" y="0">
-    <polygon points="0,0 61,0 61,28 58,43 59,64 -1,63"/>
+    <polygon points="-1.88157,-0.268796 -2,-24 0.924818,-40.8064 0,-62 0,-63.8064 60.6128,-63.7312 60.7312,-0.193613"/>
    </object>
   </objectgroup>
  </tile>
  <tile id="32">
   <objectgroup draworder="index">
-   <object id="1" x="2" y="0">
-    <polygon points="0,0 8,31 20,52 38,61 62,61 62,1"/>
+   <object id="1" x="0.268796" y="31.1803">
+    <polygon points="0,0 8.53759,31 37.2029,32.6467 38,61 63.6128,63.4192 63.6128,-0.0751821"/>
    </object>
   </objectgroup>
  </tile>
- <tile id="33">
+ <tile id="50">
   <objectgroup draworder="index">
-   <object id="1" x="1" y="59">
-    <polygon points="0,0 26,-1 43,3 63,3 63,-57 0,-58"/>
-   </object>
-  </objectgroup>
- </tile>
- <tile id="34">
-  <objectgroup draworder="index">
-   <object id="1" x="0" y="60">
-    <polygon points="0,0 26,-6 52,-18 60,-37 60,-59 2,-59"/>
+   <object id="1" x="12.6334" y="24.7292">
+    <polygon points="0,0 23.3852,-13.171 39.5129,6.1823 25.5356,27.6859 0.537591,20.9661"/>
    </object>
   </objectgroup>
  </tile>
