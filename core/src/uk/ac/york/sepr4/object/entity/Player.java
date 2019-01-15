@@ -81,7 +81,7 @@ public class Player extends LivingEntity implements InputProcessor {
         }
         if(keycode == Input.Keys.M) {
             //minimap
-            GameScreen.getInstance().getOrthographicCamera().zoom = 10;
+            GameScreen.getInstance().getOrthographicCamera().zoom = 5;
             return true;
         }
 

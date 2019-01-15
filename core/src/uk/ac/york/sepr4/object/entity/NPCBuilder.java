@@ -13,7 +13,8 @@ import java.util.Random;
 @Data
 public class NPCBuilder {
 
-    private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 500f, accuracy = 0.5f;
+    private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 500f,
+            accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f;
     private Double health = 20.0, maxHealth = 20.0;
     private List<ProjectileType> projectileTypes = new ArrayList<>();
     private boolean isDead = false, onFire = false, isAccelerating, isBraking = false;
@@ -25,7 +26,10 @@ public class NPCBuilder {
     public NPCBuilder(){}
 
     public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy , false, allied);
+        NPCBoat NPCBoat = new NPCBoat(id, texture, angle, speed,
+                maxSpeed, health, maxHealth,turningSpeed, onFire,
+                projectileTypes, range, accuracy , false, allied,
+                idealDistFromTarget, gradientFromNormalDist);
         NPCBoat.setX(pos.x);
         NPCBoat.setY(pos.y);
 

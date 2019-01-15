@@ -189,7 +189,6 @@ public class GameScreen implements Screen, InputProcessor {
         shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
-        Gdx.app.log("RENDER","START");
 
         for(Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
             //Gdx.app.log("Test", polygonMapObject.getName());
@@ -256,7 +255,7 @@ public class GameScreen implements Screen, InputProcessor {
         }
         for(Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
             if(polygonMapObject.getBoundingRectangle().overlaps(player.getRectBounds())) {
-                Gdx.app.log("GameScreen", "Collision");
+                //Gdx.app.log("GameScreen", "Collision");
                 player.setAngle((float)(2*Math.PI - player.getAngle()));
             }
         }
