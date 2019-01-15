@@ -10,7 +10,6 @@
       "class": "uk.ac.york.sepr4.object.item.Reward",
       "xp":100,
       "gold":1000,
-      "items": []
     },
     "targetEntityName":"BigBoss",
     "isKillQuest":true
