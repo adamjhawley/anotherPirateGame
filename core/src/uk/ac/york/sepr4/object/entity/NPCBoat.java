@@ -61,37 +61,8 @@ public class NPCBoat extends LivingEntity {
                 if (optionalTarget.isPresent()) {
                     LivingEntity target = optionalTarget.get();
                     this.lastTarget = optionalTarget;
+
                     //Todo: Finish the control logic of enemy to make it better
-                    //******************Think about during coding of AI fire logic
-                    //Weapon ready
-                    //Fired how long ago
-                    //How long the shot would take
-                    //always fire at target
-                    //Dont fire if going to hit allie
-
-                    //********************Think about in AI's movement
-                    //*****
-                    //On collsion course with target
-                    //on collsion course with island
-                    //need to dodge
-                    //*****
-                    //smoothen the turns
-                    //try to keep moving
-                    //keep away from hostiles except for target so if can stay away from them
-                    //stay sort of close towards allies
-
-                    //******************Special conditions
-                    //If going to collide with object try to hit side on with less speed (diffrence between them)
-                    //If colldided try to get away from the collider
-                    //Stunned
-                    //Force action - From like items
-
-                    //******************Things to make AI winnable
-                    //Accuracy
-                    //Chance to do actions like above
-                    //special conditions have to do no matter what - possibilty of fireing when in special conditions
-
-                    //************ This is just for the target
                     if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
                         forces.add(1 - AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
                         angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target)));
@@ -99,60 +70,11 @@ public class NPCBoat extends LivingEntity {
                         forces.add(1 - AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
                         angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target) - (float) Math.PI));
                     }
-                    //TODO: Trying to work out how to have a force that makes you want to go to AwayP rather than always P because at the normals of the target boat flips around cause it wants to got P but wants to stay at the mean dist
+                    forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+                    angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
 
-//                    float angle;
-//                    if (getAngleTowardsEntity(target) >= 0f && getAngleTowardsEntity(target) < Math.PI/2){
-//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI/2));
-//                        } else {
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI));
-//                        }
-//                    } else if (getAngleTowardsEntity(target) >= Math.PI/2 && getAngleTowardsEntity(target) < Math.PI){
-//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
-//                            angle = AIUtil.convertToRealAngle(target.getAngle());
-//                        } else {
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI/2));
-//                        }
-//                    } else if (getAngleTowardsEntity(target) >= Math.PI && getAngleTowardsEntity(target) < 3*Math.PI/2){
-//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
-//                            angle  = AIUtil.convertToRealAngle(target.getAngle());
-//                        } else {
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() + Math.PI/2));
-//                        }
-//                    } else {
-//                        if(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), AIUtil.convertToRealAngle(getAngle())) <= Math.PI/2){
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() + Math.PI/2));
-//                        } else {
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI));
-//                        }
-//                    }
-//                    float angle;
-//                    if (getAngleTowardsEntity(target) >= 0f && getAngleTowardsEntity(target) < Math.PI/2){
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() - Math.PI));
-//                    } else if (getAngleTowardsEntity(target) >= Math.PI/2 && getAngleTowardsEntity(target) < Math.PI){
-//                            angle = AIUtil.convertToRealAngle(target.getAngle());
-//                    } else if (getAngleTowardsEntity(target) >= Math.PI && getAngleTowardsEntity(target) < 3*Math.PI/2){
-//                            angle  = AIUtil.convertToRealAngle(target.getAngle());
-//                    } else {
-//                            angle = AIUtil.convertToRealAngle((float)(target.getAngle() + Math.PI));
-//                    }
-
-//                    if (target.getSpeed()/target.getMaxSpeed() > 0.2) {
-//                        forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
-//                        angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
-//                    } else {
-//                        if (AIUtil.angleDiffrenceBetweenTwoAngles(target.getAngle(), getAngle()) <= Math.PI/2){
-//                            forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
-//                            angles.add(AIUtil.convertToRealAngle(getAngle()));
-//                        } else {
-//                            forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
-//                            angles.add(AIUtil.convertToRealAngle(getAngle()));
-//                        }
-                        forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
-                        angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
-//                    }
                     //TODO: You were here next thing to do is to stop the boats turning to quickly then do the logic for the ai
+
 //                    Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
 //
 //                    for(LivingEntity livingEntity : livingEntities){
@@ -162,14 +84,6 @@ public class NPCBoat extends LivingEntity {
 //                    }
 
                     float ang = AIUtil.resultantForce(angles, forces).get(1);
-//                    if (ang > AIUtil.convertToRealAngle(getAngle())){
-//                        setAngle(AIUtil.convertToRealAngle(getAngle() + AIUtil.angleDiffrenceBetweenTwoAngles(getAngle(), ang)/64));
-//                    } else {
-//                        setAngle(AIUtil.convertToRealAngle(getAngle() - AIUtil.angleDiffrenceBetweenTwoAngles(getAngle(), ang)/64));
-//                    }
-//                    if (!(getAngleTowardsEntity(target) > 6.1f || getAngleTowardsEntity(target) < 0.1f)){
-//                        setAngle(ang);
-//                    }
                     setAngle(ang);
 
 
