@@ -45,22 +45,26 @@ public class NPCBoat extends LivingEntity {
                 }
                 Optional<LivingEntity> optionalTarget = getTarget();
                 if (optionalTarget.isPresent()) {
-                    setAccelerating(true);
+                    //setAccelerating(true);
 
                     Gdx.app.debug("NPCBoat", "Got target - start accel");
                     LivingEntity target = optionalTarget.get();
                     this.lastTarget = optionalTarget;
 
                     //Todo: Finish the control logic of enemy to make it better
+                    float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget);
+
                     if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
-                        forces.add(1 - AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+                        forces.add(1 - f);
                         angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target)));
                     } else {
-                        forces.add(1 - AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
+                        forces.add(1 - f);
                         angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target) - (float) Math.PI));
                     }
-                    forces.add(AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget));
-                    angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+                        forces.add(f);
+                        angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+//                    forces.add(f);
+//                    angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
 
                     //TODO: You were here next thing to do is to stop the boats turning to quickly then do the logic for the ai
 
@@ -79,6 +83,27 @@ public class NPCBoat extends LivingEntity {
                         Gdx.app.error("NPCBoat", "Angle NaN!");
                     }
 
+                    //New Func
+                    float NormalFactor = Math.min(AIUtil.normalDistFromMean(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)), (float)Math.PI/8, (float)Math.PI/2)*100, 1f);
+                    float A;
+                    if (target.getSpeed() > getMaxSpeed()){
+                        A = getMaxSpeed();
+                    } else {
+                        A = target.getSpeed();
+                    }
+                    float idealSpeed = (1-f)*getMaxSpeed() + ((f+NormalFactor)/2)*A;
+                    if (idealSpeed > getSpeed()){
+                        setAccelerating(true);
+                        setBraking(false);
+                    } else {
+                        if (getSpeed()/5 > idealSpeed){
+                            setBraking(true);
+                            setAccelerating(false);
+                        } else {
+                            setAccelerating(false);
+                            setBraking(false);
+                        }
+                    }
                 } else {
                     Gdx.app.debug("NPCBoat", "No target");
                     setAccelerating(false);
