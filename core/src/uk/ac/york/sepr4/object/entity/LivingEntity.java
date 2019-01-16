@@ -1,5 +1,6 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
@@ -20,12 +21,11 @@ public abstract class LivingEntity extends Entity {
     private List<ProjectileType> projectileTypes;
     private Double health, maxHealth;
     private float maxSpeed;
-    private boolean isAccelerating, isBraking, isDead, onFire, isDying;;
+    private boolean isAccelerating = false, isBraking, isDead, onFire, isDying;
     private Integer turningSpeed;
 
     private Integer collided;
-    private ArrayList<Vector2> waterTrials1;
-    private ArrayList<Vector2> waterTrials2;
+    private ArrayList<Vector2> waterTrials1, waterTrials2;
 
     private ProjectileType selectedProjectileType;
     private float currentCooldown;
@@ -89,6 +89,8 @@ public abstract class LivingEntity extends Entity {
             float speed = getSpeed();
 
             if (isAccelerating) {
+                Gdx.app.debug("LE", "Accel");
+
                 if (speed > maxSpeed) {
                     speed = maxSpeed;
                 } else {

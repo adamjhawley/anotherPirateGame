@@ -175,7 +175,7 @@ public class GameScreen implements Screen, InputProcessor {
         entityManager.handleStageEntities(stage, delta);
 
         if (pirateMap.isObjectsEnabled()) {
-            buildingManager.spawnCollegeEnemies(delta);
+            //buildingManager.spawnCollegeEnemies(delta);
             buildingManager.checkBossSpawn();
         }
 

@@ -5,16 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
-import lombok.Getter;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.zip.DeflaterOutputStream;
 
 @Data
 public class NPCBoat extends LivingEntity {
@@ -26,13 +23,12 @@ public class NPCBoat extends LivingEntity {
     private float idealDistFromTarget;
     private float gradientForNormalDist;
 
-    private boolean hostile;
     private College allied;
     private Optional<LivingEntity> lastTarget;
 
     private float targetCheck;
 
-    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, College allied, float idealDistFromTarget, float gradientForNormalDist) {
+    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, College allied, float idealDistFromTarget, float gradientForNormalDist) {
         super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
         this.range = range;
         this.accuracy = accuracy;
@@ -40,7 +36,6 @@ public class NPCBoat extends LivingEntity {
         this.idealDistFromTarget = idealDistFromTarget;
         this.gradientForNormalDist = gradientForNormalDist;
 
-        this.hostile = hostile;
         this.allied = allied;
 
         this.lastTarget = Optional.empty();
@@ -48,17 +43,20 @@ public class NPCBoat extends LivingEntity {
     }
 
     public void act(float deltaTime) {
-        setAccelerating(true);
         Array<Float> forces = new Array<Float>();
         Array<Float> angles = new Array<Float>();
 
         if (!this.isDying()) {
-            if (this.hostile) {
+            //Gdx.app.debug("NPCBoat", "Isnt dying");
+
                 if (targetCheck < 5f) {
                     targetCheck += deltaTime;
                 }
                 Optional<LivingEntity> optionalTarget = getTarget();
                 if (optionalTarget.isPresent()) {
+                    setAccelerating(true);
+
+                    Gdx.app.debug("NPCBoat", "Got target - start accel");
                     LivingEntity target = optionalTarget.get();
                     this.lastTarget = optionalTarget;
 
@@ -90,11 +88,11 @@ public class NPCBoat extends LivingEntity {
                         Gdx.app.error("NPCBoat", "Angle NaN!");
                     }
 
-                }
+                } else {
+                    Gdx.app.debug("NPCBoat", "No target");
 
-            } else {
-                // move in area?
-            }
+                    // move in area?
+                }
         }
         super.act(deltaTime);
     }
@@ -121,12 +119,12 @@ public class NPCBoat extends LivingEntity {
 
     private Optional<LivingEntity> getTarget() {
         if (validTarget(this.lastTarget)) {
-            //Gdx.app.log("Target", "Last");
+            Gdx.app.debug("Target", "Last");
             return this.lastTarget;
         } else {
             this.lastTarget = Optional.empty();
             if (targetCheck > 5f) {
-                //Gdx.app.log("Target", "Nearest");
+                Gdx.app.debug("Target", "Nearest");
                 targetCheck = 0f;
                 return getNearestTarget();
             } else {
@@ -207,6 +205,8 @@ public class NPCBoat extends LivingEntity {
             //not allied - target player
             if (nearby.contains(player, false)) {
                 //if player is in range - target
+                Gdx.app.debug("NPCBoat", "Got nearby player");
+
                 return Optional.of(player);
             }
         }
@@ -219,15 +219,18 @@ public class NPCBoat extends LivingEntity {
                         if (nearest.get().distanceFrom(this) > livingEntity.distanceFrom(this)) {
                             //closest enemy
                             nearest = Optional.of(livingEntity);
+                            Gdx.app.debug("NPCBoat", "Got closer nearby enemy");
+
                         }
                     } else {
                         nearest = Optional.of(livingEntity);
+                        Gdx.app.debug("NPCBoat", "Got new nearby enemy");
                     }
                 }
             }
             return nearest;
         }
-
+        Gdx.app.debug("NPCBoat", "No nearby enemy");
         return Optional.empty();
     }
 

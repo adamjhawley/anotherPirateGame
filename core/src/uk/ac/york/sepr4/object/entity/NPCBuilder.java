@@ -13,22 +13,22 @@ import java.util.Random;
 @Data
 public class NPCBuilder {
 
-    private float angle = 0f, speed, angularSpeed = 0f, maxSpeed = 100f, range = 500f,
+    private float angle = 0f, speed = 0f, angularSpeed = 0f, maxSpeed = 100f, range = 500f,
             accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f;
     private Double health = 20.0, maxHealth = 20.0;
     private List<ProjectileType> projectileTypes = new ArrayList<>();
-    private boolean isDead = false, onFire = false, isAccelerating, isBraking = false;
+    private boolean isDead = false, onFire = false;
     private Integer turningSpeed = 10;
     private Texture texture = TextureManager.ENEMY;
     private ProjectileType selectedProjectile;
     private College allied = null;
 
-    public NPCBuilder(){}
+    public NPCBuilder() {}
 
     public NPCBoss buildBoss(Integer id, Vector2 pos, String name) {
         NPCBoss npcBoss = new NPCBoss(id, texture, name, angle, speed,
                 maxSpeed, health, maxHealth,turningSpeed, onFire,
-                projectileTypes, range, accuracy , false, allied,
+                projectileTypes, range, accuracy , allied,
                 idealDistFromTarget, gradientFromNormalDist);
         npcBoss.setX(pos.x);
         npcBoss.setY(pos.y);
@@ -45,7 +45,7 @@ public class NPCBuilder {
     public NPCBoat buildNPC(Integer id, Vector2 pos) {
         NPCBoat npcBoat = new NPCBoat(id, texture, angle, speed,
                 maxSpeed, health, maxHealth,turningSpeed, onFire,
-                projectileTypes, range, accuracy , false, allied,
+                projectileTypes, range, accuracy , allied,
                 idealDistFromTarget, gradientFromNormalDist);
         npcBoat.setX(pos.x);
         npcBoat.setY(pos.y);

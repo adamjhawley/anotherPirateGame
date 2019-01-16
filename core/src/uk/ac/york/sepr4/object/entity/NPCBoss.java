@@ -11,8 +11,8 @@ public class NPCBoss extends NPCBoat {
 
     private String name;
 
-    public NPCBoss(Integer id, Texture texture, String name, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, boolean hostile, College allied, float idealDistFromTarget, float gradientForNormalDist) {
-        super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy, hostile, allied, idealDistFromTarget, gradientForNormalDist);
+    public NPCBoss(Integer id, Texture texture, String name, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, College allied, float idealDistFromTarget, float gradientForNormalDist) {
+        super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes, range, accuracy, allied, idealDistFromTarget, gradientForNormalDist);
         this.name = name;
     }
 }
