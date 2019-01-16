@@ -1,46 +1,24 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
-import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 public abstract class LivingEntity extends Entity {
 
-    //REQUIRED
-    private float maxSpeed = 100f;
-
     private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
     private boolean isAccelerating, isBraking, isDead, isDying;
-    private Integer turningSpeed = 1;
-
-    private Double projectileDamage = 5.0;
-
-    private Integer collided = 0;
-    private ArrayList<Vector2> waterTrials1 = new ArrayList<>(), waterTrials2 = new ArrayList<>();
-
-    private float currentCooldown = 0f, reqCooldown = 0.5f;
+    private Integer turningSpeed = 1, collided = 0;
+    private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f;
 
     private HealthBar healthBar;
 
-
-    //Todo: Make a better collision detection
-
     public LivingEntity(Texture texture, Vector2 pos) {
         super(texture, pos);
-
-        for (int i = 0; i < 60; i++) {
-            this.waterTrials1.add(new Vector2(getCentre().x, getY()));
-            this.waterTrials2.add(new Vector2(getCentre().x, getY()));
-        }
 
         this.healthBar = new HealthBar(this);
     }

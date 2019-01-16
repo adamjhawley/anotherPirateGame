@@ -12,9 +12,8 @@ import lombok.Data;
 @Data
 public abstract class Entity extends Actor {
 
-    private float angle, speed;
+    private float angle, speed, alpha = 1;
     private Texture texture;
-    private float alpha = 1;
 
     public Entity(Texture texture, Vector2 pos) {
         this.texture = texture;
@@ -23,9 +22,9 @@ public abstract class Entity extends Actor {
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         // Required to display sprite
         setSize(getTexture().getWidth(), getTexture().getHeight());
+        // Set position
         setX(pos.x);
         setY(pos.y);
-
     }
 
     @Override
@@ -78,7 +77,7 @@ public abstract class Entity extends Actor {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
-    public String __str__(){
+    public String locToString(){
         return ("X:" + Float.toString(this.getCentre().x) + " Y:" + Float.toString(this.getCentre().y) + " ANG:" + Float.toString(this.getAngle()) + " SPD:" + Float.toString(this.getSpeed()));
     }
 

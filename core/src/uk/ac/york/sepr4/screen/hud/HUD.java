@@ -5,18 +5,16 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import lombok.Getter;
+import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.screen.GameScreen;
 
 public class HUD {
 
     private GameScreen gameScreen;
 
-    private Label goldLabel;
-    private Label goldValueLabel;
+    private Label goldLabel, goldValueLabel, xpLabel, xpValueLabel;
     @Getter
     private Table table;
-
-    private Integer goldValue = 0;
 
     public HUD(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -29,18 +27,25 @@ public class HUD {
         table.setFillParent(true);
 
         goldLabel = new Label("GOLD", new Label.LabelStyle(new BitmapFont(), Color.GOLD));
-        goldValueLabel = new Label(""+goldValue, new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        goldValueLabel = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+
+        xpLabel = new Label("LEVEL", new Label.LabelStyle(new BitmapFont(), Color.GREEN));
+        xpValueLabel = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
         table.add(goldLabel).expandX().padTop(10);
+        table.add(xpLabel).expandX().padTop(10);
         table.row();
         table.add(goldValueLabel).expandX();
+        table.add(xpValueLabel).expandX();
 
     }
 
     public void update() {
-        goldValue = gameScreen.getEntityManager().getOrCreatePlayer().getBalance();
+        Player player = gameScreen.getEntityManager().getOrCreatePlayer();
 
-        goldValueLabel.setText(""+goldValue);
+        goldValueLabel.setText(""+player.getBalance());
+        xpValueLabel.setText(""+player.getLevel()+", "+player.getXp()+ " : "+(player.levelProgress())+"%");
+
     }
 
 }

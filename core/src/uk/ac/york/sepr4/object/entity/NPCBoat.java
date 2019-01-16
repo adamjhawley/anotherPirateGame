@@ -10,6 +10,7 @@ import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
+
 import java.util.Optional;
 
 @Data
@@ -34,39 +35,38 @@ public class NPCBoat extends LivingEntity {
     }
 
     public void act(float deltaTime) {
-        Array<Float> forces = new Array<Float>();
-        Array<Float> angles = new Array<Float>();
+        Array<Float> forces = new Array<>();
+        Array<Float> angles = new Array<>();
 
         if (!this.isDying()) {
-            //Gdx.app.debug("NPCBoat", "Isnt dying");
+            // timer to check for new target (expensive if done every tick)
+            if (targetCheck < 4f) {
+                targetCheck += deltaTime;
+            }
+            Optional<LivingEntity> optionalTarget = getTarget();
+            if (optionalTarget.isPresent()) {
+                //setAccelerating(true);
 
-                if (targetCheck < 4f) {
-                    targetCheck += deltaTime;
+                //Gdx.app.debug("NPCBoat", "Got target - start accel");
+                LivingEntity target = optionalTarget.get();
+                this.lastTarget = optionalTarget;
+
+                //Todo: Finish the control logic of enemy to make it better
+                float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget);
+
+                if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
+                    forces.add(1 - f);
+                    angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target)));
+                } else {
+                    forces.add(1 - f);
+                    angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target) - (float) Math.PI));
                 }
-                Optional<LivingEntity> optionalTarget = getTarget();
-                if (optionalTarget.isPresent()) {
-                    //setAccelerating(true);
-
-                    Gdx.app.debug("NPCBoat", "Got target - start accel");
-                    LivingEntity target = optionalTarget.get();
-                    this.lastTarget = optionalTarget;
-
-                    //Todo: Finish the control logic of enemy to make it better
-                    float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget);
-
-                    if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
-                        forces.add(1 - f);
-                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target)));
-                    } else {
-                        forces.add(1 - f);
-                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target) - (float) Math.PI));
-                    }
-                        forces.add(f);
-                        angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+                forces.add(f);
+                angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
 //                    forces.add(f);
 //                    angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
 
-                    //TODO: You were here next thing to do is to stop the boats turning to quickly then do the logic for the ai
+                //TODO: You were here next thing to do is to stop the boats turning to quickly then do the logic for the ai
 
 //                    Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
 //
@@ -76,39 +76,39 @@ public class NPCBoat extends LivingEntity {
 //                        angles.add((float)(this.getAngleTowardsEntity(livingEntity) + Math.PI));
 //                    }
 
-                    float ang = AIUtil.resultantForce(angles, forces).get(1);
-                    if(!Float.isNaN(ang)) {
-                        setAngle(ang);
-                    } else {
-                        Gdx.app.error("NPCBoat", "Angle NaN!");
-                    }
-
-                    //New Func
-                    float NormalFactor = Math.min(AIUtil.normalDistFromMean(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)), (float)Math.PI/8, (float)Math.PI/2)*100, 1f);
-                    float A;
-                    if (target.getSpeed() > getMaxSpeed()){
-                        A = getMaxSpeed();
-                    } else {
-                        A = target.getSpeed();
-                    }
-                    float idealSpeed = (1-f)*getMaxSpeed() + ((f+NormalFactor)/2)*A;
-                    if (idealSpeed > getSpeed()){
-                        setAccelerating(true);
-                        setBraking(false);
-                    } else {
-                        if (getSpeed()/5 > idealSpeed){
-                            setBraking(true);
-                            setAccelerating(false);
-                        } else {
-                            setAccelerating(false);
-                            setBraking(false);
-                        }
-                    }
+                float ang = AIUtil.resultantForce(angles, forces).get(1);
+                if (!Float.isNaN(ang)) {
+                    setAngle(ang);
                 } else {
-                    //Gdx.app.debug("NPCBoat", "No target");
-                    setAccelerating(false);
-                    //TODO: Pursue for a bit if had a previous target, then stop moving
+                    Gdx.app.error("NPCBoat", "Angle NaN!");
                 }
+
+                //New Func
+                float NormalFactor = Math.min(AIUtil.normalDistFromMean(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)), (float) Math.PI / 8, (float) Math.PI / 2) * 100, 1f);
+                float A;
+                if (target.getSpeed() > getMaxSpeed()) {
+                    A = getMaxSpeed();
+                } else {
+                    A = target.getSpeed();
+                }
+                float idealSpeed = (1 - f) * getMaxSpeed() + ((f + NormalFactor) / 2) * A;
+                if (idealSpeed > getSpeed()) {
+                    setAccelerating(true);
+                    setBraking(false);
+                } else {
+                    if (getSpeed() / 5 > idealSpeed) {
+                        setBraking(true);
+                        setAccelerating(false);
+                    } else {
+                        setAccelerating(false);
+                        setBraking(false);
+                    }
+                }
+            } else {
+                //Gdx.app.debug("NPCBoat", "No target");
+                setAccelerating(false);
+                //TODO: Pursue for a bit if had a previous target, then stop moving
+            }
         }
         super.act(deltaTime);
     }

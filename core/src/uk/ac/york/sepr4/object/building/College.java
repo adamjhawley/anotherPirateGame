@@ -21,9 +21,9 @@ public class College extends Building {
     private Double bossDifficulty;
 
     //Can be set optionally in file to change college parameters
-    private float spawnRange = 500f, collegeRange = 20000f;
+    private float spawnRange = 500f, collegeRange = 5000f;
     private Double spawnChance = 0.1, enemyDifficulty = 1.0;
-    private Integer maxEntities = 1;
+    private Integer maxEntities = 3;
     private List<String> requiresCollegeStr = new ArrayList<>();
 
     //Set from college variables
@@ -50,7 +50,9 @@ public class College extends Building {
     }
 
     public NPCBoat spawnBoss() {
-        return new NPCBuilder().boss(true)
+        return new NPCBuilder()
+                .boss(true)
+                .allied(this)
                 .buildNPC(getRandomSpawnVector());
     }
 
@@ -62,7 +64,7 @@ public class College extends Building {
         return(bossName != null && bossDifficulty != null);
     }
 
-    public Optional<NPCBoat> generateCollegeNPC(Integer id) {
+    public Optional<NPCBoat> generateCollegeNPC() {
         Random random = new Random();
         if(random.nextDouble() <= spawnChance){
             NPCBoat boat = new NPCBuilder().generateRandomEnemy(getRandomSpawnVector(), this, enemyDifficulty);
@@ -86,6 +88,8 @@ public class College extends Building {
         Rectangle rectangle = getCollegeSpawnZone();
         float randX = rectangle.x+(random.nextFloat() * (rectangle.width));
         float randY = rectangle.y+(random.nextFloat() * (rectangle.height));
+        Gdx.app.debug("RandSpawn", "x:"+randX+", y:"+randY);
+        Gdx.app.debug("RandSpawn", "w:"+rectangle.width+", h:"+rectangle.height);
 
         return new Vector2(randX, randY);
     }

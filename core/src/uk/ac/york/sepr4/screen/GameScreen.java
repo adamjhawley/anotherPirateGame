@@ -85,17 +85,18 @@ public class GameScreen implements Screen, InputProcessor {
      * @param pirateGame
      */
     public GameScreen(PirateGame pirateGame) {
+        this.pirateGame = pirateGame;
+        gameScreen = this;
 
+        // Debug options (extra logging, collision shape renderer (viewing tile object map))
         if(DEBUG) {
             Gdx.app.setLogLevel(Application.LOG_DEBUG);
+            shapeRenderer = new ShapeRenderer();
         }
 
         // Local widths and heights.
         float w = Gdx.graphics.getWidth();
         float h = Gdx.graphics.getHeight();
-
-        this.pirateGame = pirateGame;
-        gameScreen = this;
 
         // Set up camera.
         orthographicCamera = new OrthographicCamera();
@@ -112,36 +113,28 @@ public class GameScreen implements Screen, InputProcessor {
         pirateMap = new PirateMap(new TmxMapLoader().load("PirateMap/PirateMap.tmx"));
         tiledMapRenderer = new OrthogonalTiledMapRenderer(pirateMap.getTiledMap(), 1 / 2f);
 
-
+        // Initialize game managers
         this.itemManager = new ItemManager();
         this.entityManager = new EntityManager(this);
         this.questManager = new QuestManager(entityManager);
         this.buildingManager = new BuildingManager(this);
 
-        inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(this);
-        inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
-
+        // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
         hudStage.addActor(this.hud.getTable());
 
-        shapeRenderer = new ShapeRenderer();
-
+        // Set input processor and focus
+        inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
+        //create and spawnn player
         startGame();
-
     }
 
     private void startGame() {
         stage.addActor(entityManager.getOrCreatePlayer());
-        Vector2 vector2 = getPirateMap().getSpawnPoint();
-        NPCBoat enemy = new NPCBuilder()
-                .buildNPC(new Vector2(vector2.x + 200f, vector2.y + 200f));
-        //entityManager.addNPC(enemy);
-        NPCBoat enemy2 = new NPCBuilder()
-                .buildNPC(new Vector2(vector2.x + 400f, vector2.y + 400f));
-        //entityManager.addNPC(enemy2);
     }
 
     /**
@@ -164,16 +157,18 @@ public class GameScreen implements Screen, InputProcessor {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        //if player dead, go to main menu
         Player player = entityManager.getOrCreatePlayer();
         if (player.isDead()) {
             pirateGame.switchScreen(ScreenType.MENU);
             return;
         }
 
+        //spawns/despawns entities, handles animations and projectiles
         entityManager.handleStageEntities(stage, delta);
 
         if (pirateMap.isObjectsEnabled()) {
-            //buildingManager.spawnCollegeEnemies(delta);
+            buildingManager.spawnCollegeEnemies(delta);
             buildingManager.checkBossSpawn();
         }
 
@@ -189,7 +184,6 @@ public class GameScreen implements Screen, InputProcessor {
         tiledMapRenderer.setView(orthographicCamera);
         tiledMapRenderer.render();
 
-
         //debug
         if(DEBUG) {
             shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
@@ -201,7 +195,6 @@ public class GameScreen implements Screen, InputProcessor {
             }
             shapeRenderer.end();
         }
-
 
         stage.act(delta);
         stage.draw();
@@ -282,9 +275,9 @@ public class GameScreen implements Screen, InputProcessor {
                 if (!(player.isDying() || player.isDead())) {
                     if (!player.damage(projectile.getDamage())) {
                         //is dead
-                        Gdx.app.log("Test Log", "Player died. ");
+                        Gdx.app.debug("GameScreen", "Player died.");
                     } else {
-                        Gdx.app.log("Test Log", "Player damaged by projectile. ");
+                        Gdx.app.debug("GameScreen", "Player damaged by projectile.");
                     }
                 }
                 //kill projectile
@@ -292,16 +285,21 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (NPCBoat NPCBoat : entityManager.getNpcList()) {
+        for (NPCBoat npcBoat : entityManager.getNpcList()) {
             for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
-                if (projectile.getShooter() != NPCBoat && projectile.getRectBounds().overlaps(NPCBoat.getRectBounds())) {
+                if (projectile.getShooter() != npcBoat && projectile.getRectBounds().overlaps(npcBoat.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
-                    if (!(NPCBoat.isDying() || NPCBoat.isDead())) {
-                        if (!NPCBoat.damage(projectile.getDamage())) {
+                    if (!(npcBoat.isDying() || npcBoat.isDead())) {
+                        if (!npcBoat.damage(projectile.getDamage())) {
                             //is dead
-                            Gdx.app.log("Test Log", "NPCBoat died. ");
+                            Gdx.app.debug("GameScreen", "NPCBoat died.");
+                            player.issueReward(itemManager.generateReward());
+                            //if dead NPC is a boss then player can capture its respective college
+                            if(npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                player.capture(npcBoat.getAllied().get());
+                            }
                         }
-                        Gdx.app.log("Test Log", "NPCBoat damaged by projectile. ");
+                        Gdx.app.debug("GameScreen", "NPCBoat damaged by projectile.");
                         //kill projectile
                         projectile.setActive(false);
                     }
@@ -317,14 +315,10 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
     public void hide() {
@@ -334,21 +328,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void dispose() {
         stage.dispose();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
     }
 
     @Override
@@ -363,6 +342,23 @@ public class GameScreen implements Screen, InputProcessor {
             }
             return true;
         }
+        return false;
+    }
+
+
+    // Stub methods for InputProcessor (unused) - must return false
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
         return false;
     }
 

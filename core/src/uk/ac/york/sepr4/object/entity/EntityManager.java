@@ -34,11 +34,7 @@ public class EntityManager {
         this.projectileManager = new ProjectileManager(gameScreen, this);
         this.animationManager = new AnimationManager(gameScreen, this);
     }
-
-    public Integer getNextEnemyID() {
-        return npcList.size;
-    }
-
+    
     public Player getOrCreatePlayer() {
         if(player == null) {
             player = new Player(gameScreen.getPirateMap().getSpawnPoint());
@@ -56,6 +52,26 @@ public class EntityManager {
         }
     }
 
+    public void handleStageEntities(Stage stage, float delta){
+        projectileManager.handleProjectiles(stage);
+        handleNPCs(stage);
+        animationManager.handleEffects(stage, delta);
+    }
+
+    /**
+     * Adds and removes NPCs as actors from the stage.
+     */
+    private void handleNPCs(Stage stage) {
+        stage.getActors().removeAll(removeDeadNPCs(), true);
+
+        for (NPCBoat NPCBoat : npcList) {
+            if (!stage.getActors().contains(NPCBoat, true)) {
+                Gdx.app.debug("EntityManager", "Adding new NPCBoat to actors list.");
+                stage.addActor(NPCBoat);
+            }
+        }
+    }
+
     public Array<LivingEntity> getLivingEntitiesInArea(Rectangle rectangle) {
         Array<LivingEntity> entities = new Array<>();
         for(NPCBoat NPCBoat : npcList) {
@@ -69,8 +85,7 @@ public class EntityManager {
         return entities;
     }
 
-
-    public Array<NPCBoat> removeDeadNPCs() {
+    private Array<NPCBoat> removeDeadNPCs() {
         Array<NPCBoat> toRemove = new Array<NPCBoat>();
         for(NPCBoat NPCBoat : npcList) {
             if(NPCBoat.isDead()){
@@ -81,27 +96,10 @@ public class EntityManager {
         return toRemove;
     }
 
-    public void handleStageEntities(Stage stage, float delta){
-        projectileManager.handleProjectiles(stage);
-        handleNPCs(stage);
-        animationManager.handleEffects(stage, delta);
-    }
 
 
 
-    /**
-     * Adds and removes NPCs as actors from the stage.
-     */
-    private void handleNPCs(Stage stage) {
-        stage.getActors().removeAll(removeDeadNPCs(), true);
 
-        for (NPCBoat NPCBoat : npcList) {
-            if (!stage.getActors().contains(NPCBoat, true)) {
-                Gdx.app.log("Test Log", "Adding new NPCBoat to actors list.");
-                stage.addActor(NPCBoat);
-            }
-        }
-    }
 
 
 

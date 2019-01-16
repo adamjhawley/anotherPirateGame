@@ -13,8 +13,8 @@ import java.util.Optional;
 @Data
 public class BuildingManager {
 
-    private Array<College> colleges;
-    private Array<Department> departments;
+    private Array<College> colleges = new Array<>();
+    private Array<Department> departments = new Array<>();
 
     private GameScreen gameScreen;
 
@@ -33,8 +33,6 @@ public class BuildingManager {
         this.spawnDelta = 0f;
 
         if(gameScreen.getPirateMap().isObjectsEnabled()) {
-            this.colleges = new Array<>();
-            this.departments = new Array<>();
             Json json = new Json();
             Gdx.app.debug("BuildingManager", "Loading Buildings");
             loadColleges(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
@@ -63,21 +61,24 @@ public class BuildingManager {
         spawnDelta+=delta;
         if(spawnDelta >= 1f) {
             for (College college : this.colleges) {
-                if(gameScreen.getEntityManager().getLivingEntitiesInArea(college.getCollegeSpawnZone()).size
+                //check how many entities already exist in college zone (dont spawn too many)
+                if(gameScreen.getEntityManager().getLivingEntitiesInArea(college.getCollegeZone()).size
                         < college.getMaxEntities()) {
-                    Optional<NPCBoat> optionalEnemy = college.generateCollegeNPC(gameScreen.getEntityManager().getNextEnemyID());
+                    Optional<NPCBoat> optionalEnemy = college.generateCollegeNPC();
                     if (optionalEnemy.isPresent()) {
                         Gdx.app.debug("Building Manager", "Spawning an enemy at " + college.getName());
                         gameScreen.getEntityManager().addNPC(optionalEnemy.get());
                     }
                 } else {
-                    Gdx.app.debug("BuildingManager", "Max entities @ "+college.getName());
+                    //Gdx.app.debug("BuildingManager", "Max entities @ "+college.getName());
                 }
             }
             spawnDelta = 0f;
         }
     }
 
+
+    //TODO: Make generic method
     private void loadColleges(Array<College> loading) {
         for(College college : loading) {
             if (college.load(gameScreen.getPirateMap())) {

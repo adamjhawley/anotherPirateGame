@@ -20,18 +20,15 @@ public class ItemManager {
         items = json.fromJson(Array.class, Item.class, Gdx.files.internal("items.json"));
         for(Item item : items){
             System.out.println(item.getName());
-            //System.out.println(item.getAttribute().getHealth());
-
         }
 
     }
 
-    public Reward generateReward(Double enemyDifficulty) {
-        Double scale = enemyDifficulty + 1;
+    public Reward generateReward() {
+        Random random = new Random();
+        Double scale = random.nextDouble();
 
-        Integer xp =  (baseXP * scale.intValue());
-
-        return new Reward(baseXP * scale.intValue(), baseGold*scale.intValue());
+        return new Reward(baseXP + (scale.intValue()*100), baseGold + (scale.intValue()*10));
     }
 
 }
