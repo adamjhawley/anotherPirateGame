@@ -1,6 +1,5 @@
 package uk.ac.york.sepr4.object.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
@@ -8,8 +7,6 @@ import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.item.Item;
-import uk.ac.york.sepr4.object.projectile.ProjectileManager;
-import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,20 +22,13 @@ public class Player extends LivingEntity implements InputProcessor {
     private List<College> captured;
 
     public Player(Vector2 pos) {
-        super(0, TextureManager.PLAYER);
+        super(TextureManager.PLAYER, pos);
         this.balance = 0;
         this.xp = 0;
         this.inventory = new ArrayList<>();
         this.captured = new ArrayList<>();
 
-
-        setPosition(pos.x, pos.y);
         setAngle((float)Math.PI);
-
-        //Setup default weapon
-        ProjectileManager projectileManager = GameScreen.getInstance().getEntityManager().getProjectileManager();
-        setSelectedProjectileType(projectileManager.getDefaultWeaponType());
-        addProjectileType(projectileManager.getDefaultWeaponType());
     }
 
     //Todo: Create a collsion procedure once collision has been made
@@ -54,9 +44,6 @@ public class Player extends LivingEntity implements InputProcessor {
         super.act(deltaTime);
     }
 
-    private void switchWeapon(ProjectileType projectileType) {
-        this.setSelectedProjectileType(projectileType);
-    }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -83,15 +70,6 @@ public class Player extends LivingEntity implements InputProcessor {
             //minimap
             GameScreen.getInstance().getOrthographicCamera().zoom = 5;
             return true;
-        }
-
-        for(ProjectileType projectileTypes : getProjectileTypes()) {
-            if(keycode == projectileTypes.getKeyCode()) {
-                Gdx.app.log("Test Log","switching weapon to "+projectileTypes.getName());
-
-                switchWeapon(projectileTypes);
-                return true;
-            }
         }
 
         return false;

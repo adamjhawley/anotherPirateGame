@@ -1,7 +1,9 @@
 package uk.ac.york.sepr4.object.projectile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
+import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
 
@@ -9,21 +11,21 @@ import uk.ac.york.sepr4.object.entity.LivingEntity;
 public class Projectile extends Entity {
 
     private LivingEntity shooter;
-    private ProjectileType projectileType;
+    private Double damage = 5.0;
+    private Integer baseSpeed = 100;
 
     private boolean active;
 
-    public Projectile(Integer id, ProjectileType projectileType, LivingEntity shooter, float speed, float angle) {
+    public Projectile(LivingEntity shooter, float speed, float angle) {
         //Take speed from the shooter so bullet has a speed relative to the shooter
         //TODO: Make the speed direction dependant (how much of the force is in the direction of the projectile)
-        super(id, projectileType.getTexture(), angle, speed+projectileType.getBaseSpeed());
-        this.shooter = shooter;
-        this.projectileType = projectileType;
+        super(TextureManager.CANNONBALL, shooter.getCentre());
 
+        this.shooter = shooter;
         this.active = true;
 
-        setSize(getTexture().getWidth(), getTexture().getHeight());
-        setPosition(shooter.getCentre().x, shooter.getCentre().y);
+        setAngle(angle);
+        setSpeed(speed + baseSpeed);
     }
 
     @Override
@@ -36,13 +38,4 @@ public class Projectile extends Entity {
         }
     }
 
-    public void collide(LivingEntity entity){
-        //TODO: Explosion image
-        if(entity.getId() != shooter.getId()) {
-            entity.setHealth(entity.getHealth() - projectileType.getDamage());
-            if (entity.getHealth() <= 0) {
-                entity.setDead(true);
-            }
-        }
-    }
 }

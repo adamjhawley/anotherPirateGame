@@ -5,60 +5,56 @@ import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
-import uk.ac.york.sepr4.object.projectile.ProjectileType;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Optional;
 import java.util.Random;
 
-@Data
 public class NPCBuilder {
 
-    private float angle = 0f, speed = 0f, angularSpeed = 0f, maxSpeed = 100f, range = 500f,
+    private float angle = 0f, speed = 0f, maxSpeed = 100f, range = 500f,
             accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f;
     private Double health = 20.0, maxHealth = 20.0;
-    private List<ProjectileType> projectileTypes = new ArrayList<>();
     private boolean isDead = false, onFire = false;
-    private Integer turningSpeed = 10;
+    private Integer turningSpeed = 2;
     private Texture texture = TextureManager.ENEMY;
-    private ProjectileType selectedProjectile;
-    private College allied = null;
+    private Optional<College> allied = Optional.empty();
+    private boolean isBoss = false;
 
     public NPCBuilder() {}
 
-    public NPCBoss buildBoss(Integer id, Vector2 pos, String name) {
-        NPCBoss npcBoss = new NPCBoss(id, texture, name, angle, speed,
-                maxSpeed, health, maxHealth,turningSpeed, onFire,
-                projectileTypes, range, accuracy , allied,
-                idealDistFromTarget, gradientFromNormalDist);
-        npcBoss.setX(pos.x);
-        npcBoss.setY(pos.y);
-
-        if(selectedProjectile != null) {
-            npcBoss.setSelectedProjectileType(this.selectedProjectile);
-            npcBoss.addProjectileType(this.selectedProjectile);
+    public NPCBoat buildNPC(Vector2 pos) {
+        NPCBoat npcBoat;
+        if(isBoss && texture == TextureManager.ENEMY) {
+            //if boss and default texture
+            npcBoat = new NPCBoat(TextureManager.BOSS, pos);
+        } else {
+            npcBoat = new NPCBoat(texture, pos);
         }
-        npcBoss.setTexture(TextureManager.BOSS);
+        npcBoat.setAngle(angle);
+        npcBoat.setAccuracy(accuracy);
+        npcBoat.setSpeed(speed);
+        npcBoat.setMaxSpeed(maxSpeed);
+        npcBoat.setRange(range);
+        npcBoat.setIdealDistFromTarget(idealDistFromTarget);
+        npcBoat.setGradientForNormalDist(gradientFromNormalDist);
+        npcBoat.setHealth(health);
+        npcBoat.setMaxHealth(maxHealth);
+        npcBoat.setTurningSpeed(turningSpeed);
+        npcBoat.setAllied(allied);
+        npcBoat.setBoss(isBoss);
 
-        return npcBoss;
-    }
-
-    public NPCBoat buildNPC(Integer id, Vector2 pos) {
-        NPCBoat npcBoat = new NPCBoat(id, texture, angle, speed,
-                maxSpeed, health, maxHealth,turningSpeed, onFire,
-                projectileTypes, range, accuracy , allied,
-                idealDistFromTarget, gradientFromNormalDist);
-        npcBoat.setX(pos.x);
-        npcBoat.setY(pos.y);
-
-        if(selectedProjectile != null) {
-            npcBoat.setSelectedProjectileType(this.selectedProjectile);
-            npcBoat.addProjectileType(this.selectedProjectile);
-        }
         return npcBoat;
     }
 
     public NPCBuilder allied(College allied) {
-        this.allied = allied;
+        if(this.allied != null) {
+            this.allied = Optional.of(allied);
+        }
+        return this;
+    }
+
+    public NPCBuilder boss(boolean isBoss) {
+        this.isBoss = isBoss;
         return this;
     }
 
@@ -82,16 +78,6 @@ public class NPCBuilder {
         return this;
     }
 
-    public NPCBuilder selectedProjectile(ProjectileType projectileType) {
-        this.selectedProjectile = projectileType;
-        return this;
-    }
-
-    public NPCBuilder projectileTypes(List<ProjectileType> projectileTypes) {
-        this.projectileTypes = projectileTypes;
-        return this;
-    }
-
     public NPCBuilder range(float range) {
         this.range =  range;
         return this;
@@ -108,17 +94,16 @@ public class NPCBuilder {
         return this;
     }
 
-    public NPCBoat generateRandomEnemy(Integer id, Vector2 pos, College allied, Double difficulty, List<ProjectileType> projectileTypes) {
+    public NPCBoat generateRandomEnemy(Vector2 pos, College allied, Double difficulty) {
         NPCBuilder builder = new NPCBuilder();
         Random random = new Random();
-        builder.projectileTypes = projectileTypes;
 
         builder.maxSpeed((float)(difficulty*random.nextDouble())+maxSpeed);
         builder.turningSpeed((int)Math.round(difficulty*random.nextDouble())+turningSpeed);
         builder.health((float)(difficulty*random.nextDouble())+maxHealth);
         builder.allied(allied);
 
-        return builder.buildNPC(id, pos);
+        return builder.buildNPC(pos);
     }
 
 }

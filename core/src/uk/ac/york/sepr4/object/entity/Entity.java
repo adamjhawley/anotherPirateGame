@@ -12,22 +12,19 @@ import lombok.Data;
 @Data
 public abstract class Entity extends Actor {
 
-    private Integer id;
     private float angle, speed;
     private Texture texture;
-    private float alpha;
+    private float alpha = 1;
 
-    public Entity(Integer id, Texture texture, float angle, float speed) {
-        this.id = id;
-        this.angle = angle;
-        this.speed = speed;
+    public Entity(Texture texture, Vector2 pos) {
         this.texture = texture;
-        this.alpha = 1;
 
         // Stops texture glitches when moving
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
         // Required to display sprite
         setSize(getTexture().getWidth(), getTexture().getHeight());
+        setX(pos.x);
+        setY(pos.y);
 
     }
 

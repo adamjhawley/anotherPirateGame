@@ -14,10 +14,6 @@ import uk.ac.york.sepr4.screen.GameScreen;
 
 public class ProjectileManager {
 
-    //ToDo: Add a function that takes a square or circle and returns them
-    @Getter
-    private Array<ProjectileType> projectileTypeList;
-
     @Getter
     private Array<Projectile> projectileList;
 
@@ -27,22 +23,13 @@ public class ProjectileManager {
     public ProjectileManager(GameScreen gameScreen, EntityManager entityManager) {
         this.gameScreen = gameScreen;
         this.entityManager = entityManager;
-        this.projectileList = new Array<Projectile>();
+        this.projectileList = new Array<>();
 
-        Json json = new Json();
-        projectileTypeList = json.fromJson(Array.class, ProjectileType.class, Gdx.files.internal("projectiles.json"));
     }
 
-    public ProjectileType getDefaultWeaponType() {
-        return projectileTypeList.peek();
-    }
 
-    private Integer getNextProjectileID(){
-        return projectileList.size;
-    }
-
-    public void spawnProjectile(ProjectileType projectileType, LivingEntity livingEntity, float speed, float angle) {
-        Projectile projectile = new Projectile(getNextProjectileID(), projectileType, livingEntity, speed, angle);
+    public void spawnProjectile(LivingEntity livingEntity, float speed, float angle) {
+        Projectile projectile = new Projectile(livingEntity, speed, angle);
         projectileList.add(projectile);
     }
 

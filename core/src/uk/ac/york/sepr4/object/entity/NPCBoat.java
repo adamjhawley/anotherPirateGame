@@ -3,43 +3,34 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
-import uk.ac.york.sepr4.object.projectile.ProjectileType;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
-import java.util.List;
 import java.util.Optional;
 
 @Data
 public class NPCBoat extends LivingEntity {
 
     //NPCBoat-specific variables
-    private float range;
-    private float accuracy;
+    private float range = 500f;
+    private float accuracy = 0.5f;
 
-    private float idealDistFromTarget;
-    private float gradientForNormalDist;
+    private float idealDistFromTarget = 250f;
+    private float gradientForNormalDist = 50f;
 
-    private College allied;
-    private Optional<LivingEntity> lastTarget;
+    private Optional<College> allied = Optional.empty();
+    private Optional<LivingEntity> lastTarget = Optional.empty();
 
-    private float targetCheck;
+    private float targetCheck = 4f;
 
-    public NPCBoat(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes, float range, float accuracy, College allied, float idealDistFromTarget, float gradientForNormalDist) {
-        super(id, texture, angle, speed, maxSpeed, health, maxHealth, turningSpeed, onFire, projectileTypes);
-        this.range = range;
-        this.accuracy = accuracy;
+    private boolean isBoss;
 
-        this.idealDistFromTarget = idealDistFromTarget;
-        this.gradientForNormalDist = gradientForNormalDist;
-
-        this.allied = allied;
-
-        this.lastTarget = Optional.empty();
-        this.targetCheck = 4f;
+    public NPCBoat(Texture texture, Vector2 pos) {
+        super(texture, pos);
     }
 
     public void act(float deltaTime) {
@@ -90,18 +81,11 @@ public class NPCBoat extends LivingEntity {
 
                 } else {
                     Gdx.app.debug("NPCBoat", "No target");
-
-                    // move in area?
+                    setAccelerating(false);
+                    //TODO: Pursue for a bit if had a previous target, then stop moving
                 }
         }
         super.act(deltaTime);
-    }
-
-    public Optional<College> getAllied() {
-        if (this.allied == null) {
-            return Optional.empty();
-        }
-        return Optional.of(allied);
     }
 
     private boolean validTarget(Optional<LivingEntity> optionalLivingEntity) {

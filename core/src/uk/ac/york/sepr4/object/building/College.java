@@ -6,9 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.entity.NPCBoat;
-import uk.ac.york.sepr4.object.entity.NPCBoss;
 import uk.ac.york.sepr4.object.entity.NPCBuilder;
-import uk.ac.york.sepr4.object.projectile.ProjectileType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +24,9 @@ public class College extends Building {
     private float spawnRange = 500f, collegeRange = 20000f;
     private Double spawnChance = 0.1, enemyDifficulty = 1.0;
     private Integer maxEntities = 1;
-    private List<String> projectileTypesStr = new ArrayList<>(), requiresCollegeStr = new ArrayList<>();
+    private List<String> requiresCollegeStr = new ArrayList<>();
 
     //Set from college variables
-    private List<ProjectileType> projectileTypes;
     private List<College> requiresCollege;
     private NPCBoat boss;
     private boolean bossSpawned = false;
@@ -52,8 +49,9 @@ public class College extends Building {
         return false;
     }
 
-    public NPCBoss spawnBoss(Integer id) {
-        return new NPCBuilder().buildBoss(id, getRandomSpawnVector(), bossName);
+    public NPCBoat spawnBoss() {
+        return new NPCBuilder().boss(true)
+                .buildNPC(getRandomSpawnVector());
     }
 
     /***
@@ -67,7 +65,7 @@ public class College extends Building {
     public Optional<NPCBoat> generateCollegeNPC(Integer id) {
         Random random = new Random();
         if(random.nextDouble() <= spawnChance){
-            NPCBoat boat = new NPCBuilder().generateRandomEnemy(id, getRandomSpawnVector(), this, enemyDifficulty, projectileTypes);
+            NPCBoat boat = new NPCBuilder().generateRandomEnemy(getRandomSpawnVector(), this, enemyDifficulty);
             return Optional.of(boat);
         }
         return Optional.empty();

@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Data;
 import uk.ac.york.sepr4.object.entity.NPCBoat;
-import uk.ac.york.sepr4.object.entity.NPCBoss;
 import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.screen.GameScreen;
 
@@ -52,7 +51,7 @@ public class BuildingManager {
                 Player player = gameScreen.getEntityManager().getPlayer();
                 if (college.getCollegeZone().contains(player.getRectBounds())) {
                     Gdx.app.debug("BuildingManager", "Player entered college zone: " + college.getName());
-                    NPCBoss npcBoss = college.spawnBoss(gameScreen.getEntityManager().getNextEnemyID());
+                    NPCBoat npcBoss = college.spawnBoss();
                     college.setBossSpawned(true);
                     gameScreen.getEntityManager().addNPC(npcBoss);
                 }

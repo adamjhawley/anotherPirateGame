@@ -137,12 +137,10 @@ public class GameScreen implements Screen, InputProcessor {
         stage.addActor(entityManager.getOrCreatePlayer());
         Vector2 vector2 = getPirateMap().getSpawnPoint();
         NPCBoat enemy = new NPCBuilder()
-                .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
-                .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x + 200f, vector2.y + 200f));
+                .buildNPC(new Vector2(vector2.x + 200f, vector2.y + 200f));
         //entityManager.addNPC(enemy);
         NPCBoat enemy2 = new NPCBuilder()
-                .selectedProjectile(entityManager.getProjectileManager().getDefaultWeaponType())
-                .buildNPC(entityManager.getNextEnemyID(), new Vector2(vector2.x + 400f, vector2.y + 400f));
+                .buildNPC(new Vector2(vector2.x + 400f, vector2.y + 400f));
         //entityManager.addNPC(enemy2);
     }
 
@@ -282,7 +280,7 @@ public class GameScreen implements Screen, InputProcessor {
                     && projectile.getRectBounds().overlaps(player.getRectBounds())) {
                 //if bullet overlaps player and shooter not player
                 if (!(player.isDying() || player.isDead())) {
-                    if (!player.damage(projectile.getProjectileType().getDamage())) {
+                    if (!player.damage(projectile.getDamage())) {
                         //is dead
                         Gdx.app.log("Test Log", "Player died. ");
                     } else {
@@ -299,7 +297,7 @@ public class GameScreen implements Screen, InputProcessor {
                 if (projectile.getShooter() != NPCBoat && projectile.getRectBounds().overlaps(NPCBoat.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
                     if (!(NPCBoat.isDying() || NPCBoat.isDead())) {
-                        if (!NPCBoat.damage(projectile.getProjectileType().getDamage())) {
+                        if (!NPCBoat.damage(projectile.getDamage())) {
                             //is dead
                             Gdx.app.log("Test Log", "NPCBoat died. ");
                         }

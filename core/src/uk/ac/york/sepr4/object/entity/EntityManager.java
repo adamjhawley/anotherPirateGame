@@ -48,20 +48,11 @@ public class EntityManager {
     }
 
     public void addNPC(NPCBoat npcBoat){
-        if(!npcIDExists(npcBoat)) {
+        if(!NPCList.contains(npcBoat, false)) {
             this.NPCList.add(npcBoat);
         } else {
             Gdx.app.error("EntityManager", "Tried to add an NPC with ID that already exists!");
         }
-    }
-
-    private boolean npcIDExists(NPCBoat npcBoat) {
-        for(NPCBoat npc : NPCList) {
-            if (npc.getId().equals(npcBoat.getId())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public Array<LivingEntity> getLivingEntitiesInArea(Rectangle rectangle) {

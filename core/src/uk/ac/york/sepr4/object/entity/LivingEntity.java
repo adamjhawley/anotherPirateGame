@@ -3,64 +3,46 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
-import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
-import uk.ac.york.sepr4.object.projectile.ProjectileType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public abstract class LivingEntity extends Entity {
 
-    private List<ProjectileType> projectileTypes;
-    private Double health, maxHealth;
-    private float maxSpeed;
-    private boolean isAccelerating = false, isBraking, isDead, onFire, isDying;
-    private Integer turningSpeed;
+    //REQUIRED
+    private float maxSpeed = 100f;
 
-    private Integer collided;
-    private ArrayList<Vector2> waterTrials1, waterTrials2;
+    private Double health = 20.0, maxHealth = 20.0;
+    private boolean isAccelerating, isBraking, isDead, isDying;
+    private Integer turningSpeed = 1;
 
-    private ProjectileType selectedProjectileType;
-    private float currentCooldown;
+    private Double projectileDamage = 5.0;
+
+    private Integer collided = 0;
+    private ArrayList<Vector2> waterTrials1 = new ArrayList<>(), waterTrials2 = new ArrayList<>();
+
+    private float currentCooldown = 0f, reqCooldown = 0.5f;
 
     private HealthBar healthBar;
 
-    public LivingEntity(Integer id, Texture texture) {
-        this(id, texture, 0f, 0f, 500f, 20.0, 20.0, 2, false, new ArrayList<ProjectileType>());
-    }
 
     //Todo: Make a better collision detection
 
-    public LivingEntity(Integer id, Texture texture, float angle, float speed, float maxSpeed, Double health, Double maxHealth, Integer turningSpeed, boolean onFire, List<ProjectileType> projectileTypes) {
-        super(id, texture, angle, speed);
-
-        this.onFire = onFire;
-        this.projectileTypes = projectileTypes;
-        this.health = health;
-        this.maxHealth = maxHealth;
-        this.isDead = false;
-        this.currentCooldown = 0f;
-        this.maxSpeed = maxSpeed;
-        this.turningSpeed = turningSpeed;
-
-        this.collided = 0;
-        this.waterTrials1 = new ArrayList<Vector2>();
-        this.waterTrials2 = new ArrayList<Vector2>();
+    public LivingEntity(Texture texture, Vector2 pos) {
+        super(texture, pos);
 
         for (int i = 0; i < 60; i++) {
-            this.waterTrials1.add(new Vector2(getCentre().x, getCentre().y));
-            this.waterTrials2.add(new Vector2(getCentre().x, getCentre().y));
+            this.waterTrials1.add(new Vector2(getCentre().x, getY()));
+            this.waterTrials2.add(new Vector2(getCentre().x, getY()));
         }
 
         this.healthBar = new HealthBar(this);
-        this.isDying = false;
     }
 
     @Override
@@ -127,17 +109,17 @@ public abstract class LivingEntity extends Entity {
 
             if (distance > 0.1) {
                 if (i < this.waterTrials1.size() / 4) {
-                    animationManager.addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.5f);
-                    animationManager.addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.5f);
+                    animationManager.addEffect(xM, yM, angleP, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.5f);
+                    animationManager.addEffect(xM2, yM2, angleP2,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.5f);
                 } else if (i < this.waterTrials1.size() / 2) {
-                    animationManager.addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.3f);
-                    animationManager.addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.3f);
+                    animationManager.addEffect(xM, yM, angleP,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.3f);
+                    animationManager.addEffect(xM2, yM2, angleP2,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.3f);
                 } else if (i < 3 * this.waterTrials1.size() / 4) {
-                    animationManager.addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.2f);
-                    animationManager.addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.2f);
+                    animationManager.addEffect(xM, yM, angleP,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.2f);
+                    animationManager.addEffect(xM2, yM2, angleP2,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.2f);
                 } else {
-                    animationManager.addEffect(xM, yM, angleP, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.1f);
-                    animationManager.addEffect(xM2, yM2, angleP2, 0f, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.1f);
+                    animationManager.addEffect(xM, yM, angleP,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.1f);
+                    animationManager.addEffect(xM2, yM2, angleP2, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.1f);
                 }
             }
         }
@@ -179,9 +161,6 @@ public abstract class LivingEntity extends Entity {
     }
 
 
-    public void addProjectileType(ProjectileType projectileType) {
-        this.projectileTypes.add(projectileType);
-    }
 
     //return true if still alive
     public boolean damage(Double damage) {
@@ -194,14 +173,12 @@ public abstract class LivingEntity extends Entity {
     }
 
     public boolean fire(float angle) {
-        ProjectileType projectileType = this.getSelectedProjectileType();
-        if (projectileType != null) {
-            if (projectileType.getCooldown() <= getCurrentCooldown()) {
+            if (currentCooldown >= reqCooldown) {
                 setCurrentCooldown(0f);
-                GameScreen.getInstance().getEntityManager().getProjectileManager().spawnProjectile(projectileType, this, getSpeed(), angle);
+                GameScreen.getInstance().getEntityManager().getProjectileManager().spawnProjectile( this, getSpeed(), angle);
                 return true;
             }
-        }
+
         return false;
     }
 
