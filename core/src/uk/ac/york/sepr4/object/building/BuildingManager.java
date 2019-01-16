@@ -48,7 +48,7 @@ public class BuildingManager {
     public void checkBossSpawn() {
         for(College college : colleges) {
             if(!college.isBossSpawned()) {
-                Player player = gameScreen.getEntityManager().getPlayer();
+                Player player = gameScreen.getEntityManager().getOrCreatePlayer();
                 if (college.getCollegeZone().contains(player.getRectBounds())) {
                     Gdx.app.debug("BuildingManager", "Player entered college zone: " + college.getName());
                     NPCBoat npcBoss = college.spawnBoss();

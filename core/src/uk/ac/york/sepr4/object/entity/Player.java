@@ -14,24 +14,17 @@ import java.util.List;
 @Data
 public class Player extends LivingEntity implements InputProcessor {
 
-    private Integer balance;
-    private Integer xp;
-    private List<Item> inventory;
+    private Integer balance = 0, xp = 0;
+    private List<Item> inventory = new ArrayList<>();
     private float angularSpeed;
 
-    private List<College> captured;
+    private List<College> captured = new ArrayList<>();
 
     public Player(Vector2 pos) {
         super(TextureManager.PLAYER, pos);
-        this.balance = 0;
-        this.xp = 0;
-        this.inventory = new ArrayList<>();
-        this.captured = new ArrayList<>();
-
+        //face up
         setAngle((float)Math.PI);
     }
-
-    //Todo: Create a collsion procedure once collision has been made
 
     @Override
     public void act(float deltaTime) {
@@ -47,22 +40,22 @@ public class Player extends LivingEntity implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.UP) {
+        if(keycode == Input.Keys.W) {
             setAccelerating(true);
             return true;
         }
 
-        if(keycode == Input.Keys.DOWN) {
+        if(keycode == Input.Keys.S) {
             setBraking(true);
             return true;
         }
 
-        if(keycode == Input.Keys.LEFT) {
+        if(keycode == Input.Keys.A) {
             setAngularSpeed(getTurningSpeed());
             return true;
         }
 
-        if(keycode == Input.Keys.RIGHT) {
+        if(keycode == Input.Keys.D) {
             setAngularSpeed(-getTurningSpeed());
             return true;
         }
@@ -77,22 +70,22 @@ public class Player extends LivingEntity implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode == Input.Keys.UP) {
+        if(keycode == Input.Keys.W) {
             setAccelerating(false);
             return true;
         }
 
-        if(keycode == Input.Keys.DOWN) {
+        if(keycode == Input.Keys.S) {
             setBraking(false);
             return true;
         }
 
-        if(keycode == Input.Keys.LEFT) {
+        if(keycode == Input.Keys.A) {
             setAngularSpeed(0);
             return true;
         }
 
-        if(keycode == Input.Keys.RIGHT) {
+        if(keycode == Input.Keys.D) {
             setAngularSpeed(0);
             return true;
         }

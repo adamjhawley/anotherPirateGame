@@ -13,13 +13,13 @@ import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 
-@Data
+
 public class EntityManager {
 
     private Player player;
 
-    //NPCBoat ID should also be location in list.
-    Array<NPCBoat> NPCList;
+    @Getter
+    private Array<NPCBoat> npcList = new Array<>();
 
     private GameScreen gameScreen;
 
@@ -30,26 +30,27 @@ public class EntityManager {
 
     public EntityManager(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
-        this.NPCList = new Array<>();
 
         this.projectileManager = new ProjectileManager(gameScreen, this);
         this.animationManager = new AnimationManager(gameScreen, this);
     }
 
     public Integer getNextEnemyID() {
-        return this.NPCList.size;
+        return npcList.size;
     }
 
     public Player getOrCreatePlayer() {
         if(player == null) {
             player = new Player(gameScreen.getPirateMap().getSpawnPoint());
+            animationManager.createWaterTrail(player);
         }
         return player;
     }
 
     public void addNPC(NPCBoat npcBoat){
-        if(!NPCList.contains(npcBoat, false)) {
-            this.NPCList.add(npcBoat);
+        if(!npcList.contains(npcBoat, false)) {
+            this.npcList.add(npcBoat);
+            animationManager.createWaterTrail(npcBoat);
         } else {
             Gdx.app.error("EntityManager", "Tried to add an NPC with ID that already exists!");
         }
@@ -57,7 +58,7 @@ public class EntityManager {
 
     public Array<LivingEntity> getLivingEntitiesInArea(Rectangle rectangle) {
         Array<LivingEntity> entities = new Array<>();
-        for(NPCBoat NPCBoat : NPCList) {
+        for(NPCBoat NPCBoat : npcList) {
             if(NPCBoat.getRectBounds().overlaps(rectangle)){
                 entities.add(NPCBoat);
             }
@@ -68,22 +69,15 @@ public class EntityManager {
         return entities;
     }
 
-    public NPCBoat getNPC(Integer id) throws IllegalArgumentException { //Will need to be changed
-        NPCBoat NPCBoat = NPCList.get(id);
-        if(NPCBoat != null) {
-            return NPCBoat;
-        }
-        throw new IllegalArgumentException("No NPCBoat found with given ID.");
-    }
 
     public Array<NPCBoat> removeDeadNPCs() {
         Array<NPCBoat> toRemove = new Array<NPCBoat>();
-        for(NPCBoat NPCBoat : NPCList) {
+        for(NPCBoat NPCBoat : npcList) {
             if(NPCBoat.isDead()){
                 toRemove.add(NPCBoat);
             }
         }
-        NPCList.removeAll(toRemove, true);
+        npcList.removeAll(toRemove, true);
         return toRemove;
     }
 
@@ -101,7 +95,7 @@ public class EntityManager {
     private void handleNPCs(Stage stage) {
         stage.getActors().removeAll(removeDeadNPCs(), true);
 
-        for (NPCBoat NPCBoat : getNPCList()) {
+        for (NPCBoat NPCBoat : npcList) {
             if (!stage.getActors().contains(NPCBoat, true)) {
                 Gdx.app.log("Test Log", "Adding new NPCBoat to actors list.");
                 stage.addActor(NPCBoat);

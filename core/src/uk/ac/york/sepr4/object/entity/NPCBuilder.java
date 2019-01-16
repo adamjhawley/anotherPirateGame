@@ -13,7 +13,7 @@ public class NPCBuilder {
 
     private float angle = 0f, speed = 0f, maxSpeed = 100f, range = 500f,
             accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f;
-    private Double health = 20.0, maxHealth = 20.0;
+    private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
     private boolean isDead = false, onFire = false;
     private Integer turningSpeed = 2;
     private Texture texture = TextureManager.ENEMY;
@@ -42,6 +42,7 @@ public class NPCBuilder {
         npcBoat.setTurningSpeed(turningSpeed);
         npcBoat.setAllied(allied);
         npcBoat.setBoss(isBoss);
+        npcBoat.setDamage(damage);
 
         return npcBoat;
     }
@@ -55,6 +56,11 @@ public class NPCBuilder {
 
     public NPCBuilder boss(boolean isBoss) {
         this.isBoss = isBoss;
+        return this;
+    }
+
+    public NPCBuilder damage(Double damage) {
+        this.damage = damage;
         return this;
     }
 

@@ -1,15 +1,15 @@
 package uk.ac.york.sepr4.object.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
+import lombok.Getter;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class AnimationManager {
 
@@ -23,7 +23,9 @@ public class AnimationManager {
     private HashMap<LivingEntity, Float> deathAnimations = new HashMap<>();
 
     //Water Trails
-    private HashMap<LivingEntity, Vector2> waterTrails1 = new HashMap<>(), waterTrails2 = new HashMap<>();
+    private List<WaterTrail> waterTrails = new ArrayList<>();
+
+
 
 
     public AnimationManager(GameScreen gameScreen, EntityManager entityManager) {
@@ -44,9 +46,65 @@ public class AnimationManager {
         this.effects.add(effect);
     }
 
+    /**
+     * Removes all effects then adds all new effects
+     * Effects work on a frame by frame basis so need to be spawned in every frame
+     */
+    public void handleEffects(Stage stage, float delta) {
+        handleDeathAnimations(delta);
+        updateWaterTrails();
+        stage.getActors().removeAll(this.lastFrameEffects, true);
+
+        for (Entity effect : effects) {
+            if (!stage.getActors().contains(effect, true)) {
+                //Gdx.app.log("Test Log", "Adding new effect to actors list.");
+                stage.addActor(effect);
+            }
+        }
+
+        this.lastFrameEffects = this.effects;
+        this.effects = new Array<>();
+    }
+
+    //TODO: Could be cleaned up
+    //Water Trails
+    private void updateWaterTrails() {
+        List<WaterTrail> toRemove = new ArrayList<>();
+        for(WaterTrail waterTrail : waterTrails) {
+            if(waterTrail.getLE() instanceof NPCBoat) {
+                //remove dead NPCs trail
+                if(!entityManager.getNpcList().contains((NPCBoat) waterTrail.getLE(), false)){
+                    toRemove.add(waterTrail);
+                } else {
+                    //if not dead, update effects
+                    waterTrail.spawnEffects(this);
+                }
+            } else if(waterTrail.getLE() instanceof Player) {
+                //remove dead players trail
+                if(entityManager.getOrCreatePlayer().isDead()) {
+                    toRemove.add(waterTrail);
+                } else {
+                    //if not dead, update effects
+                    waterTrail.spawnEffects(this);
+                }
+            } else {
+                Gdx.app.error("AnimationManager", "Trail found for unknown LE");
+                toRemove.add(waterTrail);
+            }
+        }
+        waterTrails.removeAll(toRemove);
+    }
+
+    public void createWaterTrail(LivingEntity livingEntity) {
+        waterTrails.add(new WaterTrail(livingEntity));
+    }
+    
+
+
+    //Death Animations
     private void handleDeathAnimations(float delta) {
         //add dying npcs if they arent already in there
-        for(LivingEntity livingEntity : entityManager.getNPCList()) {
+        for(LivingEntity livingEntity : entityManager.getNpcList()) {
             if(livingEntity.isDying() && !deathAnimations.containsKey(livingEntity)) {
                 deathAnimations.put(livingEntity, 0f);
             }
@@ -75,23 +133,96 @@ public class AnimationManager {
     }
 
 
-    /**
-     * Removes all effects then adds all new effects
-     * Effects work on a frame by frame basis so need to be spawned in every frame
-     */
-    public void handleEffects(Stage stage, float delta) {
-        handleDeathAnimations(delta);
 
-        stage.getActors().removeAll(this.lastFrameEffects, true);
+}
 
-        for (Entity effect : effects) {
-            if (!stage.getActors().contains(effect, true)) {
-                //Gdx.app.log("Test Log", "Adding new effect to actors list.");
-                stage.addActor(effect);
+class WaterTrail {
+    private List<Vector2> lTrails = new ArrayList<>(), rTrails = new ArrayList<>();
+    @Getter
+    private LivingEntity lE;
+    
+    public WaterTrail(LivingEntity livingEntity) {
+        this.lE = livingEntity;
+    }
+    
+    public void spawnEffects(AnimationManager animationManager) {
+        shiftTrails();
+        lTrails.add(new Vector2(getXwithAngleandDistance(lE.getCentre().x, (float) (lE.getAngle() - 7 * Math.PI / 8), 50f),
+                getYwithAngleandDistance(lE.getCentre().y, (float) (lE.getAngle() - 7 * Math.PI / 8), 45f)));
+        rTrails.add(new Vector2(getXwithAngleandDistance(lE.getCentre().x, (float) (lE.getAngle() + 7 * Math.PI / 8), 50f),
+                getYwithAngleandDistance(lE.getCentre().y, (float) (lE.getAngle() + 7 * Math.PI / 8), 45f)));
+
+
+        for (int i = 0; i < lTrails.size() - 1; i++) {
+            float xM = getXmidPoint(lTrails.get(i).x, lTrails.get(i + 1).x);
+            float yM = getYmidPoint(lTrails.get(i).y, lTrails.get(i + 1).y);
+            float angleP = getAngleToPoint(lTrails.get(i).x, lTrails.get(i).y, lTrails.get(i + 1).x, lTrails.get(i + 1).y) + (float)Math.PI/2;
+            float distance = getDistanceToPoint(lTrails.get(i).x, lTrails.get(i).y, lTrails.get(i + 1).x, lTrails.get(i + 1).y);
+
+            float xM2 = getXmidPoint(rTrails.get(i).x, rTrails.get(i + 1).x);
+            float yM2 = getYmidPoint(rTrails.get(i).y, rTrails.get(i + 1).y);
+            float angleP2 = getAngleToPoint(rTrails.get(i).x, rTrails.get(i).y, rTrails.get(i + 1).x, rTrails.get(i + 1).y) + (float)Math.PI/2;
+            float distance2 = getDistanceToPoint(rTrails.get(i).x, rTrails.get(i).y, rTrails.get(i + 1).x, rTrails.get(i + 1).y);
+
+
+            if (distance > 0.1) {
+                if (i < lTrails.size() / 4) {
+                    animationManager.addEffect(xM, yM, angleP, TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.1f);
+                    animationManager.addEffect(xM2, yM2, angleP2,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.1f);
+                } else if (i < lTrails.size() / 2) {
+                    animationManager.addEffect(xM, yM, angleP,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.2f);
+                    animationManager.addEffect(xM2, yM2, angleP2,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.2f);
+                } else if (i < 3 * lTrails.size() / 4) {
+                    animationManager.addEffect(xM, yM, angleP,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.3f);
+                    animationManager.addEffect(xM2, yM2, angleP2,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.3f);
+                } else {
+                    animationManager.addEffect(xM, yM, angleP,  TextureManager.MIDDLEBOATTRAIL1, (int)(distance + 5), 10,0.5f);
+                    animationManager.addEffect(xM2, yM2, angleP2, TextureManager.MIDDLEBOATTRAIL1, (int)(distance2 + 5), 10,0.5f);
+                }
             }
         }
 
-        this.lastFrameEffects = this.effects;
-        this.effects = new Array<>();
+    }
+    
+    
+
+    private float getXmidPoint(float x1, float x2) {
+        if (x2 > x1){
+            return (x1+(x2-x1)/2);
+        } else {
+            return (x1-(x2-x1)/2);
+        }
+    }
+    private float getYmidPoint(float y1, float y2) {
+        if (y2 > y1){
+            return (y1+(y2-y1)/2);
+        } else {
+            return (y1-(y2-y1)/2);
+        }
+    }
+    private float getAngleToPoint(float x1, float y1, float x2, float y2) {
+        double d_angle = Math.atan(((y2 - y1) / (x2 - x1)));
+        if(x2 < x1){
+            d_angle += Math.PI;
+        }
+        float angle = (float)d_angle + (float)Math.PI/2;
+        return angle;
+    }
+
+    private float getDistanceToPoint(float x1, float y1, float x2, float y2) {
+        return (float) Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+    }
+    private float getXwithAngleandDistance(float x1, float angle, float distance) {
+        return (float)(x1 + distance*Math.sin(angle));
+    }
+    private float getYwithAngleandDistance(float y1, float angle, float distance) {
+        return (float)(y1 - distance*Math.cos(angle));
+    }
+
+    private void shiftTrails() {
+        if(lTrails.size() >= 60) {
+            lTrails.remove(0);
+            rTrails.remove(0);
+        }
     }
 }

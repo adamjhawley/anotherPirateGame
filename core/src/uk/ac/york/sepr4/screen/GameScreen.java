@@ -221,7 +221,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (NPCBoat NPCBoat : entityManager.getNPCList()) {
+        for (NPCBoat NPCBoat : entityManager.getNpcList()) {
             if (NPCBoat.getHealth() < NPCBoat.getMaxHealth()) {
                 if (!stage.getActors().contains(NPCBoat.getHealthBar(), true)) {
                     stage.addActor(NPCBoat.getHealthBar());
@@ -253,7 +253,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void checkLivingEntityCollisions() {
         Player player = getEntityManager().getOrCreatePlayer();
         //player/npc collision check
-        for (NPCBoat NPCBoat : getEntityManager().getNPCList()) {
+        for (NPCBoat NPCBoat : getEntityManager().getNpcList()) {
             if (NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
                 //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
                 //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
@@ -292,7 +292,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (NPCBoat NPCBoat : entityManager.getNPCList()) {
+        for (NPCBoat NPCBoat : entityManager.getNpcList()) {
             for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
                 if (projectile.getShooter() != NPCBoat && projectile.getRectBounds().overlaps(NPCBoat.getRectBounds())) {
                     //if bullet overlaps player and shooter not player

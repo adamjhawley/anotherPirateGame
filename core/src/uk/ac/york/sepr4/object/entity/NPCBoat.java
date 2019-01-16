@@ -25,7 +25,7 @@ public class NPCBoat extends LivingEntity {
     private Optional<College> allied = Optional.empty();
     private Optional<LivingEntity> lastTarget = Optional.empty();
 
-    private float targetCheck = 4f;
+    private float targetCheck = 3f;
 
     private boolean isBoss;
 
@@ -40,7 +40,7 @@ public class NPCBoat extends LivingEntity {
         if (!this.isDying()) {
             //Gdx.app.debug("NPCBoat", "Isnt dying");
 
-                if (targetCheck < 5f) {
+                if (targetCheck < 4f) {
                     targetCheck += deltaTime;
                 }
                 Optional<LivingEntity> optionalTarget = getTarget();
@@ -105,7 +105,7 @@ public class NPCBoat extends LivingEntity {
                         }
                     }
                 } else {
-                    Gdx.app.debug("NPCBoat", "No target");
+                    //Gdx.app.debug("NPCBoat", "No target");
                     setAccelerating(false);
                     //TODO: Pursue for a bit if had a previous target, then stop moving
                 }
@@ -128,12 +128,12 @@ public class NPCBoat extends LivingEntity {
 
     private Optional<LivingEntity> getTarget() {
         if (validTarget(this.lastTarget)) {
-            Gdx.app.debug("Target", "Last");
+            //Gdx.app.debug("Target", "Last");
             return this.lastTarget;
         } else {
             this.lastTarget = Optional.empty();
-            if (targetCheck > 5f) {
-                Gdx.app.debug("Target", "Nearest");
+            if (targetCheck > 4f) {
+                //Gdx.app.debug("Target", "Nearest");
                 targetCheck = 0f;
                 return getNearestTarget();
             } else {
@@ -214,7 +214,7 @@ public class NPCBoat extends LivingEntity {
             //not allied - target player
             if (nearby.contains(player, false)) {
                 //if player is in range - target
-                Gdx.app.debug("NPCBoat", "Got nearby player");
+                //Gdx.app.debug("NPCBoat", "Got nearby player");
 
                 return Optional.of(player);
             }
@@ -228,18 +228,18 @@ public class NPCBoat extends LivingEntity {
                         if (nearest.get().distanceFrom(this) > livingEntity.distanceFrom(this)) {
                             //closest enemy
                             nearest = Optional.of(livingEntity);
-                            Gdx.app.debug("NPCBoat", "Got closer nearby enemy");
+                            //Gdx.app.debug("NPCBoat", "Got closer nearby enemy");
 
                         }
                     } else {
                         nearest = Optional.of(livingEntity);
-                        Gdx.app.debug("NPCBoat", "Got new nearby enemy");
+                        //Gdx.app.debug("NPCBoat", "Got new nearby enemy");
                     }
                 }
             }
             return nearest;
         }
-        Gdx.app.debug("NPCBoat", "No nearby enemy");
+        //Gdx.app.debug("NPCBoat", "No nearby enemy");
         return Optional.empty();
     }
 
