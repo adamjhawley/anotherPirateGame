@@ -77,6 +77,7 @@ public class NPCBoat extends LivingEntity {
 
 
                 //NO DUMB MOVE CHECK**************
+                float wantedAngle = ang; //chnage
 
                 //********************************
 
@@ -117,7 +118,9 @@ public class NPCBoat extends LivingEntity {
 
 
                 //TURN ACTION*******************
-
+                turnRight(AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle));
+                this.prevoiusTurn = AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle);
+                setAngle(getAngle() + (getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed()) % (float)(2*Math.PI));
                 //******************************
 
                 
