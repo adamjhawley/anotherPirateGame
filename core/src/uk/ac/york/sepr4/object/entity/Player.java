@@ -18,7 +18,6 @@ public class Player extends LivingEntity implements InputProcessor {
 
     private Integer balance = 0, xp = 0;
     private List<Item> inventory = new ArrayList<>();
-    private float angularSpeed;
 
     private List<College> captured = new ArrayList<>();
 
@@ -31,7 +30,7 @@ public class Player extends LivingEntity implements InputProcessor {
     @Override
     public void act(float deltaTime) {
         float angle = getAngle();
-        angle += ((angularSpeed * deltaTime) * (getSpeed() / getMaxSpeed())) % (float)(2*Math.PI);;
+        angle += ((getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed())) % (float)(2*Math.PI);;
 
        // Gdx.app.log("", this.__str__());
 

@@ -26,6 +26,11 @@ public class NPCBoat extends LivingEntity {
     private Optional<College> allied = Optional.empty();
     private Optional<LivingEntity> lastTarget = Optional.empty();
 
+    private boolean prevoiusTurn = true;
+    private boolean turning = false;
+
+    private int dodging = 0;
+
     private float targetCheck = 3f;
 
     private boolean isBoss;
@@ -39,19 +44,19 @@ public class NPCBoat extends LivingEntity {
         Array<Float> angles = new Array<>();
 
         if (!this.isDying()) {
+            //TARGET CHECK***************
             // timer to check for new target (expensive if done every tick)
             if (targetCheck < 4f) {
                 targetCheck += deltaTime;
             }
             Optional<LivingEntity> optionalTarget = getTarget();
             if (optionalTarget.isPresent()) {
-                //setAccelerating(true);
-
-                //Gdx.app.debug("NPCBoat", "Got target - start accel");
                 LivingEntity target = optionalTarget.get();
                 this.lastTarget = optionalTarget;
+            //***************************
 
-                //Todo: Finish the control logic of enemy to make it better
+
+                //FORCES WANTED TO BE COMPUTED***************
                 float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget);
 
                 if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
@@ -63,51 +68,68 @@ public class NPCBoat extends LivingEntity {
                 }
                 forces.add(f);
                 angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
-//                    forces.add(f);
-//                    angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+                //********************************************
 
-                //TODO: You were here next thing to do is to stop the boats turning to quickly then do the logic for the ai
 
-//                    Array<LivingEntity> livingEntities = getLivingEntitiesInRange();
-//
-//                    for(LivingEntity livingEntity : livingEntities){
-//                        forces.add(AIUtil.straightLineGraphOneIfCloser((float)this.distanceFrom(livingEntity), this.gradientForNormalDist, this.idealDistFromTarget));
-//
-//                        angles.add((float)(this.getAngleTowardsEntity(livingEntity) + Math.PI));
-//                    }
-
+                //RESULTANT ANGLE*****************
                 float ang = AIUtil.resultantForce(angles, forces).get(1);
-                if (!Float.isNaN(ang)) {
-                    setAngle(ang);
-                } else {
-                    Gdx.app.error("NPCBoat", "Angle NaN!");
-                }
+                //********************************
 
-                //New Func
-                float NormalFactor = Math.min(AIUtil.normalDistFromMean(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)), (float) Math.PI / 8, (float) Math.PI / 2) * 100, 1f);
-                float A;
-                if (target.getSpeed() > getMaxSpeed()) {
-                    A = getMaxSpeed();
-                } else {
-                    A = target.getSpeed();
-                }
-                float idealSpeed = (1 - f) * getMaxSpeed() + ((f + NormalFactor) / 2) * A;
-                if (idealSpeed > getSpeed()) {
-                    setAccelerating(true);
-                    setBraking(false);
-                } else {
-                    if (getSpeed() / 5 > idealSpeed) {
-                        setBraking(true);
-                        setAccelerating(false);
+
+                //NO DUMB MOVE CHECK**************
+
+                //********************************
+
+
+                //SPEED STUFF*****************
+                if (this.dodging == 0) {
+                    float NormalFactor = Math.min(AIUtil.normalDistFromMean(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)), (float) Math.PI / 8, (float) Math.PI / 2) * 100, 1f);
+                    float A;
+                    if (target.getSpeed() > getMaxSpeed()) {
+                        A = getMaxSpeed();
                     } else {
-                        setAccelerating(false);
-                        setBraking(false);
+                        A = target.getSpeed();
                     }
+                    float idealSpeed = (1 - f) * getMaxSpeed() + ((f + NormalFactor) / 2) * A;
+                    if (idealSpeed > getSpeed()) {
+                        setAccelerating(true);
+                        setBraking(false);
+                    } else {
+                        if (getSpeed() / 5 > idealSpeed) {
+                            setBraking(true);
+                            setAccelerating(false);
+                        } else {
+                            setAccelerating(false);
+                            setBraking(false);
+                        }
+                    }
+                } else {
+                    setAccelerating(false);
+                    setBraking(true);
+                    this.dodging -= 1;
                 }
+                //****************************
+
+
+                //DODGE STARTER*****************
+
+                //******************************
+
+
+                //TURN ACTION*******************
+
+                //******************************
+
+                
+                //FIRING************************
+
+                //******************************
             } else {
-                //Gdx.app.debug("NPCBoat", "No target");
+                //PATROL**********************
                 setAccelerating(false);
+                this.dodging = 0;
                 //TODO: Pursue for a bit if had a previous target, then stop moving
+                //****************************
             }
         }
         super.act(deltaTime);
@@ -247,6 +269,18 @@ public class NPCBoat extends LivingEntity {
         Rectangle radius = getRectBounds();
         radius.set(radius.x - range, radius.y - range, radius.width + 2 * range, radius.height + 2 * range);
         return radius;
+    }
+
+    private void turnRight(boolean right){
+        if (this.prevoiusTurn == true && right == false || this.prevoiusTurn == false && right == true || this.turning == false){
+            setAngularSpeed(0);
+        } else {
+            if(right){
+                setAngularSpeed(-getTurningSpeed());
+            } else {
+                setAngularSpeed(getTurningSpeed());
+            }
+        }
     }
 
 }

@@ -46,7 +46,7 @@ public class AIUtil {
         return (float)theta;
     }
 
-    public static boolean rightForAngleDiffrence(double thetaP, double thetaTP){
+    public static boolean rightThetaForAngleDiffrence(double thetaP, double thetaTP){
         boolean right;
         if (thetaP <= thetaTP && thetaTP <= Math.PI) {
             right = true;
@@ -71,7 +71,7 @@ public class AIUtil {
         double thetaP = convertToRealAngle(target.getAngle());
         double thetaTP = source.getAngleTowardsEntity(target);
 
-        boolean right = rightForAngleDiffrence(thetaP, thetaTP);
+        boolean right = rightThetaForAngleDiffrence(thetaP, thetaTP);
         double theta = thetaForAngleDiffrence(thetaP, thetaTP);
 
         double b = timeForPerfectAngleToCollide(source, target, (float)theta, addedSpeed);
@@ -138,6 +138,17 @@ public class AIUtil {
             return (float)(2* Math.PI - convertToRealAngle(angle2 - angle1));
         } else {
             return convertToRealAngle(angle2 - angle1);
+        }
+    }
+
+    //Returns true if angle2 is right of angle1
+    public static boolean rightForAngleDiffrenceBetweenTwoAngles(float angle1, float angle2){
+        angle1 = convertToRealAngle(angle1);
+        angle2 = convertToRealAngle(angle2);
+        if (convertToRealAngle(angle2 - angle1) > Math.PI){
+            return true;
+        } else {
+            return false;
         }
     }
 

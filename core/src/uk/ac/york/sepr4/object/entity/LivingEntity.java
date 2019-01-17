@@ -14,6 +14,7 @@ public abstract class LivingEntity extends Entity {
     private boolean isAccelerating, isBraking, isDead, isDying;
     private Integer turningSpeed = 1, collided = 0;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f;
+    private float angularSpeed = 0f;
 
     private HealthBar healthBar;
 
