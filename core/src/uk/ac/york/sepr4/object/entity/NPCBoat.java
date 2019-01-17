@@ -12,6 +12,7 @@ import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Data
 public class NPCBoat extends LivingEntity {
@@ -30,6 +31,11 @@ public class NPCBoat extends LivingEntity {
     private boolean turning = false;
 
     private int dodging = 0;
+    private int randomForceAppl = 0;
+    private float randomForce = 0f;
+    private float randomAngle = 0f;
+
+    private Random r = new Random();
 
     private float targetCheck = 3f;
 
@@ -59,6 +65,7 @@ public class NPCBoat extends LivingEntity {
                 //FORCES WANTED TO BE COMPUTED***************
                 float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget);
 
+                //Forces due to the target**
                 if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
                     forces.add(1 - f);
                     angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(target)));
@@ -68,6 +75,21 @@ public class NPCBoat extends LivingEntity {
                 }
                 forces.add(f);
                 angles.add(AIUtil.convertToRealAngle(target.getAngle() - (float) Math.PI));
+                //**
+
+                //Forces due to the other living entitys**
+                for (LivingEntity livingentity : getLivingEntitesInRangeMinusTarget(target)){
+                    float n = AIUtil.normalDistFromMean((float) this.distanceFrom(livingentity), 50, 200);
+                    if ((float) this.distanceFrom(livingentity) < 200) {
+                        forces.add((1 - n)/2);
+                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity)));
+                    } else {
+                        forces.add((1 - n)/2);
+                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity) - (float) Math.PI));
+                    }
+                }
+                //**
+
                 //********************************************
 
 
@@ -77,8 +99,7 @@ public class NPCBoat extends LivingEntity {
 
 
                 //NO DUMB MOVE CHECK**************
-                float wantedAngle = ang; //chnage
-
+                float wantedAngle = ang; //change
                 //********************************
 
 
@@ -113,11 +134,27 @@ public class NPCBoat extends LivingEntity {
 
 
                 //DODGE STARTER*****************
-
+                if (getProjectilesToDodge(getProjectilesInRange()).size > 0){
+                    float prob = 1f*getProjectilesToDodge(getProjectilesInRange()).size;
+                    float random = r.nextFloat() * 100f;
+                    if (random < prob){
+                        setDodging(100);
+                        Gdx.app.log("Doging","");
+                    }
+                } else {
+                    if (getDodging() > 0){
+                        setDodging(10);
+                    }
+                }
                 //******************************
 
 
                 //TURN ACTION*******************
+                if (AIUtil.angleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle) < Math.PI/16){
+                    this.turning = false;
+                } else {
+                    this.turning = true;
+                }
                 turnRight(AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle));
                 this.prevoiusTurn = AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle);
                 setAngle(getAngle() + (getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed()) % (float)(2*Math.PI));
@@ -182,6 +219,14 @@ public class NPCBoat extends LivingEntity {
         }
 
         return false;
+    }
+
+    private Array<LivingEntity> getLivingEntitesInRangeMinusTarget(LivingEntity target) {
+        Array<LivingEntity> nearby = getLivingEntitiesInRange();
+        if (nearby.contains(target, false)){
+            nearby.removeValue(target, false);
+        }
+        return nearby;
     }
 
     private Array<LivingEntity> getLivingEntitiesInRange() {
