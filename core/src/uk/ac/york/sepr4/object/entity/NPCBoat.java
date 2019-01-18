@@ -17,31 +17,23 @@ import java.util.Random;
 public class NPCBoat extends LivingEntity {
 
     //NPCBoat-specific variables
-    private float range = 500f;
-    private float accuracy = 0.5f;
+    private float range = 500f; //How far away it can see livingEntitys/objects
+    private float accuracy = 0.5f; //This is how accurate this is (currently is (1/0.5)*Math.PI/32 which allows for that much range on both sides of the perfect shot and picks a random angle from that range
 
-    private float idealDistFromTarget = 250f;
-    private float gradientForNormalDist = 50f;
+    private float idealDistFromTarget = 250f; //For the distance you want NPC to be away from target (Goldy Lox Zone)
+    private float gradientForNormalDist = 50f; //This is the standard deviation of the normal distabution
 
-    private Optional<College> allied = Optional.empty();
-    private Optional<LivingEntity> lastTarget = Optional.empty();
+    private Optional<College> allied = Optional.empty(); //This is the faction the boat is allied with
+    private Optional<LivingEntity> lastTarget = Optional.empty(); //This is the target currently being fought
 
-    private boolean prevoiusTurn = true;
-    private boolean turning = false;
+    private boolean prevoiusTurn = true; //right = true, left = false this is used to be able to take infomation over frames it is the prevoius turn the NPC did
+    private boolean turning = false; //This is wether the boat is turning or not. ~In conjuction these to help turnPreCalc determine the angularSpeed across multiple frames
 
-    private int dodging = 0;
-    private int randomForceAppl = 0;
-    private float randomForce = 0f;
-    private float randomAngle = 0f;
+    private int dodging = 0; //Not dodging = 0 anything other than 0 is meaning doging. this is the amount of frames you want the NPC to dodge for
 
-    private boolean died = false;
-    private int peopleoverboardanimationtime = 0;
-    private int swimminganimation;
-    private double alphaswimming;
+    private Random r = new Random(); //Just for randomness
 
-    private Random r = new Random();
-
-    private float targetCheck = 3f;
+    private float targetCheck = 3f; //Timer so target check aint every frame
 
     private boolean isBoss;
 
@@ -50,10 +42,14 @@ public class NPCBoat extends LivingEntity {
     }
 
     /***
+     *  This is the control logic of the NPC's AI. It uses functions from mainly AIUtil to be able to make decsions on how it is mean't to behave.
+     *  They are broken down into sections as to be able to make the code and control structure easier to read.
+     *  When callign this function it will actually make the NPC that is in the world do the actions.
      *
      * @param deltaTime
      */
     public void act(float deltaTime) {
+        //Clears arrays for later use
         Array<Float> forces = new Array<>();
         Array<Float> angles = new Array<>();
 
@@ -63,6 +59,7 @@ public class NPCBoat extends LivingEntity {
             if (targetCheck < 4f) {
                 targetCheck += deltaTime;
             }
+            //Gets a target
             Optional<LivingEntity> optionalTarget = getTarget();
             if (optionalTarget.isPresent()) {
                 LivingEntity target = optionalTarget.get();
@@ -71,7 +68,8 @@ public class NPCBoat extends LivingEntity {
 
 
                 //FORCES WANTED TO BE COMPUTED***************
-                float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget);
+                //Explained more on the resultant force function take a look
+                float f = AIUtil.normalDistFromMean((float) this.distanceFrom(target), this.gradientForNormalDist, this.idealDistFromTarget); //---Normal Distrubtion 0 to 1 in max force this allows for us to have diffrent forces depending on distances to the player
 
                 //Forces due to the target**
                 if ((float) this.distanceFrom(target) < this.idealDistFromTarget) {
@@ -87,7 +85,7 @@ public class NPCBoat extends LivingEntity {
 
                 //Forces due to the other living entitys**
                 for (LivingEntity livingentity : getLivingEntitesInRangeMinusTarget(target)){
-                    float n = AIUtil.normalDistFromMean((float) this.distanceFrom(livingentity), 50, 200);
+                    float n = AIUtil.normalDistFromMean((float) this.distanceFrom(livingentity), 50, 200); //---Normal Distrubtion again but to all livining entitys stops them wanting to collide
                     if ((float) this.distanceFrom(livingentity) < 200) {
                         forces.add((1 - n)/2);
                         angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity)- (float) Math.PI));
@@ -98,21 +96,30 @@ public class NPCBoat extends LivingEntity {
                 }
                 //**
 
+                //Other forces can be applied in this way where the forces can be any value. In the cases above the max values they can get is 1 this should give you rough estimates of the power of the forces
+                //Really good to add in functions that take into account certain things for strategic poistioning/cool interactions like ramming and whirlpools and things like that *HINT* *HINT*
+
                 //********************************************
 
 
                 //RESULTANT ANGLE*****************
+                //Gets the resultant force of all the forces and angles of those forces given by forces and angles arrays
+                //returns and array which is basically a pair being (resultant force, resultant forces angle)
                 float ang = AIUtil.resultantForce(angles, forces).get(1);
                 //********************************
 
 
                 //NO DUMB MOVE CHECK**************
+                //This section can be made to check whether certain moves maybe a bad move, e.g. moving into projectiles firing line, better strategic poistioning *HINT* *HINT*
                 float wantedAngle = ang; //change
                 //********************************
 
 
                 //SPEED STUFF*****************
+                //Look at NPC Behaviour 2 for more details/visuallisation
+                //If not dodging
                 if (this.dodging == 0) {
+                    //gets the normal of the angle towards the boat explained in NPC Functions 3
                     float NormalFactor = Math.min(AIUtil.normalDistFromMean(AIUtil.angleDiffrenceBetweenTwoAngles(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)), (float) Math.PI / 8, (float) Math.PI / 2) * 100, 1f);
                     float A;
                     if (target.getSpeed() > getMaxSpeed()) {
@@ -134,6 +141,7 @@ public class NPCBoat extends LivingEntity {
                         }
                     }
                 } else {
+                    //If dodging act this out
                     setAccelerating(false);
                     setBraking(true);
                     this.dodging -= 1;
@@ -142,7 +150,13 @@ public class NPCBoat extends LivingEntity {
 
 
                 //DODGE STARTER*****************
+
+                //Actual dodge movements are implemented in Speed stuff but for more advanced dodge can be adjusted in both Speed stuff and Turn action *HINT* *HINT*
+
+                //Gets all projectiles that will hit NPC and if above 0
                 if (getProjectilesToDodge(getProjectilesInRange()).size > 0){
+
+                    //Set on a dodge if probability has chosen
                     float prob = 1f*getProjectilesToDodge(getProjectilesInRange()).size;
                     float random = r.nextFloat() * 100f;
                     if (random < prob){
@@ -150,6 +164,7 @@ public class NPCBoat extends LivingEntity {
                         Gdx.app.log("Doging","");
                     }
                 } else {
+                    //Stops the NPC being still for longer than needed
                     if (getDodging() > 0){
                         setDodging(10);
                     }
@@ -158,41 +173,36 @@ public class NPCBoat extends LivingEntity {
 
 
                 //TURN ACTION*******************
+                //Stops movement of under PI/16 from actually taking affect
                 if (AIUtil.angleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle) < Math.PI/16){
                     this.turning = false;
                 } else {
                     this.turning = true;
                 }
-                turnRight(AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle));
+
+                //Checks for changes in turning so angular speed will be correct
+                turnPreCalcs(AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle));
+
+                //Sets prevoius turn to this turns right boolean e.g. if turning right then = true else false meaning left turn
                 this.prevoiusTurn = AIUtil.rightForAngleDiffrenceBetweenTwoAngles(getAngle(), wantedAngle);
+
+                //Sets the angle depending on parameters same as in livingentity
                 setAngle(getAngle() + (getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed()) % (float)(2*Math.PI));
                 //******************************
 
                 
                 //FIRING************************
+                //Calculates perfectShot into fireangle then adds some randomness to the shot with the parameter of accuracy which is inveresed
                 if (target.getSpeed() <  target.getMaxSpeed()/5){
-//                    boolean NotHitting = true;
-//                    for (LivingEntity livingentity : getLivingEntitesInRangeMinusTarget(target)){
-//                        if (AIUtil.angleDiffrenceBetweenTwoAngles(getAngleTowardsEntity(target), AIUtil.perfectAngleToCollide(this, target, 100)) < Math.PI/16){
-//                            NotHitting = false;
-//                        }
-//                    }
-//                    if (NotHitting == false){
-//                        fire(getAngleTowardsEntity(target));
-//                    }
-                    fire(getAngleTowardsEntity(target));
+                    float fireangle = getAngleTowardsEntity(target);
+                    //Calls fire at angle
+                    fire((float)(fireangle + (-(1/getAccuracy())*(Math.PI/32) + r.nextFloat() * (2*(1/getAccuracy())*(Math.PI/32)))));
                 } else {
+                    //Stops the AI shooting at distances that are longer than 3 seconds due to infinte inteception points, if going parrell
                     if (AIUtil.timeForPerfectAngleToCollide(this, target, AIUtil.thetaForAngleDiffrence(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)) , 100) < 3){
-//                        boolean NotHitting = true;
-//                        for (LivingEntity livingentity : getLivingEntitesInRangeMinusTarget(target)){
-//                            if (AIUtil.angleDiffrenceBetweenTwoAngles(getAngleTowardsEntity(target), AIUtil.perfectAngleToCollide(this, target, 100)) < Math.PI/16){
-//                                NotHitting = false;
-//                            }
-//                        }
-//                        if (NotHitting == false){
-//                            fire(AIUtil.perfectAngleToCollide(this, target, 100));
-//                        }
-                        fire(AIUtil.perfectAngleToCollide(this, target, 100));
+                        float fireangle = AIUtil.perfectAngleToCollide(this, target, 100);
+                        //calls fire at angle
+                        fire((float)(fireangle + (-(1/getAccuracy())*(Math.PI/32) + r.nextFloat() * (2*(1/getAccuracy())*(Math.PI/32)))));
                     }
                 }
                 //******************************
@@ -207,6 +217,12 @@ public class NPCBoat extends LivingEntity {
         super.act(deltaTime);
     }
 
+    /**
+     * Checks whether the target passed to it is a good target to choose and can actually be chosen
+     *
+     * @param optionalLivingEntity
+     * @return true if valid target, false otherwise
+     */
     private boolean validTarget(Optional<LivingEntity> optionalLivingEntity) {
         if (optionalLivingEntity.isPresent()) {
             LivingEntity livingEntity = optionalLivingEntity.get();
@@ -220,6 +236,11 @@ public class NPCBoat extends LivingEntity {
         return false;
     }
 
+    /**
+     * Knits together all the target functions to be able to get a correct target in the range of the NPC
+     *
+     * @return theTarget
+     */
     private Optional<LivingEntity> getTarget() {
         if (validTarget(this.lastTarget)) {
             //Gdx.app.debug("Target", "Last");
@@ -236,10 +257,18 @@ public class NPCBoat extends LivingEntity {
         }
     }
 
+    /**
+     * Checks whether the inputed livingEntity is part of the same college/faction this can also be player being allied aswell
+     * However if the NPC is below a certain health it will be scared so will fight targets, usally only happens when player is shooting allied targets so they will fight back
+     *
+     * @param livingEntity
+     * @return True if they are allied, False if not
+     */
     private boolean areAllied(LivingEntity livingEntity) {
         if (livingEntity instanceof Player) {
             Player player = (Player) livingEntity;
             if (getAllied().isPresent()) {
+                //Implements the if they have low health fight
                 if (getHealth() < 3*getMaxHealth()/4){
                     return false;
                 }
@@ -256,6 +285,12 @@ public class NPCBoat extends LivingEntity {
         return false;
     }
 
+    /**
+     * Is an extension of the getLivingEntitiesInRange() so that it removes the target in the array being passed back of all the entitys in the range of the NPC
+     *
+     * @param target
+     * @return Array of all livingEntitys in the range of NPC - itself and target
+     */
     private Array<LivingEntity> getLivingEntitesInRangeMinusTarget(LivingEntity target) {
         Array<LivingEntity> nearby = getLivingEntitiesInRange();
         if (nearby.contains(target, false)){
@@ -264,6 +299,11 @@ public class NPCBoat extends LivingEntity {
         return nearby;
     }
 
+    /**
+     * returns all livingEntitys in the range of the NPC except itself
+     *
+     * @return Array of livingEntites in range of NPC - itself
+     */
     private Array<LivingEntity> getLivingEntitiesInRange() {
         Array<LivingEntity> nearby = GameScreen.getInstance().getEntityManager().getLivingEntitiesInArea(getRangeArea());
         if (nearby.contains(this, false)) {
@@ -272,14 +312,25 @@ public class NPCBoat extends LivingEntity {
         return nearby;
     }
 
+    /**
+     * Gets all projectiles in range of NPC
+     *
+     * @return Array of all projectiles in the range of the NPC
+     */
     private Array<Projectile> getProjectilesInRange() {
         Array<Projectile> nearby = GameScreen.getInstance().getEntityManager().getProjectileManager().getProjectileInArea(getRangeArea());
         return nearby;
     }
 
+    /**
+     *
+     * @param projectiles
+     * @return
+     */
     private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles) {
         Array<Entity> projectilesToDodge = new Array<Entity>();
         for (Projectile projectile : projectiles) {
+            //Checkout NPC Functions 2 but rather than the source being a NPC and the target being the target, the AI is now the target and the source is the projectile on the loop of iteration
             float thetaToThisInFuture = AIUtil.perfectAngleToCollide(projectile, this, projectile.getSpeed());
             float thetaActual = AIUtil.convertToRealAngle(projectile.getAngle());
             float dist = (float) projectile.distanceFrom(this);
@@ -298,6 +349,7 @@ public class NPCBoat extends LivingEntity {
                 isTriangle = false;
             }
 
+            //Check out NPC Functions 1
             if (isTriangle == true) {
                 float opp = (float) Math.tan(theta) * dist;
                 if (opp < 0) {
@@ -354,7 +406,7 @@ public class NPCBoat extends LivingEntity {
         return radius;
     }
 
-    private void turnRight(boolean right){
+    private void turnPreCalcs(boolean right){
         if (this.prevoiusTurn == true && right == false || this.prevoiusTurn == false && right == true || this.turning == false){
             setAngularSpeed(0);
         } else {
