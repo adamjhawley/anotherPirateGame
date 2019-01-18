@@ -105,7 +105,7 @@ public class AIUtil {
         if (b < 0) {
             b = -b;
         }
-        Gdx.app.log("time", b+"");
+        //Gdx.app.log("time", b+"");
         return (float) b;
     }
 

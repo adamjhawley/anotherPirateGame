@@ -12,7 +12,7 @@ import java.util.Random;
 public class NPCBuilder {
 
     private float angle = 0f, speed = 0f, maxSpeed = 100f, range = 500f,
-            accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f;
+            accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f, reqCooldown = 0.8f;
     private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
     private boolean isDead = false, onFire = false;
     private Integer turningSpeed = 2;
@@ -43,6 +43,7 @@ public class NPCBuilder {
         npcBoat.setAllied(allied);
         npcBoat.setBoss(isBoss);
         npcBoat.setDamage(damage);
+        npcBoat.setReqCooldown(reqCooldown);
 
         return npcBoat;
     }
@@ -56,6 +57,11 @@ public class NPCBuilder {
 
     public NPCBuilder boss(boolean isBoss) {
         this.isBoss = isBoss;
+        return this;
+    }
+
+    public NPCBuilder reqCooldown(float reqCooldown) {
+        this.reqCooldown = reqCooldown;
         return this;
     }
 
@@ -101,13 +107,19 @@ public class NPCBuilder {
     }
 
     public NPCBoat generateRandomEnemy(Vector2 pos, College allied, Double difficulty) {
+        return generateRandomEnemy(pos, allied, difficulty, false);
+    }
+
+    public NPCBoat generateRandomEnemy(Vector2 pos, College allied, Double difficulty, boolean isBoss) {
         NPCBuilder builder = new NPCBuilder();
         Random random = new Random();
-
+        builder.boss(isBoss);
         builder.maxSpeed((float)(difficulty*random.nextDouble())+maxSpeed);
         builder.turningSpeed((int)Math.round(difficulty*random.nextDouble())+turningSpeed);
         builder.health((float)(difficulty*random.nextDouble())+maxHealth);
+        builder.reqCooldown((float)(1/(difficulty*reqCooldown)));
         builder.allied(allied);
+
 
         return builder.buildNPC(pos);
     }

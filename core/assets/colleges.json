@@ -5,6 +5,7 @@
     "mapObjectStr": "halifax",
     "bossName": "Oleg",
     "bossDifficulty": 0.5,
-    "spawnChance": 1.0
+    "spawnChance": 1.0,
+    "enemyDifficulty": 0.5
   }
 ]

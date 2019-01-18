@@ -22,7 +22,7 @@ public class College extends Building {
 
     //Can be set optionally in file to change college parameters
     private float spawnRange = 500f;
-    private Double spawnChance = 0.1, enemyDifficulty = 1.0;
+    private Double spawnChance = 0.1, enemyDifficulty = 0.1;
     private Integer maxEntities = 3;
     private List<String> requiresCollegeStr = new ArrayList<>(); //yet to be implemented (questing)
 
@@ -49,10 +49,8 @@ public class College extends Building {
     }
 
     public NPCBoat spawnBoss() {
-        return new NPCBuilder()
-                .boss(true)
-                .allied(this)
-                .buildNPC(getRandomSpawnVector());
+        //spawn boss at center
+        return new NPCBuilder().generateRandomEnemy(getMapLocation(), this, bossDifficulty, true);
     }
 
     /***

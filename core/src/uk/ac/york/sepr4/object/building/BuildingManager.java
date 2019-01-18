@@ -46,6 +46,7 @@ public class BuildingManager {
     public void checkBossSpawn() {
         for(College college : colleges) {
             if(!college.isBossSpawned()) {
+                //TODO: Add collision check for boss spawn
                 Player player = gameScreen.getEntityManager().getOrCreatePlayer();
                 if (college.getBuildingZone().contains(player.getRectBounds())) {
                     Gdx.app.debug("BuildingManager", "Player entered college zone: " + college.getName());

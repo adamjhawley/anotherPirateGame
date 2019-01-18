@@ -25,8 +25,10 @@ public class Player extends LivingEntity implements InputProcessor {
         super(TextureManager.PLAYER, pos);
         //face up
         setAngle((float)Math.PI);
-        setMaxHealth(1000.0);
-        setHealth(1000.0);
+
+        //testing
+        //setMaxHealth(1000.0);
+        //setHealth(1000.0);
     }
 
     @Override

@@ -161,6 +161,7 @@ public class GameScreen implements Screen, InputProcessor {
         //if player dead, go to main menu
         Player player = entityManager.getOrCreatePlayer();
         if (player.isDead()) {
+            Gdx.app.debug("GameScreen", "Player Died!");
             pirateGame.switchScreen(ScreenType.MENU);
             return;
         }
