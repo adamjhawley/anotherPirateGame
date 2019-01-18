@@ -56,7 +56,7 @@ public class Player extends LivingEntity implements InputProcessor {
         return level;
     }
 
-    public Double levelProgress() {
+    public Double getLevelProgress() {
         if(xp==0){
             return 0.0;
         }

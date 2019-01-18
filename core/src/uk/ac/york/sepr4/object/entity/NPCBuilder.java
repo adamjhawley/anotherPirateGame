@@ -120,7 +120,6 @@ public class NPCBuilder {
         builder.reqCooldown((float)(1/(difficulty*reqCooldown)));
         builder.allied(allied);
 
-
         return builder.buildNPC(pos);
     }
 

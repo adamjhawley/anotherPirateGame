@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.Align;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
@@ -54,7 +53,7 @@ public class HUD {
         Player player = gameScreen.getEntityManager().getOrCreatePlayer();
 
         goldValueLabel.setText(""+player.getBalance());
-        xpValueLabel.setText(""+player.getLevel()+" ("+(player.levelProgress())+"%)");
+        xpValueLabel.setText(""+player.getLevel()+" ("+(player.getLevelProgress())*100+"%)");
 
         boolean captured = false;
         Optional<Building> loc = gameScreen.getEntityManager().getPlayerLocation();

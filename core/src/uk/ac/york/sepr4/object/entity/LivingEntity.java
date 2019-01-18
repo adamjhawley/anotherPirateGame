@@ -49,12 +49,6 @@ public abstract class LivingEntity extends Entity {
     public void act(float deltaTime) {
         setCurrentCooldown(getCurrentCooldown() + deltaTime);
 
-        if (this.firingAnimation != 21){
-            //do firing aniimation
-            GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(AIUtil.getXwithAngleandDistance(getCentre().x, getFiringangle() + (float)Math.PI/2, 50), AIUtil.getYwithAngleandDistance(getCentre().y, getFiringangle() + (float)Math.PI/2, 50), getFiringangle(), TextureManager.FiringFrame(getFiringAnimation()), 70, 50, 1);
-            setFiringAnimation(getFiringAnimation() + 1);
-        }
-
         if (!this.isDying) {
             float speed = getSpeed();
 
@@ -95,7 +89,7 @@ public abstract class LivingEntity extends Entity {
                 setCurrentCooldown(0f);
                 GameScreen.getInstance().getEntityManager().getProjectileManager().spawnProjectile( this, getSpeed(), angle);
                 setFiringangle(angle - (float)Math.PI/2);
-                setFiringAnimation(0);
+                GameScreen.getInstance().getEntityManager().getAnimationManager().addFiringAnimation(this);
                 return true;
             }
 

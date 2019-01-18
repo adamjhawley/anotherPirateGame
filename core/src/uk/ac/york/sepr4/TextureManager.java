@@ -75,58 +75,16 @@ public class TextureManager {
     public static Texture WENTWORTH_MANOWAR = new Texture(Gdx.files.internal(path+"wentworthmanowarasset.png"));
     public static Texture WENTWORTH_SLOOP = new Texture(Gdx.files.internal(path+"wentworthsloopasset.png"));
 
-    public static Texture SwimmingFrame(int number){
-        if (number == 1){
-            return new Texture(Gdx.files.internal(path+"crew (1).png"));
-        } else {
-            return new Texture(Gdx.files.internal(path+"crew (4).png"));
-        }
-    }
+//    public static Texture swimmingFrame(int number){
+//        if (number == 1){
+//            return new Texture(Gdx.files.internal(path+"crew (1).png"));
+//        } else {
+//            return new Texture(Gdx.files.internal(path+"crew (4).png"));
+//        }
+//    }
 
-
-    public static Texture FiringFrame(int number){
-        number += 1;
-        if(number == 1){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame1.png"));
-        } else if (number == 2){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame2.png"));
-        } else if (number == 3){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame3.png"));
-        } else if (number == 4){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame4.png"));
-        } else if (number == 5){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame5.png"));
-        } else if (number == 6){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame6.png"));
-        } else if (number == 7){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame7.png"));
-        } else if (number == 8){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame8.png"));
-        } else if (number == 9){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame9.png"));
-        } else if (number == 10){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame10.png"));
-        } else if (number == 11){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame11.png"));
-        } else if (number == 12){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame12.png"));
-        } else if (number == 13){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame13.png"));
-        } else if (number == 14){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame14.png"));
-        } else if (number == 15){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame15.png"));
-        } else if (number == 16){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame16.png"));
-        } else if (number == 17){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame17.png"));
-        } else if (number == 18){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame18.png"));
-        } else if (number == 19){
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame19.png"));
-        } else {
-            return new Texture(Gdx.files.internal(path+"Cannon Animation/frame20.png"));
-        }
+    public static Texture firingFrame(int number){
+        return new Texture(Gdx.files.internal(path+"cannon/frame"+number+".png"));
     }
 
 

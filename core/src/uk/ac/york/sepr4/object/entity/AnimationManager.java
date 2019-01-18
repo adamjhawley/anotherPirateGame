@@ -25,15 +25,13 @@ public class AnimationManager {
 
     //Water Trails
     private List<WaterTrail> waterTrails = new ArrayList<>();
-
-
-
+    //Cannon "boom" animation
+    private HashMap<LivingEntity, Integer> fireAnimations = new HashMap<>();
 
     public AnimationManager(GameScreen gameScreen, EntityManager entityManager) {
         this.gameScreen = gameScreen;
         this.entityManager = entityManager;
     }
-
 
     //Takes the centre x,y of where you want the image to be
     public void addEffect(float x, float y, float angle, Texture texture, int width, int height, float alpha){
@@ -54,6 +52,7 @@ public class AnimationManager {
     public void handleEffects(Stage stage, float delta) {
         handleDeathAnimations(delta);
         updateWaterTrails();
+        updateFiringAnimations();
         stage.getActors().removeAll(this.lastFrameEffects, true);
 
         for (Entity effect : effects) {
@@ -65,6 +64,30 @@ public class AnimationManager {
 
         this.lastFrameEffects = this.effects;
         this.effects = new Array<>();
+    }
+
+    public void addFiringAnimation(LivingEntity livingEntity) {
+        fireAnimations.put(livingEntity, 1);
+    }
+
+    private void updateFiringAnimations() {
+        for(LivingEntity livingEntity : fireAnimations.keySet()) {
+            Integer val = fireAnimations.get(livingEntity);
+            if(val==null || val > 20) {
+                fireAnimations.remove(livingEntity);
+                return;
+            } else {
+                addEffect(AIUtil.getXwithAngleandDistance(livingEntity.getCentre().x,
+                        livingEntity.getFiringangle() + (float)Math.PI/2, 50),
+                        AIUtil.getYwithAngleandDistance(livingEntity.getCentre().y,
+                                livingEntity.getFiringangle() + (float)Math.PI/2, 50),
+                        livingEntity.getFiringangle(), TextureManager.firingFrame(val),
+                        70, 50, 1);
+
+                val++;
+                fireAnimations.replace(livingEntity, val);
+            }
+        }
     }
 
     //TODO: Could be cleaned up

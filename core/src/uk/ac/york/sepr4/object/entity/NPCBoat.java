@@ -214,12 +214,12 @@ public class NPCBoat extends LivingEntity {
 //            } else {
                 if (peopleoverboardanimationtime > 0){
                     if (this.swimminganimation == 1){
-                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.SwimmingFrame(1), 100, 100, (float)this.alphaswimming);
+                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.swimmingFrame(1), 100, 100, (float)this.alphaswimming);
                         setSwimminganimation(2);
                         this.peopleoverboardanimationtime -= 1;
                         //this.alphaswimming -= 0.01;
                     } else {
-                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.SwimmingFrame(2), 20, 20, (float)this.alphaswimming);
+                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.swimmingFrame(2), 20, 20, (float)this.alphaswimming);
                         setSwimminganimation(1);
                         this.peopleoverboardanimationtime -= 1;
                         //this.alphaswimming -= 0.01;
