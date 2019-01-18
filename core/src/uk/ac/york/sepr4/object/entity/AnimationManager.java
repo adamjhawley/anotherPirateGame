@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import lombok.Getter;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
+import uk.ac.york.sepr4.utils.AIUtil;
 
 import java.util.*;
 
@@ -147,10 +148,10 @@ class WaterTrail {
     
     public void spawnEffects(AnimationManager animationManager) {
         shiftTrails();
-        lTrails.add(new Vector2(getXwithAngleandDistance(lE.getCentre().x, (float) (lE.getAngle() - 7 * Math.PI / 8), 50f),
-                getYwithAngleandDistance(lE.getCentre().y, (float) (lE.getAngle() - 7 * Math.PI / 8), 45f)));
-        rTrails.add(new Vector2(getXwithAngleandDistance(lE.getCentre().x, (float) (lE.getAngle() + 7 * Math.PI / 8), 50f),
-                getYwithAngleandDistance(lE.getCentre().y, (float) (lE.getAngle() + 7 * Math.PI / 8), 45f)));
+        lTrails.add(new Vector2(AIUtil.getXwithAngleandDistance(lE.getCentre().x, (float) (lE.getAngle() - 7 * Math.PI / 8), 50f),
+                AIUtil.getYwithAngleandDistance(lE.getCentre().y, (float) (lE.getAngle() - 7 * Math.PI / 8), 45f)));
+        rTrails.add(new Vector2(AIUtil.getXwithAngleandDistance(lE.getCentre().x, (float) (lE.getAngle() + 7 * Math.PI / 8), 50f),
+                AIUtil.getYwithAngleandDistance(lE.getCentre().y, (float) (lE.getAngle() + 7 * Math.PI / 8), 45f)));
 
 
         for (int i = 0; i < lTrails.size() - 1; i++) {
@@ -211,12 +212,6 @@ class WaterTrail {
 
     private float getDistanceToPoint(float x1, float y1, float x2, float y2) {
         return (float) Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
-    }
-    private float getXwithAngleandDistance(float x1, float angle, float distance) {
-        return (float)(x1 + distance*Math.sin(angle));
-    }
-    private float getYwithAngleandDistance(float y1, float angle, float distance) {
-        return (float)(y1 - distance*Math.cos(angle));
     }
 
     private void shiftTrails() {

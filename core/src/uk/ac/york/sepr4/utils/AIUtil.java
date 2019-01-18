@@ -9,6 +9,13 @@ import uk.ac.york.sepr4.object.projectile.Projectile;
 import com.badlogic.gdx.utils.Array;
 
 public class AIUtil {
+    public static float getXwithAngleandDistance(float x1, float angle, float distance) {
+        return (float)(x1 + distance*Math.sin(angle));
+    }
+    public static float getYwithAngleandDistance(float y1, float angle, float distance) {
+        return (float)(y1 - distance*Math.cos(angle));
+    }
+
     public static float convertToRealAngle(float angle) {
         if (angle >= 0) {
             while (angle >= 0) {

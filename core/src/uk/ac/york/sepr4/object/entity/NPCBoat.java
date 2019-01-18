@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
+import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
@@ -35,6 +36,11 @@ public class NPCBoat extends LivingEntity {
     private float randomForce = 0f;
     private float randomAngle = 0f;
 
+    private boolean died = false;
+    private int peopleoverboardanimationtime = 0;
+    private int swimminganimation;
+    private double alphaswimming;
+
     private Random r = new Random();
 
     private float targetCheck = 3f;
@@ -45,6 +51,10 @@ public class NPCBoat extends LivingEntity {
         super(texture, pos);
     }
 
+    /***
+     *
+     * @param deltaTime
+     */
     public void act(float deltaTime) {
         Array<Float> forces = new Array<>();
         Array<Float> angles = new Array<>();
@@ -195,6 +205,27 @@ public class NPCBoat extends LivingEntity {
                 //TODO: Pursue for a bit if had a previous target, then stop moving
                 //****************************
             }
+        } else {
+//            if (died == false){
+                died = true;
+                this.peopleoverboardanimationtime = 1000;
+                this.swimminganimation = 1;
+                this.alphaswimming = 1;
+//            } else {
+                if (peopleoverboardanimationtime > 0){
+                    if (this.swimminganimation == 1){
+                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.SwimmingFrame(1), 100, 100, (float)this.alphaswimming);
+                        setSwimminganimation(2);
+                        this.peopleoverboardanimationtime -= 1;
+                        //this.alphaswimming -= 0.01;
+                    } else {
+                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.SwimmingFrame(2), 20, 20, (float)this.alphaswimming);
+                        setSwimminganimation(1);
+                        this.peopleoverboardanimationtime -= 1;
+                        //this.alphaswimming -= 0.01;
+                    }
+//                }
+            }
         }
         super.act(deltaTime);
     }
@@ -232,6 +263,9 @@ public class NPCBoat extends LivingEntity {
         if (livingEntity instanceof Player) {
             Player player = (Player) livingEntity;
             if (getAllied().isPresent()) {
+                if (getHealth() < 3*getMaxHealth()/4){
+                    return false;
+                }
                 return player.getCaptured().contains(getAllied().get());
             }
         } else {
