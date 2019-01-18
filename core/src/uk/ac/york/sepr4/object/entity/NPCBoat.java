@@ -82,10 +82,10 @@ public class NPCBoat extends LivingEntity {
                     float n = AIUtil.normalDistFromMean((float) this.distanceFrom(livingentity), 50, 200);
                     if ((float) this.distanceFrom(livingentity) < 200) {
                         forces.add((1 - n)/2);
-                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity)));
+                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity)- (float) Math.PI));
                     } else {
                         forces.add((1 - n)/2);
-                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity) - (float) Math.PI));
+                        angles.add(AIUtil.convertToRealAngle(this.getAngleTowardsEntity(livingentity)));
                     }
                 }
                 //**
@@ -162,7 +162,31 @@ public class NPCBoat extends LivingEntity {
 
                 
                 //FIRING************************
-
+                if (target.getSpeed() <  target.getMaxSpeed()/5){
+//                    boolean NotHitting = true;
+//                    for (LivingEntity livingentity : getLivingEntitesInRangeMinusTarget(target)){
+//                        if (AIUtil.angleDiffrenceBetweenTwoAngles(getAngleTowardsEntity(target), AIUtil.perfectAngleToCollide(this, target, 100)) < Math.PI/16){
+//                            NotHitting = false;
+//                        }
+//                    }
+//                    if (NotHitting == false){
+//                        fire(getAngleTowardsEntity(target));
+//                    }
+                    fire(getAngleTowardsEntity(target));
+                } else {
+                    if (AIUtil.timeForPerfectAngleToCollide(this, target, AIUtil.thetaForAngleDiffrence(AIUtil.convertToRealAngle(target.getAngle()), getAngleTowardsEntity(target)) , 100) < 3){
+//                        boolean NotHitting = true;
+//                        for (LivingEntity livingentity : getLivingEntitesInRangeMinusTarget(target)){
+//                            if (AIUtil.angleDiffrenceBetweenTwoAngles(getAngleTowardsEntity(target), AIUtil.perfectAngleToCollide(this, target, 100)) < Math.PI/16){
+//                                NotHitting = false;
+//                            }
+//                        }
+//                        if (NotHitting == false){
+//                            fire(AIUtil.perfectAngleToCollide(this, target, 100));
+//                        }
+                        fire(AIUtil.perfectAngleToCollide(this, target, 100));
+                    }
+                }
                 //******************************
             } else {
                 //PATROL**********************
