@@ -47,7 +47,7 @@ public class BuildingManager {
         for(College college : colleges) {
             if(!college.isBossSpawned()) {
                 Player player = gameScreen.getEntityManager().getOrCreatePlayer();
-                if (college.getCollegeZone().contains(player.getRectBounds())) {
+                if (college.getBuildingZone().contains(player.getRectBounds())) {
                     Gdx.app.debug("BuildingManager", "Player entered college zone: " + college.getName());
                     NPCBoat npcBoss = college.spawnBoss();
                     college.setBossSpawned(true);
@@ -62,12 +62,20 @@ public class BuildingManager {
         if(spawnDelta >= 1f) {
             for (College college : this.colleges) {
                 //check how many entities already exist in college zone (dont spawn too many)
-                if(gameScreen.getEntityManager().getLivingEntitiesInArea(college.getCollegeZone()).size
+                if(gameScreen.getEntityManager().getLivingEntitiesInArea(college.getBuildingZone()).size
                         < college.getMaxEntities()) {
                     Optional<NPCBoat> optionalEnemy = college.generateCollegeNPC();
                     if (optionalEnemy.isPresent()) {
-                        Gdx.app.debug("Building Manager", "Spawning an enemy at " + college.getName());
-                        gameScreen.getEntityManager().addNPC(optionalEnemy.get());
+                        NPCBoat npcBoat = optionalEnemy.get();
+                        //checks if spawn spot is valid
+                        //TODO: instead of cancelling spawn, get a better spot
+                        if(!gameScreen.getPirateMap().isColliding(npcBoat.getCentre())) {
+                            Gdx.app.debug("Building Manager", "Spawning an enemy at " + college.getName());
+                            gameScreen.getEntityManager().addNPC(optionalEnemy.get());
+                        } else {
+                            Gdx.app.debug("BuildingManager", "Didnt spawn enemy in collision spot!");
+
+                        }
                     }
                 } else {
                     //Gdx.app.debug("BuildingManager", "Max entities @ "+college.getName());

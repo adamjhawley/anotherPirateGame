@@ -58,6 +58,7 @@ public class GameScreen implements Screen, InputProcessor {
     private EntityManager entityManager;
     @Getter
     private QuestManager questManager;
+    @Getter
     private BuildingManager buildingManager;
 
     private InputMultiplexer inputMultiplexer;
@@ -178,6 +179,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         checkCollisions();
 
+        // Update camera and focus on player.
         orthographicCamera.position.set(player.getX() + player.getWidth() / 2f, player.getY() + player.getHeight() / 2f, 0);
         orthographicCamera.update();
         batch.setProjectionMatrix(orthographicCamera.combined);

@@ -9,9 +9,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import lombok.Getter;
+import uk.ac.york.sepr4.object.building.Building;
+import uk.ac.york.sepr4.object.building.College;
+import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.screen.GameScreen;
+
+import java.util.Optional;
 
 
 public class EntityManager {
@@ -41,6 +46,21 @@ public class EntityManager {
             animationManager.createWaterTrail(player);
         }
         return player;
+    }
+
+    public Optional<Building> getPlayerLocation() {
+        Optional<Building> loc = Optional.empty();
+        for(College building : gameScreen.getBuildingManager().getColleges()) {
+            if(building.getBuildingZone().contains(player.getX(), player.getY())) {
+                loc = Optional.of(building);
+            }
+        }
+        for(Department building : gameScreen.getBuildingManager().getDepartments()) {
+            if(building.getBuildingZone().contains(player.getX(), player.getY())) {
+                loc = Optional.of(building);
+            }
+        }
+        return loc;
     }
 
     public void addNPC(NPCBoat npcBoat){

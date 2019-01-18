@@ -14,6 +14,7 @@ public abstract class Building {
     private String name;
     private String mapObjectStr;
     private Vector2 mapLocation;
+    private Float buildingRange = 1500f;
 
     public boolean load(PirateMap pirateMap) {
         Optional<RectangleMapObject> objectOptional = pirateMap.getMapObject(mapObjectStr);
@@ -25,5 +26,10 @@ public abstract class Building {
             Gdx.app.log("Building", "Could not load map object for building: " + name);
         }
         return false;
+    }
+
+    public Rectangle getBuildingZone() {
+        Vector2 pos = getMapLocation();
+        return new Rectangle(pos.x-(getBuildingRange()/2), pos.y-(getBuildingRange()/2), getBuildingRange(), getBuildingRange());
     }
 }

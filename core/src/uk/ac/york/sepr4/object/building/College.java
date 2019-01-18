@@ -21,14 +21,13 @@ public class College extends Building {
     private Double bossDifficulty;
 
     //Can be set optionally in file to change college parameters
-    private float spawnRange = 500f, collegeRange = 5000f;
+    private float spawnRange = 500f;
     private Double spawnChance = 0.1, enemyDifficulty = 1.0;
     private Integer maxEntities = 3;
-    private List<String> requiresCollegeStr = new ArrayList<>();
+    private List<String> requiresCollegeStr = new ArrayList<>(); //yet to be implemented (questing)
 
     //Set from college variables
-    private List<College> requiresCollege;
-    private NPCBoat boss;
+    private List<College> requiresCollege; //yet to be implemented (questing)
     private boolean bossSpawned = false;
 
 
@@ -77,10 +76,7 @@ public class College extends Building {
         Vector2 pos = getMapLocation();
         return new Rectangle(pos.x-(spawnRange/2), pos.y-(spawnRange/2), spawnRange, spawnRange);
     }
-    public Rectangle getCollegeZone() {
-        Vector2 pos = getMapLocation();
-        return new Rectangle(pos.x-(collegeRange/2), pos.y-(collegeRange/2), collegeRange, collegeRange);
-    }
+
 
     private Vector2 getRandomSpawnVector() {
         //TODO: Very unsure if this works / is the best (or even good) way to do this.

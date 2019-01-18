@@ -60,6 +60,15 @@ public class PirateMap {
         }
     }
 
+    public boolean isColliding(Vector2 pos) {
+        for(Polygon polygon : collisionObjects) {
+            if(polygon.contains(pos)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void setCollisionObjects() {
         for (MapLayer mapLayer : tiledMap.getLayers()) {
 
