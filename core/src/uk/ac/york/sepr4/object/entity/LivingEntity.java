@@ -4,10 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
-import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
-import uk.ac.york.sepr4.utils.AIUtil;
 
 @Data
 public abstract class LivingEntity extends Entity {
@@ -18,7 +16,6 @@ public abstract class LivingEntity extends Entity {
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f;
     private float angularSpeed = 0f;
 
-    private int firingAnimation = 21;
     private float firingangle;
 
     private HealthBar healthBar;

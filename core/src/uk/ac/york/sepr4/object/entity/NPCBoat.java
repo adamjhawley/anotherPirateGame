@@ -6,12 +6,10 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import lombok.Data;
-import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
-
 import java.util.Optional;
 import java.util.Random;
 
@@ -204,27 +202,6 @@ public class NPCBoat extends LivingEntity {
                 this.dodging = 0;
                 //TODO: Pursue for a bit if had a previous target, then stop moving
                 //****************************
-            }
-        } else {
-//            if (died == false){
-                died = true;
-                this.peopleoverboardanimationtime = 1000;
-                this.swimminganimation = 1;
-                this.alphaswimming = 1;
-//            } else {
-                if (peopleoverboardanimationtime > 0){
-                    if (this.swimminganimation == 1){
-                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.swimmingFrame(1), 100, 100, (float)this.alphaswimming);
-                        setSwimminganimation(2);
-                        this.peopleoverboardanimationtime -= 1;
-                        //this.alphaswimming -= 0.01;
-                    } else {
-                        GameScreen.getInstance().getEntityManager().getAnimationManager().addEffect(getCentre().x, getCentre().y, 0, TextureManager.swimmingFrame(2), 20, 20, (float)this.alphaswimming);
-                        setSwimminganimation(1);
-                        this.peopleoverboardanimationtime -= 1;
-                        //this.alphaswimming -= 0.01;
-                    }
-//                }
             }
         }
         super.act(deltaTime);

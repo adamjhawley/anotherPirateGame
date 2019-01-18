@@ -37,7 +37,7 @@ public class EntityManager {
         this.gameScreen = gameScreen;
 
         this.projectileManager = new ProjectileManager(gameScreen, this);
-        this.animationManager = new AnimationManager(gameScreen, this);
+        this.animationManager = new AnimationManager(this);
     }
     
     public Player getOrCreatePlayer() {

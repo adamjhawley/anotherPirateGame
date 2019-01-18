@@ -7,14 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import lombok.Getter;
 import uk.ac.york.sepr4.TextureManager;
-import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
 
 import java.util.*;
 
 public class AnimationManager {
 
-    private GameScreen gameScreen;
     private EntityManager entityManager;
 
     //Death Animations
@@ -28,8 +26,7 @@ public class AnimationManager {
     //Cannon "boom" animation
     private HashMap<LivingEntity, Integer> fireAnimations = new HashMap<>();
 
-    public AnimationManager(GameScreen gameScreen, EntityManager entityManager) {
-        this.gameScreen = gameScreen;
+    public AnimationManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -140,11 +137,14 @@ public class AnimationManager {
             livingEntity.setTexture(TextureManager.DEADENEMY);
             livingEntity.setAlpha(1-(deathTimer/5));
             if (deathTimer < 1/6f) {
-                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), TextureManager.EXPLOSION1, 40, 40,1);
+                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y,
+                        livingEntity.getAngle(), TextureManager.EXPLOSION1, 40, 40,1);
             } else if (deathTimer < 2/6f) {
-                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), TextureManager.EXPLOSION2, 40, 40, 1);
+                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y,
+                        livingEntity.getAngle(), TextureManager.EXPLOSION2, 40, 40, 1);
             } else if (deathTimer < 1/2f){
-                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y, livingEntity.getAngle(), TextureManager.EXPLOSION3, 40, 40,1);
+                addEffect(livingEntity.getCentre().x, livingEntity.getCentre().y,
+                        livingEntity.getAngle(), TextureManager.EXPLOSION3, 40, 40,1);
             }
             if (deathTimer > 5){
                 livingEntity.setDead(true);
@@ -207,8 +207,6 @@ class WaterTrail {
         }
 
     }
-    
-    
 
     private float getXmidPoint(float x1, float x2) {
         if (x2 > x1){
@@ -217,6 +215,7 @@ class WaterTrail {
             return (x1-(x2-x1)/2);
         }
     }
+
     private float getYmidPoint(float y1, float y2) {
         if (y2 > y1){
             return (y1+(y2-y1)/2);
@@ -224,6 +223,7 @@ class WaterTrail {
             return (y1-(y2-y1)/2);
         }
     }
+
     private float getAngleToPoint(float x1, float y1, float x2, float y2) {
         double d_angle = Math.atan(((y2 - y1) / (x2 - x1)));
         if(x2 < x1){
