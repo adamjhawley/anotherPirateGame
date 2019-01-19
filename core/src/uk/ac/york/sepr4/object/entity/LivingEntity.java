@@ -16,6 +16,8 @@ public abstract class LivingEntity extends Entity {
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f;
     private float angularSpeed = 0f;
 
+    private int collidedWithIsland = 0;
+
     private float firingangle;
 
     private HealthBar healthBar;

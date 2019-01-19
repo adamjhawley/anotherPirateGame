@@ -9,14 +9,30 @@ import uk.ac.york.sepr4.object.projectile.Projectile;
 import com.badlogic.gdx.utils.Array;
 
 public class AIUtil {
+
+    /**
+     * @param x1 The original x
+     * @param angle The angle you want to move the x by
+     * @param distance The distance you want to move the x by on that angle
+     * @return The X once x1 has been moved along by that angle for a certain distance
+     */
     public static float getXwithAngleandDistance(float x1, float angle, float distance) {
         return (float)(x1 + distance*Math.sin(angle));
     }
+
+    //Same as before but Y
     public static float getYwithAngleandDistance(float y1, float angle, float distance) {
         return (float)(y1 - distance*Math.cos(angle));
     }
 
+    /**
+     * Takes any angle and converts it back down to the range 0 to 2PI this is due to how libgdx does its angles where you can get an actor with 10pi if its rotated 5 times
+     *
+     * @param angle
+     * @return angle restriced to 0 to 2PI
+     */
     public static float convertToRealAngle(float angle) {
+        //Have to do it in this bad way due to angle mod 2PI not working
         if (angle >= 0) {
             while (angle >= 0) {
                 angle -= 2 * Math.PI;
@@ -33,6 +49,12 @@ public class AIUtil {
         return angle;
     }
 
+    /**
+     * Refer to NPC Functions 4
+     * @param thetaP
+     * @param thetaTP
+     * @return theta (Green angle)
+     */
     public static float thetaForAngleDiffrence(double thetaP, double thetaTP){
         double theta;
         if (thetaP <= thetaTP && thetaTP <= Math.PI) {
@@ -53,6 +75,12 @@ public class AIUtil {
         return (float)theta;
     }
 
+    /**
+     * Refer to NPC Functions 4 but rather now just returns whether the angle is turning right or left
+     * @param thetaP
+     * @param thetaTP
+     * @return right = true, left = false
+     */
     public static boolean rightThetaForAngleDiffrence(double thetaP, double thetaTP){
         boolean right;
         if (thetaP <= thetaTP && thetaTP <= Math.PI) {
@@ -73,7 +101,13 @@ public class AIUtil {
         return right;
     }
 
-    //Todo: Create one function that does the same thing just uses speeds rather than using getProjectileSpeed
+    /**
+     * Refer to NPC Functions 2
+     * @param source
+     * @param target
+     * @param addedSpeed - This is here just incase its for the shooting where you need to add the projectiles speed onto the sources speed
+     * @return - Returns the angle to shoot at or move in to hit the target at the right time going at the current speed/the soon to be speed in case of shooting
+     */
     public static float perfectAngleToCollide(Entity source, Entity target, double addedSpeed) {
         double thetaP = convertToRealAngle(target.getAngle());
         double thetaTP = source.getAngleTowardsEntity(target);
@@ -105,6 +139,14 @@ public class AIUtil {
         return convertToRealAngle((float) shotAngle);
     }
 
+    /**
+     * Refer to NPC Functions 2
+     * @param source
+     * @param target
+     * @param theta
+     * @param addedSpeed
+     * @return b = the time taken for the source object or shot to connect with the target
+     */
     public static float timeForPerfectAngleToCollide(Entity source, Entity target, float theta, double addedSpeed) {
         double time = source.distanceFrom(target) / (source.getSpeed() + addedSpeed);
 
@@ -112,7 +154,6 @@ public class AIUtil {
         if (b < 0) {
             b = -b;
         }
-        //Gdx.app.log("time", b+"");
         return (float) b;
     }
 
@@ -138,7 +179,7 @@ public class AIUtil {
     }
     //********************
 
-    //Returns the diffrence between 2 angles where angle 1 is the one with the respect
+    //Returns the diffrence between 2 angles where angle 1 is the one with the respect (Same as doing a dot product of 2 vectors basically)
     public static float angleDiffrenceBetweenTwoAngles(float angle1, float angle2){
         angle1 = convertToRealAngle(angle1);
         angle2 = convertToRealAngle(angle2);
@@ -149,7 +190,7 @@ public class AIUtil {
         }
     }
 
-    //Returns true if angle2 is right of angle1
+    //Returns true if angle2 is right of angle1 (meaning if I travel along angle1 then turn to angle2 will it be left or right)
     public static boolean rightForAngleDiffrenceBetweenTwoAngles(float angle1, float angle2){
         angle1 = convertToRealAngle(angle1);
         angle2 = convertToRealAngle(angle2);
@@ -160,6 +201,12 @@ public class AIUtil {
         }
     }
 
+    /**
+     * Refer to NPC Functions 5 - Same us plusing together a bunch of vectors
+     * @param angles
+     * @param forces
+     * @return An Array where its like a pair (Resultant force magnitude, Resultant force angle) [Basically a vector]
+     */
     public static Array<Float> resultantForce(Array<Float> angles, Array<Float> forces){
         Array<Float> force_angle = new Array<Float>();
         float N = 0, E = 0;

@@ -323,9 +323,10 @@ public class NPCBoat extends LivingEntity {
     }
 
     /**
+     *Returns an array of all the projectiles that are going to collide with the NPC out of the ones that have been passed to the function
      *
-     * @param projectiles
-     * @return
+     * @param projectiles (All projectiles that want to be checked)
+     * @return An array of projectiles that will collide with the NPC from the Array given to this function
      */
     private Array<Entity> getProjectilesToDodge(Array<Projectile> projectiles) {
         Array<Entity> projectilesToDodge = new Array<Entity>();
@@ -364,6 +365,12 @@ public class NPCBoat extends LivingEntity {
         return projectilesToDodge;
     }
 
+    /**
+     * Used in conjunction with the target selection stuff to be able to pick the nearest target to the NPC
+     * Trys to always pick player
+     *
+     * @return the nearest target
+     */
     private Optional<LivingEntity> getNearestTarget() {
         Player player = GameScreen.getInstance().getEntityManager().getOrCreatePlayer();
         Array<LivingEntity> nearby = getLivingEntitiesInRange();
@@ -406,6 +413,12 @@ public class NPCBoat extends LivingEntity {
         return radius;
     }
 
+    /**
+     * This is needed to be able to make the AI turn like the player does because it doesn't have a person key up it doesn't know to change angular speed
+     * This is needed to be called before any setAngle() made by the npc
+     *
+     * @param right = true if turning right, else is a left turn this is only used if turning = true
+     */
     private void turnPreCalcs(boolean right){
         if (this.prevoiusTurn == true && right == false || this.prevoiusTurn == false && right == true || this.turning == false){
             setAngularSpeed(0);

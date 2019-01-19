@@ -30,6 +30,7 @@ import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
+import uk.ac.york.sepr4.utils.AIUtil;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -262,10 +263,35 @@ public class GameScreen implements Screen, InputProcessor {
             float[] points = polygon.getTransformedVertices();
             for (int i=0;i<points.length;i+=2){
                 if(player.getRectBounds().contains(points[i],points[i+1])){
-                    Gdx.app.log("GameScreen", "Collision");
-                    player.setAngle((float)(2*Math.PI - player.getAngle()));
+                    if (player.getCollidedWithIsland() == 0) {
+                        player.setCollidedWithIsland(10);
+                        player.setAngle(AIUtil.convertToRealAngle(player.getAngle() - (float) Math.PI));
+                        if (player.getSpeed() > player.getMaxSpeed() / 5) {
+                            player.setSpeed(player.getMaxSpeed() / 5);
+                        }
+                    }
                 }
+                for (NPCBoat NPCBoat : getEntityManager().getNpcList()) {
+                    if(NPCBoat.getRectBounds().contains(points[i],points[i+1])){
+                        if (NPCBoat.getCollidedWithIsland() == 0) {
+                            NPCBoat.setCollidedWithIsland(10);
+                            NPCBoat.setAngle(AIUtil.convertToRealAngle(NPCBoat.getAngle() - (float) Math.PI));
+                            if (NPCBoat.getSpeed() > NPCBoat.getMaxSpeed() / 5) {
+                                NPCBoat.setSpeed(NPCBoat.getMaxSpeed() / 5);
+                            }
+                        }
+                    }
+                }
+
             }
+        }
+        for (NPCBoat NPCBoat : getEntityManager().getNpcList()) {
+            if (NPCBoat.getCollidedWithIsland() != 0){
+                NPCBoat.setCollidedWithIsland(NPCBoat.getCollidedWithIsland() - 1);
+            }
+        }
+        if (player.getCollidedWithIsland() != 0){
+            player.setCollidedWithIsland(player.getCollidedWithIsland() - 1);
         }
     }
 
