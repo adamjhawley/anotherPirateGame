@@ -15,12 +15,12 @@ public class AnimationManager {
 
     private EntityManager entityManager;
 
-    //Death Animations
-    private Array<Entity> effects = new Array<>();
     //For cleanup
     private Array<Entity> lastFrameEffects = new Array<>(); //Needed for clean up
     private HashMap<LivingEntity, Float> deathAnimations = new HashMap<>();
 
+    //Death Animations
+    private Array<Entity> effects = new Array<>();
     //Water Trails
     private List<WaterTrail> waterTrails = new ArrayList<>();
     //Cannon "boom" animation
@@ -30,7 +30,7 @@ public class AnimationManager {
         this.entityManager = entityManager;
     }
 
-    //Takes the centre x,y of where you want the image to be
+    //Takes the centre x,y of where you want the effect to appear
     public void addEffect(float x, float y, float angle, Texture texture, int width, int height, float alpha){
         Entity effect = new Entity(texture, new Vector2(x,y)) {};
         effect.setY(y - height/2);
@@ -62,8 +62,8 @@ public class AnimationManager {
         this.effects = new Array<>();
     }
 
-    public void addFiringAnimation(LivingEntity livingEntity) {
-        cannonExplosions.add(new CannonExplosion(livingEntity));
+    public void addFiringAnimation(LivingEntity livingEntity, float firingAngle) {
+        cannonExplosions.add(new CannonExplosion(livingEntity, firingAngle));
     }
 
     private void updateFiringAnimations() {
@@ -156,9 +156,9 @@ class CannonExplosion {
     private Float firingAngle;
     private int frame = 1;
 
-    public CannonExplosion(LivingEntity lE) {
+    public CannonExplosion(LivingEntity lE, float firingAngle) {
         this.lE = lE;
-        this.firingAngle = new Float(lE.getFiringangle());
+        this.firingAngle = firingAngle;
     }
 
     public boolean isComplete() {

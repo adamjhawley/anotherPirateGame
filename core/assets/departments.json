@@ -1,1 +1,7 @@
-[]
+[
+  {
+    "class": "uk.ac.york.sepr4.object.building.Department",
+    "name": "Department of Computer Science",
+    "mapObjectStr": "compsci"
+  }
+]

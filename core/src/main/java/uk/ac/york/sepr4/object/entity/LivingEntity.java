@@ -17,9 +17,8 @@ public abstract class LivingEntity extends Entity {
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f;
     private float angularSpeed = 0f;
 
+    //TODO: Better ways to monitor this
     private int collidedWithIsland = 0, colliedWithBoat = 0;
-
-    private float firingangle;
 
     private HealthBar healthBar;
 
@@ -35,11 +34,15 @@ public abstract class LivingEntity extends Entity {
     }
 
     public void kill(boolean silent) {
-        //if not silent, act method will explode
+        //if not silent, death animation will appear
         this.isDying = !silent;
         this.isDead = silent;
     }
 
+    /***
+     * Called to action collision action (boat reversal)
+     * @param withBoat true if collision was with another LivingEntity (boat)
+     */
     public void collide(boolean withBoat) {
         if(withBoat) {
             setColliedWithBoat(10);
@@ -85,8 +88,11 @@ public abstract class LivingEntity extends Entity {
         }
     }
 
-
-    //return true if still alive
+    /***
+     * Called to inflict damage on LivingEntity
+     * @param damage amount of damage to inflict
+     * @return true if LivingEntity alive
+     */
     public boolean damage(Double damage) {
         this.health = this.health - damage;
         if (this.health <= 0) {
@@ -96,12 +102,16 @@ public abstract class LivingEntity extends Entity {
         return true;
     }
 
+    /***
+     * Called when a LivingEntity is to fire a shot.
+     * @param angle angle at which to fire
+     * @return true if cooldown sufficient and shot has been fired
+     */
     public boolean fire(float angle) {
             if (currentCooldown >= reqCooldown) {
                 setCurrentCooldown(0f);
                 GameScreen.getInstance().getEntityManager().getProjectileManager().spawnProjectile( this, getSpeed(), angle);
-                setFiringangle(angle - (float)Math.PI/2);
-                GameScreen.getInstance().getEntityManager().getAnimationManager().addFiringAnimation(this);
+                GameScreen.getInstance().getEntityManager().getAnimationManager().addFiringAnimation(this,angle - (float)Math.PI/2);
                 return true;
             }
 
