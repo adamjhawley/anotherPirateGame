@@ -24,7 +24,7 @@ public class AnimationManager {
     //Water Trails
     private List<WaterTrail> waterTrails = new ArrayList<>();
     //Cannon "boom" animation
-    private HashMap<LivingEntity, Integer> fireAnimations = new HashMap<>();
+    private List<CannonExplosion> cannonExplosions = new ArrayList<>();
 
     public AnimationManager(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -54,7 +54,6 @@ public class AnimationManager {
 
         for (Entity effect : effects) {
             if (!stage.getActors().contains(effect, true)) {
-                //Gdx.app.log("Test Log", "Adding new effect to actors list.");
                 stage.addActor(effect);
             }
         }
@@ -64,25 +63,16 @@ public class AnimationManager {
     }
 
     public void addFiringAnimation(LivingEntity livingEntity) {
-        fireAnimations.put(livingEntity, 1);
+        cannonExplosions.add(new CannonExplosion(livingEntity));
     }
 
     private void updateFiringAnimations() {
-        for(LivingEntity livingEntity : fireAnimations.keySet()) {
-            Integer val = fireAnimations.get(livingEntity);
-            if(val==null || val > 20) {
-                fireAnimations.remove(livingEntity);
-                return;
+        List<CannonExplosion> toRemove = new ArrayList<>();
+        for(CannonExplosion cannonExplosion: cannonExplosions) {
+            if(cannonExplosion.isComplete()) {
+                toRemove.add(cannonExplosion);
             } else {
-                addEffect(AIUtil.getXwithAngleandDistance(livingEntity.getCentre().x,
-                        livingEntity.getFiringangle() + (float)Math.PI/2, 50),
-                        AIUtil.getYwithAngleandDistance(livingEntity.getCentre().y,
-                                livingEntity.getFiringangle() + (float)Math.PI/2, 50),
-                        livingEntity.getFiringangle(), TextureManager.firingFrame(val),
-                        70, 50, 1);
-
-                val++;
-                fireAnimations.replace(livingEntity, val);
+                cannonExplosion.spawnEffects(this);
             }
         }
     }
@@ -123,6 +113,7 @@ public class AnimationManager {
 
 
     //Death Animations
+    //TODO: Cleanup like other animations
     private void handleDeathAnimations(float delta) {
         //add dying npcs if they arent already in there
         for(LivingEntity livingEntity : entityManager.getLivingEntities()) {
@@ -158,6 +149,31 @@ public class AnimationManager {
 
 
 
+}
+
+class CannonExplosion {
+    private LivingEntity lE;
+    private Float firingAngle;
+    private int frame = 1;
+
+    public CannonExplosion(LivingEntity lE) {
+        this.lE = lE;
+        this.firingAngle = new Float(lE.getFiringangle());
+    }
+
+    public boolean isComplete() {
+        return (frame==21);
+    }
+
+    public void spawnEffects(AnimationManager animationManager) {
+        animationManager.addEffect(AIUtil.getXwithAngleandDistance(lE.getCentre().x,
+                firingAngle + (float)Math.PI/2, 50),
+                AIUtil.getYwithAngleandDistance(lE.getCentre().y,
+                        firingAngle + (float)Math.PI/2, 50),
+                firingAngle, TextureManager.firingFrame(frame),
+                70, 50, 1);
+        frame++;
+    }
 }
 
 class WaterTrail {
