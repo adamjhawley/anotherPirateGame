@@ -5,9 +5,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.object.PirateMap;
-import uk.ac.york.sepr4.object.entity.NPCBoat;
-import uk.ac.york.sepr4.object.entity.NPCBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,7 +22,7 @@ public class College extends Building {
     private Integer maxEntities = 2;
     private List<String> requiresCollegeStr = new ArrayList<>(); //yet to be implemented (questing)
 
-    //Set from college variables
+    //Set from college file variables
     private List<College> requiresCollege; //yet to be implemented (questing)
     private boolean bossSpawned = false;
 

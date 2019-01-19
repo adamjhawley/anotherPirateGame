@@ -69,6 +69,8 @@ public class HUD {
         }
         if(captured) {
             captureStatus.setText("(CAPTURED)");
+        } else {
+            captureStatus.setText("");
         }
 
     }

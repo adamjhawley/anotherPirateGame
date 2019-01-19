@@ -13,7 +13,6 @@ import uk.ac.york.sepr4.object.entity.NPCBoat;
 
 import java.util.Optional;
 import java.util.Random;
-import java.util.Vector;
 
 @Data
 public class BuildingManager {
@@ -39,11 +38,13 @@ public class BuildingManager {
 
         if(gameScreen.getPirateMap().isObjectsEnabled()) {
             Json json = new Json();
-            Gdx.app.debug("BuildingManager", "Loading Buildings");
-            loadColleges(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
-            loadDepartments(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
+            loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
+            loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
+            Gdx.app.log("BuildingManager",
+                    "Loaded "+colleges.size+" colleges and "+departments.size+" departments!");
+
         } else {
-            Gdx.app.log("Building Manager", "Objects not enabled, not loading buildings!");
+            Gdx.app.error("Building Manager", "Objects not enabled, not loading buildings!");
         }
     }
 
@@ -118,30 +119,47 @@ public class BuildingManager {
         }
     }
 
-
     //TODO: Make generic method
-    private void loadColleges(Array<College> loading) {
-        for(College college : loading) {
-            if (college.load(gameScreen.getPirateMap())) {
-                    colleges.add(college);
-                    Gdx.app.debug("BuildingManager", "Loaded " + college.getName());
-                } else {
-                    Gdx.app.error("BuildingManager", "Failed to load " + college.getName());
+    private void loadBuildings(Array<Building> loading) {
+        for(Building building : loading) {
+            if (building.load(gameScreen.getPirateMap())) {
+                if(building instanceof College) {
+                    colleges.add((College) building);
+                } else if (building instanceof Department) {
+                    departments.add((Department) building);
                 }
+                Gdx.app.debug("BuildingManager", "Loaded " + building.getName());
+            } else {
+                Gdx.app.error("BuildingManager", "Failed to load " + building.getName());
+            }
 
         }
     }
 
-    private void loadDepartments(Array<Department> loading) {
-        for(Department department : loading) {
-            if (department.load(gameScreen.getPirateMap())) {
-                    departments.add(department);
-                    Gdx.app.debug("BuildingManager", "Loaded " + department.getName());
-                } else {
-                    Gdx.app.error("BuildingManager", "Failed to load " + department.getName());
 
-                }
-
-        }
-    }
+//    //TODO: Make generic method
+//    private void loadColleges(Array<College> loading) {
+//        for(College college : loading) {
+//            if (college.load(gameScreen.getPirateMap())) {
+//                    colleges.add(college);
+//                    Gdx.app.debug("BuildingManager", "Loaded " + college.getName());
+//                } else {
+//                    Gdx.app.error("BuildingManager", "Failed to load " + college.getName());
+//                }
+//
+//        }
+//    }
+//
+//    private void loadDepartments(Array<Department> loading) {
+//        for(Department department : loading) {
+//            if (department.load(gameScreen.getPirateMap())) {
+//                    departments.add(department);
+//                    Gdx.app.debug("BuildingManager", "Loaded " + department.getName());
+//                } else {
+//                    Gdx.app.error("BuildingManager", "Failed to load " + department.getName());
+//
+//                }
+//
+//        }
+//    }
 }

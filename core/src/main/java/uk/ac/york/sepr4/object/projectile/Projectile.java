@@ -29,7 +29,7 @@ public class Projectile extends Entity {
     @Override
     public void act(float deltaTime) {
         if(this.distanceFrom(shooter) > 1000) {
-            Gdx.app.log("Test Log","Clearing up distant projectile!");
+            Gdx.app.debug("Projectile","Clearing up distant projectile!");
             this.active = false;
         } else {
             super.act(deltaTime);

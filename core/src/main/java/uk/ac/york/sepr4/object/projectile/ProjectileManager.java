@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import lombok.Getter;
-import uk.ac.york.sepr4.screen.GameScreen;
-import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
 
 public class ProjectileManager {
@@ -15,12 +13,7 @@ public class ProjectileManager {
     @Getter
     private Array<Projectile> projectileList;
 
-    private GameScreen gameScreen;
-    private EntityManager entityManager;
-
-    public ProjectileManager(GameScreen gameScreen, EntityManager entityManager) {
-        this.gameScreen = gameScreen;
-        this.entityManager = entityManager;
+    public ProjectileManager() {
         this.projectileList = new Array<>();
 
     }
@@ -49,7 +42,7 @@ public class ProjectileManager {
 
         for (Projectile projectile : getProjectileList()) {
             if (!stage.getActors().contains(projectile, true)) {
-                Gdx.app.log("Test Log", "Adding new projectile to actors list.");
+                Gdx.app.debug("ProjectileManager", "Adding new projectile to actors list.");
                 stage.addActor(projectile);
             }
         }

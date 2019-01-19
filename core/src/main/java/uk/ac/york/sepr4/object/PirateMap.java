@@ -39,12 +39,11 @@ public class PirateMap {
         this.tiledMap = tiledMap;
         this.collisionObjects = new ArrayList<>();
 
-
         if (checkObjectLayer()) {
             setCollisionObjects();
             this.objectsEnabled = true;
         } else {
-            Gdx.app.log("Pirate Map", "Map does NOT contain object layer!");
+            Gdx.app.error("Pirate Map", "Map does NOT contain object layer!");
             this.objectsEnabled = false;
         }
 
@@ -72,7 +71,6 @@ public class PirateMap {
 
             if (mapLayer instanceof TiledMapTileLayer) {
                 TiledMapTileLayer tileLayer = (TiledMapTileLayer) mapLayer;
-                Gdx.app.log("PirateMap", "" + mapLayer.getName());
 
                 //scan across
                 for (int x = 0; x <= tileLayer.getWidth(); x++) {
@@ -82,7 +80,6 @@ public class PirateMap {
                         if (cell != null) {
                             TiledMapTile tile = tileLayer.getCell(x, y).getTile();
                             if (tile.getObjects() != null) {
-                               // Gdx.app.log("PirateMap", "" + x + ", " + y);
 
                                 Iterator<MapObject> iterator = tile.getObjects().iterator();
                                 while (iterator.hasNext()) {
@@ -99,7 +96,6 @@ public class PirateMap {
                                         //Simple replace with non-rotated tiles in map editor.
                                         polygon.setRotation(polygonMapObject.getPolygon().getRotation());
                                         polygon.setScale(1/2f, 1/2f);
-                                        //Gdx.app.log("Polygon", ""+polygonMapObject.getPolygon().getBoundingRectangle().x + ", "+polygonMapObject.getPolygon().getBoundingRectangle().y);
                                         collisionObjects.add(polygon);
                                     }
                                 }

@@ -125,7 +125,7 @@ public class AnimationManager {
     //Death Animations
     private void handleDeathAnimations(float delta) {
         //add dying npcs if they arent already in there
-        for(LivingEntity livingEntity : entityManager.getNpcList()) {
+        for(LivingEntity livingEntity : entityManager.getLivingEntities()) {
             if(livingEntity.isDying() && !deathAnimations.containsKey(livingEntity)) {
                 deathAnimations.put(livingEntity, 0f);
             }

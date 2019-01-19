@@ -34,7 +34,7 @@ public class EntityManager {
     public EntityManager(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
 
-        this.projectileManager = new ProjectileManager(gameScreen, this);
+        this.projectileManager = new ProjectileManager();
         this.animationManager = new AnimationManager(this);
     }
     
@@ -121,7 +121,7 @@ public class EntityManager {
     }
 
     private Array<NPCBoat> removeDeadNPCs() {
-        Array<NPCBoat> toRemove = new Array<NPCBoat>();
+        Array<NPCBoat> toRemove = new Array<>();
         for(NPCBoat NPCBoat : npcList) {
             if(NPCBoat.isDead()){
                 toRemove.add(NPCBoat);

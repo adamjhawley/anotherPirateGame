@@ -23,6 +23,10 @@ public class PirateGame extends Game {
 		switchScreen(ScreenType.GAME);
 	}
 
+	public void gameOver() {
+		gameScreen = null;
+	}
+
 	public void switchScreen(ScreenType screenType){
 		switch (screenType) {
 			case MENU:

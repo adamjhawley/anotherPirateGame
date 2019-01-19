@@ -17,10 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
-import uk.ac.york.sepr4.object.entity.EntityManager;
-import uk.ac.york.sepr4.object.entity.LivingEntity;
-import uk.ac.york.sepr4.object.entity.NPCBoat;
-import uk.ac.york.sepr4.object.entity.Player;
+import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
@@ -29,8 +26,6 @@ import uk.ac.york.sepr4.screen.hud.HUD;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
-import uk.ac.york.sepr4.utils.AIUtil;
-import uk.ac.york.sepr4.utils.ShapeUtil;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -70,7 +65,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private ShapeRenderer shapeRenderer;
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -164,47 +159,53 @@ public class GameScreen implements Screen, InputProcessor {
         if (player.isDead()) {
             Gdx.app.debug("GameScreen", "Player Died!");
             pirateGame.switchScreen(ScreenType.MENU);
+            pirateGame.gameOver();
             return;
         }
 
-        //spawns/despawns entities, handles animations and projectiles
-        entityManager.handleStageEntities(stage, delta);
+        if(!player.isDying()) {
 
-        if (pirateMap.isObjectsEnabled()) {
-            buildingManager.spawnCollegeEnemies(delta);
-            buildingManager.checkBossSpawn();
+            //spawns/despawns entities, handles animations and projectiles
+            entityManager.handleStageEntities(stage, delta);
+        } else {
+            //when the player is dying - only process animations
+            getEntityManager().getAnimationManager().handleEffects(stage,delta);
         }
-
-        handleHealthBars();
-
-        this.hud.update();
-
-        checkCollisions();
-
-        // Update camera and focus on player.
-        orthographicCamera.position.set(player.getX() + player.getWidth() / 2f, player.getY() + player.getHeight() / 2f, 0);
-        orthographicCamera.update();
-        batch.setProjectionMatrix(orthographicCamera.combined);
-        tiledMapRenderer.setView(orthographicCamera);
-        tiledMapRenderer.render();
-
-        //debug
-        if(DEBUG) {
-            shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
-
-            for (Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
-                shapeRenderer.polygon(polygonMapObject.getTransformedVertices());
+            if (pirateMap.isObjectsEnabled()) {
+                buildingManager.spawnCollegeEnemies(delta);
+                buildingManager.checkBossSpawn();
             }
-            shapeRenderer.end();
-        }
+
+            handleHealthBars();
+
+            this.hud.update();
+
+            checkCollisions();
+
+            // Update camera and focus on player.
+            orthographicCamera.position.set(player.getX() + player.getWidth() / 2f, player.getY() + player.getHeight() / 2f, 0);
+            orthographicCamera.update();
+            batch.setProjectionMatrix(orthographicCamera.combined);
+            tiledMapRenderer.setView(orthographicCamera);
+            tiledMapRenderer.render();
+
+            //debug
+            if (DEBUG) {
+                shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.RED);
+
+                for (Polygon polygonMapObject : getPirateMap().getCollisionObjects()) {
+                    shapeRenderer.polygon(polygonMapObject.getTransformedVertices());
+                }
+                shapeRenderer.end();
+            }
+
 
         stage.act(delta);
         stage.draw();
         hudStage.act();
         hudStage.draw();
-
     }
 
     /**
@@ -248,14 +249,6 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     public void checkLivingEntityCollisions() {
-        //player/npc collision check
-//        for (NPCBoat NPCBoat : getEntityManager().getNpcList()) {
-//            if (NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
-//                //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
-//                //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
-//                //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
-//            }
-//        }
         //player/map collision check
         //TODO: Improve to make player a polygon
         for(LivingEntity lE : getEntityManager().getLivingEntities()) {
@@ -270,6 +263,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
 
             //between living entities themselves
+            //TODO: still a bit buggy
             for(LivingEntity lE2 : getEntityManager().getLivingEntities()) {
                 if(!lE.equals(lE2)) {
                     if(lE.getRectBounds().overlaps(lE2.getRectBounds())) {
@@ -283,47 +277,32 @@ public class GameScreen implements Screen, InputProcessor {
                     lE.setColliedWithBoat(lE.getColliedWithBoat() - 1);
                 }
             }
-
         }
-
-
-
     }
 
     private void checkProjectileCollisions() {
         Player player = entityManager.getOrCreatePlayer();
-        for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
-            if (projectile.getShooter() != player
-                    && projectile.getRectBounds().overlaps(player.getRectBounds())) {
-                //if bullet overlaps player and shooter not player
-                if (!(player.isDying() || player.isDead())) {
-                    if (!player.damage(projectile.getDamage())) {
-                        //is dead
-                        Gdx.app.debug("GameScreen", "Player died.");
-                    } else {
-                        Gdx.app.debug("GameScreen", "Player damaged by projectile.");
-                    }
-                }
-                //kill projectile
-                projectile.setActive(false);
-            }
-        }
 
-        for (NPCBoat npcBoat : entityManager.getNpcList()) {
+        for (LivingEntity livingEntity : entityManager.getLivingEntities()) {
             for (Projectile projectile : entityManager.getProjectileManager().getProjectileList()) {
-                if (projectile.getShooter() != npcBoat && projectile.getRectBounds().overlaps(npcBoat.getRectBounds())) {
+                if (projectile.getShooter() != livingEntity && projectile.getRectBounds().overlaps(livingEntity.getRectBounds())) {
                     //if bullet overlaps player and shooter not player
-                    if (!(npcBoat.isDying() || npcBoat.isDead())) {
-                        if (!npcBoat.damage(projectile.getDamage())) {
+                    if (!(livingEntity.isDying() || livingEntity.isDead())) {
+                        if (!livingEntity.damage(projectile.getDamage())) {
                             //is dead
-                            Gdx.app.debug("GameScreen", "NPCBoat died.");
-                            player.issueReward(itemManager.generateReward());
-                            //if dead NPC is a boss then player can capture its respective college
-                            if(npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
-                                player.capture(npcBoat.getAllied().get());
+                            if(livingEntity instanceof NPCBoat) {
+                                Gdx.app.debug("GameScreen", "NPCBoat died.");
+                                NPCBoat npcBoat = (NPCBoat) livingEntity;
+                                player.issueReward(itemManager.generateReward());
+                                //if dead NPC is a boss then player can capture its respective college
+                                if(npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                    player.capture(npcBoat.getAllied().get());
+                                }
+                            } else {
+                                Gdx.app.debug("GameScreen", "Player died.");
                             }
                         }
-                        Gdx.app.debug("GameScreen", "NPCBoat damaged by projectile.");
+                        Gdx.app.debug("GameScreen", "LivingEntity damaged by projectile.");
                         //kill projectile
                         projectile.setActive(false);
                     }

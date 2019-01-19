@@ -18,9 +18,7 @@ public class ItemManager {
     public ItemManager() {
         Json json = new Json();
         items = json.fromJson(Array.class, Item.class, Gdx.files.internal("items.json"));
-        for(Item item : items){
-            System.out.println(item.getName());
-        }
+        Gdx.app.log("ItemManager", "Loaded "+items.size+" items!");
 
     }
 
