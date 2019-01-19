@@ -1,10 +1,7 @@
 package uk.ac.york.sepr4.utils;
 
 
-import com.badlogic.gdx.Gdx;
 import uk.ac.york.sepr4.object.entity.Entity;
-import uk.ac.york.sepr4.object.entity.LivingEntity;
-import uk.ac.york.sepr4.object.projectile.Projectile;
 
 import com.badlogic.gdx.utils.Array;
 

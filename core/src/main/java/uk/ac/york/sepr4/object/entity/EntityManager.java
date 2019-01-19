@@ -1,18 +1,13 @@
 package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import lombok.Data;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.Department;
-import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 

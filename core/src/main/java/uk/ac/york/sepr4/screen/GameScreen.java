@@ -6,13 +6,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -20,24 +17,26 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
+import uk.ac.york.sepr4.object.entity.EntityManager;
+import uk.ac.york.sepr4.object.entity.LivingEntity;
+import uk.ac.york.sepr4.object.entity.NPCBoat;
+import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
 import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.screen.hud.HUD;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
-import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
-import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
- * {@link uk.ac.york.sepr4.object.building.BuildingManager}, {@link uk.ac.york.sepr4.object.item.ItemManager},
- * {@link uk.ac.york.sepr4.object.quest.QuestManager} and {@link uk.ac.york.sepr4.object.entity.EntityManager}
+ * {@link BuildingManager}, {@link ItemManager},
+ * {@link QuestManager} and {@link EntityManager}
  * <p>
  * Responds to keyboard and mouse input by the player. InputMultiplexer used to combine input processing in both
- * this class (mouse clicks) and {@link uk.ac.york.sepr4.object.entity.Player} class (key press).
+ * this class (mouse clicks) and {@link Player} class (key press).
  */
 public class GameScreen implements Screen, InputProcessor {
 
@@ -69,7 +68,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private ShapeRenderer shapeRenderer;
 
-    private static final boolean DEBUG = true;
+    public static boolean DEBUG = true;
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -217,7 +216,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        for (NPCBoat NPCBoat : entityManager.getNpcList()) {
+        for (uk.ac.york.sepr4.object.entity.NPCBoat NPCBoat : entityManager.getNpcList()) {
             if (NPCBoat.getHealth() < NPCBoat.getMaxHealth()) {
                 if (!stage.getActors().contains(NPCBoat.getHealthBar(), true)) {
                     stage.addActor(NPCBoat.getHealthBar());

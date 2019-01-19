@@ -2,7 +2,6 @@ package uk.ac.york.sepr4.object.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
 

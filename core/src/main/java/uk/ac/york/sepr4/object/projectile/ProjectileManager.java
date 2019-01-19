@@ -5,12 +5,10 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Json;
 import lombok.Getter;
+import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
-import uk.ac.york.sepr4.object.entity.NPCBoat;
-import uk.ac.york.sepr4.screen.GameScreen;
 
 public class ProjectileManager {
 
