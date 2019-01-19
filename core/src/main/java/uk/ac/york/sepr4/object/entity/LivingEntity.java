@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
+import uk.ac.york.sepr4.utils.AIUtil;
 
 @Data
 public abstract class LivingEntity extends Entity {
@@ -15,6 +16,8 @@ public abstract class LivingEntity extends Entity {
     private Integer turningSpeed = 1, collided = 0;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f;
     private float angularSpeed = 0f;
+
+    private int collidedWithIsland = 0, colliedWithBoat = 0;
 
     private float firingangle;
 
@@ -35,6 +38,18 @@ public abstract class LivingEntity extends Entity {
         //if not silent, act method will explode
         this.isDying = !silent;
         this.isDead = silent;
+    }
+
+    public void collide(boolean withBoat) {
+        if(withBoat) {
+            setColliedWithBoat(10);
+        } else {
+            setCollidedWithIsland(10);
+        }
+        setAngle(AIUtil.convertToRealAngle(getAngle() - (float) Math.PI));
+        if (getSpeed() > getMaxSpeed() / 5) {
+            setSpeed(getMaxSpeed() / 5);
+        }
     }
 
     public HealthBar getHealthBar() {

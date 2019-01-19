@@ -1,14 +1,19 @@
 package uk.ac.york.sepr4.object.building;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Data;
+import uk.ac.york.sepr4.object.entity.NPCBuilder;
 import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.screen.GameScreen;
 import uk.ac.york.sepr4.object.entity.NPCBoat;
 
 import java.util.Optional;
+import java.util.Random;
+import java.util.Vector;
 
 @Data
 public class BuildingManager {
@@ -50,12 +55,46 @@ public class BuildingManager {
                 Player player = gameScreen.getEntityManager().getOrCreatePlayer();
                 if (college.getBuildingZone().contains(player.getRectBounds())) {
                     Gdx.app.debug("BuildingManager", "Player entered college zone: " + college.getName());
-                    NPCBoat npcBoss = college.spawnBoss();
-                    college.setBossSpawned(true);
-                    gameScreen.getEntityManager().addNPC(npcBoss);
+                    Optional<NPCBoat> npcBoss = generateCollegeNPC(college, true);
+                    if(npcBoss.isPresent()) {
+                        college.setBossSpawned(true);
+                        gameScreen.getEntityManager().addNPC(npcBoss.get());
+                    }
+
                 }
             }
         }
+    }
+
+    private Optional<Vector2> getValidRandomSpawn(College college, float size) {
+        int attempts = 0;
+        while (attempts<10) {
+            Vector2 test = college.getRandomSpawnVector();
+            Rectangle rectangle = new Rectangle(test.x-(size/2), test.y-(size/2), size, size);
+            if(!gameScreen.getPirateMap().isColliding(rectangle)
+                    && !gameScreen.getEntityManager().isOccupied(rectangle)) {
+                return Optional.of(test);
+            }
+            attempts++;
+        }
+        return Optional.empty();
+    }
+
+    private Optional<NPCBoat> generateCollegeNPC(College college, boolean boss) {
+        Random random = new Random();
+        if(random.nextDouble() <= college.getSpawnChance()){
+            Optional<Vector2> pos = getValidRandomSpawn(college, 250f);
+            if(pos.isPresent()) {
+                NPCBoat boat = new NPCBuilder()
+                        .generateRandomEnemy(
+                                pos.get(),
+                                college,
+                                boss ? college.getBossDifficulty() : college.getEnemyDifficulty(),
+                                boss);
+                return Optional.of(boat);
+            }
+        }
+        return Optional.empty();
     }
 
     public void spawnCollegeEnemies(float delta) {
@@ -65,18 +104,11 @@ public class BuildingManager {
                 //check how many entities already exist in college zone (dont spawn too many)
                 if(gameScreen.getEntityManager().getLivingEntitiesInArea(college.getBuildingZone()).size
                         < college.getMaxEntities()) {
-                    Optional<NPCBoat> optionalEnemy = college.generateCollegeNPC();
+                    Optional<NPCBoat> optionalEnemy = generateCollegeNPC(college,false);
                     if (optionalEnemy.isPresent()) {
-                        NPCBoat npcBoat = optionalEnemy.get();
                         //checks if spawn spot is valid
-                        //TODO: instead of cancelling spawn, get a better spot
-                        if(!gameScreen.getPirateMap().isColliding(npcBoat.getCentre())) {
-                            Gdx.app.debug("Building Manager", "Spawning an enemy at " + college.getName());
-                            gameScreen.getEntityManager().addNPC(optionalEnemy.get());
-                        } else {
-                            Gdx.app.debug("BuildingManager", "Didnt spawn enemy in collision spot!");
-
-                        }
+                        Gdx.app.debug("Building Manager", "Spawning an enemy at " + college.getName());
+                        gameScreen.getEntityManager().addNPC(optionalEnemy.get());
                     }
                 } else {
                     //Gdx.app.debug("BuildingManager", "Max entities @ "+college.getName());

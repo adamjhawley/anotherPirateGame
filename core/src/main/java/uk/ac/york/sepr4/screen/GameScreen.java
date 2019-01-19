@@ -29,6 +29,8 @@ import uk.ac.york.sepr4.screen.hud.HUD;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
+import uk.ac.york.sepr4.utils.AIUtil;
+import uk.ac.york.sepr4.utils.ShapeUtil;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -246,26 +248,46 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     public void checkLivingEntityCollisions() {
-        Player player = getEntityManager().getOrCreatePlayer();
         //player/npc collision check
-        for (NPCBoat NPCBoat : getEntityManager().getNpcList()) {
-            if (NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
-                //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
-                //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
-                //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
-            }
-        }
+//        for (NPCBoat NPCBoat : getEntityManager().getNpcList()) {
+//            if (NPCBoat.getRectBounds().overlaps(player.getRectBounds())) {
+//                //Double actingMom = NPCBoat.getSpeed() * Math.acos(NPCBoat.getAngleTowardsLE(player));
+//                //player.setAngle(player.getAngle()+(float)Math.acos(player.getSpeed()/NPCBoat.getSpeed()));
+//                //NPCBoat.setSpeed(NPCBoat.getSpeed()/2);
+//            }
+//        }
         //player/map collision check
         //TODO: Improve to make player a polygon
-        for(Polygon polygon : getPirateMap().getCollisionObjects()) {
-            float[] points = polygon.getTransformedVertices();
-            for (int i=0;i<points.length;i+=2){
-                if(player.getRectBounds().contains(points[i],points[i+1])){
-                    Gdx.app.log("GameScreen", "Collision");
-                    player.setAngle((float)(2*Math.PI - player.getAngle()));
+        for(LivingEntity lE : getEntityManager().getLivingEntities()) {
+            //Between entity and map
+            if(getPirateMap().isColliding(lE.getRectBounds())) {
+                if (lE.getCollidedWithIsland() == 0) {
+                    lE.collide(false);
                 }
             }
+            if(lE.getCollidedWithIsland() >= 1) {
+                lE.setCollidedWithIsland(lE.getCollidedWithIsland() - 1);
+            }
+
+            //between living entities themselves
+            for(LivingEntity lE2 : getEntityManager().getLivingEntities()) {
+                if(!lE.equals(lE2)) {
+                    if(lE.getRectBounds().overlaps(lE2.getRectBounds())) {
+                        if(lE.getColliedWithBoat() == 0) {
+                            lE.collide(true);
+                        }
+                        //Gdx.app.log("gs", ""+lE.getColliedWithBoat());
+                    }
+                }
+                if(lE.getColliedWithBoat() >= 1) {
+                    lE.setColliedWithBoat(lE.getColliedWithBoat() - 1);
+                }
+            }
+
         }
+
+
+
     }
 
     private void checkProjectileCollisions() {

@@ -10,7 +10,6 @@ import uk.ac.york.sepr4.object.entity.NPCBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Data
@@ -23,7 +22,7 @@ public class College extends Building {
     //Can be set optionally in file to change college parameters
     private float spawnRange = 500f;
     private Double spawnChance = 0.1, enemyDifficulty = 0.1;
-    private Integer maxEntities = 3;
+    private Integer maxEntities = 2;
     private List<String> requiresCollegeStr = new ArrayList<>(); //yet to be implemented (questing)
 
     //Set from college variables
@@ -48,11 +47,6 @@ public class College extends Building {
         return false;
     }
 
-    public NPCBoat spawnBoss() {
-        //spawn boss at center
-        return new NPCBuilder().generateRandomEnemy(getMapLocation(), this, bossDifficulty, true);
-    }
-
     /***
      * Check if the boss specified by file is defined and can be created.
      * @return
@@ -61,22 +55,13 @@ public class College extends Building {
         return(bossName != null && bossDifficulty != null);
     }
 
-    public Optional<NPCBoat> generateCollegeNPC() {
-        Random random = new Random();
-        if(random.nextDouble() <= spawnChance){
-            NPCBoat boat = new NPCBuilder().generateRandomEnemy(getRandomSpawnVector(), this, enemyDifficulty);
-            return Optional.of(boat);
-        }
-        return Optional.empty();
-    }
 
     public Rectangle getCollegeSpawnZone() {
         Vector2 pos = getMapLocation();
         return new Rectangle(pos.x-(spawnRange/2), pos.y-(spawnRange/2), spawnRange, spawnRange);
     }
 
-
-    private Vector2 getRandomSpawnVector() {
+    public Vector2 getRandomSpawnVector() {
         //TODO: Very unsure if this works / is the best (or even good) way to do this.
         Random random = new Random();
         Rectangle rectangle = getCollegeSpawnZone();

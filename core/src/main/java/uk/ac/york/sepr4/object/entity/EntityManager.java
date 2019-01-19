@@ -11,6 +11,9 @@ import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
 import uk.ac.york.sepr4.screen.GameScreen;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -41,6 +44,23 @@ public class EntityManager {
             animationManager.createWaterTrail(player);
         }
         return player;
+    }
+
+    public List<LivingEntity> getLivingEntities() {
+        List<LivingEntity> list = new ArrayList<>();
+        npcList.forEach(npcBoat -> list.add(npcBoat));
+        list.add(getOrCreatePlayer());
+
+        return new ArrayList<>(list);
+    }
+
+    public boolean isOccupied(Rectangle rectangle) {
+        for(LivingEntity livingEntities : getLivingEntities()) {
+            if(rectangle.overlaps(livingEntities.getRectBounds())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Optional<Building> getPlayerLocation() {

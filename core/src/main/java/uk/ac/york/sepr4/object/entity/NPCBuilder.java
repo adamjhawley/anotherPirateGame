@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
-
 import java.util.Optional;
 import java.util.Random;
 
@@ -13,7 +12,6 @@ public class NPCBuilder {
     private float angle = 0f, speed = 0f, maxSpeed = 100f, range = 500f,
             accuracy = 0.5f, idealDistFromTarget = 250f, gradientFromNormalDist = 50f, reqCooldown = 0.8f;
     private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
-    private boolean isDead = false, onFire = false;
     private Integer turningSpeed = 2;
     private Texture texture = TextureManager.ENEMY;
     private Optional<College> allied = Optional.empty();
@@ -94,10 +92,10 @@ public class NPCBuilder {
         return this;
     }
 
-    public NPCBuilder accuracy(float accuracy) {
-        this.accuracy = accuracy;
-        return this;
-    }
+//    public NPCBuilder accuracy(float accuracy) {
+//        this.accuracy = accuracy;
+//        return this;
+//    }
 
     public NPCBuilder health(Double health) {
         this.health = health;
@@ -118,6 +116,7 @@ public class NPCBuilder {
         builder.health((float)(difficulty*random.nextDouble())+maxHealth);
         builder.reqCooldown((float)(1/(difficulty*reqCooldown)));
         builder.allied(allied);
+        builder.angle((float) (2*Math.PI*random.nextDouble()));
 
         return builder.buildNPC(pos);
     }

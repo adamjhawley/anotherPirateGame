@@ -9,8 +9,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Getter;
+import uk.ac.york.sepr4.utils.ShapeUtil;
 
 import java.util.*;
 
@@ -56,9 +58,9 @@ public class PirateMap {
         }
     }
 
-    public boolean isColliding(Vector2 pos) {
+    public boolean isColliding(Rectangle rectangle) {
         for(Polygon polygon : collisionObjects) {
-            if(polygon.contains(pos)){
+            if(ShapeUtil.overlap(polygon, rectangle)){
                 return true;
             }
         }

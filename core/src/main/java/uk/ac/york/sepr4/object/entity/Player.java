@@ -27,8 +27,8 @@ public class Player extends LivingEntity implements InputProcessor {
         setAngle((float)Math.PI);
 
         //testing
-        //setMaxHealth(1000.0);
-        //setHealth(1000.0);
+        setMaxHealth(1000.0);
+        setHealth(1000.0);
     }
 
     @Override
