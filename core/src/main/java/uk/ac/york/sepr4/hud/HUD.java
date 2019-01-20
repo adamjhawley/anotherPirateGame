@@ -1,14 +1,14 @@
-package uk.ac.york.sepr4.screen.hud;
+package uk.ac.york.sepr4.hud;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import lombok.Getter;
+import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.entity.Player;
-import uk.ac.york.sepr4.screen.GameScreen;
 
 import java.util.Optional;
 

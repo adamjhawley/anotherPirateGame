@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.screen;
+package uk.ac.york.sepr4;
 
 public enum ScreenType {
     MENU, PREFERENCES, GAME, END

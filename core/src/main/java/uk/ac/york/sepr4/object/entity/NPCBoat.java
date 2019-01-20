@@ -8,7 +8,7 @@ import com.badlogic.gdx.utils.Array;
 import lombok.Data;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.projectile.Projectile;
-import uk.ac.york.sepr4.screen.GameScreen;
+import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.utils.AIUtil;
 import java.util.Optional;
 import java.util.Random;

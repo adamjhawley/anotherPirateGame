@@ -9,10 +9,9 @@ import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.projectile.ProjectileManager;
-import uk.ac.york.sepr4.screen.GameScreen;
+import uk.ac.york.sepr4.GameScreen;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

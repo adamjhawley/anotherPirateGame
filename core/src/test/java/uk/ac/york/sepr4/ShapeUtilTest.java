@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.screen;
+package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;

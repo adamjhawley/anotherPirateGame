@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
-import uk.ac.york.sepr4.screen.GameScreen;
-import uk.ac.york.sepr4.screen.hud.HealthBar;
+import uk.ac.york.sepr4.GameScreen;
+import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.utils.AIUtil;
 
 @Data

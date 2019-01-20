@@ -2,9 +2,6 @@ package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.Game;
 import lombok.Getter;
-import uk.ac.york.sepr4.screen.GameScreen;
-import uk.ac.york.sepr4.screen.ScreenType;
-import uk.ac.york.sepr4.screen.MenuScreen;
 
 public class PirateGame extends Game {
 

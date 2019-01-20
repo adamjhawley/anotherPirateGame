@@ -9,7 +9,7 @@ import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.item.Item;
 import uk.ac.york.sepr4.object.item.Reward;
-import uk.ac.york.sepr4.screen.GameScreen;
+import uk.ac.york.sepr4.GameScreen;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +29,10 @@ public class Player extends LivingEntity implements InputProcessor {
         //testing
         //setMaxHealth(1000.0);
         //setHealth(1000.0);
+
+        setMaxHealth(20.0+(0.5*(getLevel()-1)));
+        setMaxSpeed(100f+(5f*(getLevel()-1)));
+        setDamage(0.5+(0.1*(getLevel()-1)));
     }
 
     @Override

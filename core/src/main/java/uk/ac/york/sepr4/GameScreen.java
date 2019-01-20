@@ -1,4 +1,4 @@
-package uk.ac.york.sepr4.screen;
+package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
@@ -18,12 +18,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import uk.ac.york.sepr4.object.entity.*;
-import uk.ac.york.sepr4.PirateGame;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
 import uk.ac.york.sepr4.object.quest.QuestManager;
-import uk.ac.york.sepr4.screen.hud.HUD;
-import uk.ac.york.sepr4.screen.hud.HealthBar;
+import uk.ac.york.sepr4.hud.HUD;
+import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
