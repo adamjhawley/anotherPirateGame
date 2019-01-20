@@ -179,7 +179,7 @@ public class AIUtil {
     public static boolean rightForAngleDiffrenceBetweenTwoAngles(float angle1, float angle2){
         angle1 = normalizeAngle(angle1);
         angle2 = normalizeAngle(angle2);
-        if (normalizeAngle(angle2 - angle1) > Math.PI){
+        if (angleDiffrenceBetweenTwoAngles(angle1, angle2) >= 0){
             return true;
         } else {
             return false;
