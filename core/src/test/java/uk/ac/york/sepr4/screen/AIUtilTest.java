@@ -7,9 +7,9 @@ import uk.ac.york.sepr4.utils.AIUtil;
 public class AIUtilTest {
 
     @Test
-    public void convertToRealAngleTest() {
-        Assert.assertEquals(2.035, AIUtil.convertToRealAngle(90), 0.01);
+    public void normalizeAngleTest() {
+        Assert.assertEquals(-Math.PI, AIUtil.normalizeAngle((float) (-3*Math.PI)), 0.01);
 
-        Assert.assertEquals(4.245, AIUtil.convertToRealAngle(-90), 0.01);
+        Assert.assertEquals(Math.PI, AIUtil.normalizeAngle((float) (3*Math.PI)), 0.01);
     }
 }

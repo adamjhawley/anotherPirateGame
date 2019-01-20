@@ -33,13 +33,12 @@ public class Player extends LivingEntity implements InputProcessor {
 
     @Override
     public void act(float deltaTime) {
-        float angle = getAngle();
-        angle += ((getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed())) % (float)(2*Math.PI);
-
-       // Gdx.app.log("", this.__str__());
-
-        setAngle(angle);
-        super.act(deltaTime);
+        if(!isDying() && !isDead()) {
+            float angle = getAngle();
+            angle += ((getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed())) % (float) (2 * Math.PI);
+            setAngle(angle);
+            super.act(deltaTime);
+        }
     }
 
     public void capture(College college) {

@@ -339,9 +339,9 @@ public class GameScreen implements Screen, InputProcessor {
             Player player = entityManager.getOrCreatePlayer();
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float) (-Math.atan2(player.getCentre().x - clickLoc.x, player.getCentre().y - clickLoc.y));
-            Gdx.app.log("Test Log", "Firing: Click at (rad) " + fireAngle);
+            Gdx.app.debug("GameScreen", "Firing: Click at (rad) " + fireAngle);
             if (!player.fire(fireAngle)) {
-                Gdx.app.log("Test Log", "Error firing!");
+                Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
             }
             return true;
         }

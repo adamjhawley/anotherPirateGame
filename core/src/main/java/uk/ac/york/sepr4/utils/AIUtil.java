@@ -8,10 +8,10 @@ import com.badlogic.gdx.utils.Array;
 public class AIUtil {
 
     /**
-     * @param x1 The original x
+     * @param x1 The original x position
      * @param angle The angle you want to move the x by
      * @param distance The distance you want to move the x by on that angle
-     * @return The X once x1 has been moved along by that angle for a certain distance
+     * @return The x position once x1 has been moved along by that angle for a certain distance
      */
     public static float getXwithAngleandDistance(float x1, float angle, float distance) {
         return (float)(x1 + distance*Math.sin(angle));
@@ -23,27 +23,15 @@ public class AIUtil {
     }
 
     /**
-     * Takes any angle and converts it back down to the range 0 to 2PI this is due to how libgdx does its angles where you can get an actor with 10pi if its rotated 5 times
+     * Takes any angle and converts it back down to the range 0 to 2PI
+     * This is due to how LibGDX uses angles where you can have an actor with 10pi if rotated 5 times
      *
      * @param angle
-     * @return angle restriced to 0 to 2PI
+     * @return angle restricted to 0 to 2PI
      */
-    public static float convertToRealAngle(float angle) {
+    public static float normalizeAngle(float angle) {
         //Have to do it in this bad way due to angle mod 2PI not working
-        if (angle >= 0) {
-            while (angle >= 0) {
-                angle -= 2 * Math.PI;
-            }
-            angle += 2 * Math.PI;
-        } else {
-            while (angle < 0) {
-                angle += 2 * Math.PI;
-            }
-        }
-        if (angle < 0){
-            angle = 0f;
-        }
-        return angle;
+        return (float) (angle%(2*Math.PI));
     }
 
     /**
@@ -102,11 +90,11 @@ public class AIUtil {
      * Refer to NPC Functions 2
      * @param source
      * @param target
-     * @param addedSpeed - This is here just incase its for the shooting where you need to add the projectiles speed onto the sources speed
-     * @return - Returns the angle to shoot at or move in to hit the target at the right time going at the current speed/the soon to be speed in case of shooting
+     * @param addedSpeed - A value to increase the projectile's speed (usually by the source's speed)
+     * @return - Returns the angle to shoot at or move in to hit the target at the right time going at the current speed
      */
     public static float perfectAngleToCollide(Entity source, Entity target, double addedSpeed) {
-        double thetaP = convertToRealAngle(target.getAngle());
+        double thetaP = normalizeAngle(target.getAngle());
         double thetaTP = source.getAngleTowardsEntity(target);
 
         boolean right = rightThetaForAngleDiffrence(thetaP, thetaTP);
@@ -133,7 +121,7 @@ public class AIUtil {
             shotAngle = thetaTP;
         }
 
-        return convertToRealAngle((float) shotAngle);
+        return normalizeAngle((float) shotAngle);
     }
 
     /**
@@ -178,20 +166,20 @@ public class AIUtil {
 
     //Returns the diffrence between 2 angles where angle 1 is the one with the respect (Same as doing a dot product of 2 vectors basically)
     public static float angleDiffrenceBetweenTwoAngles(float angle1, float angle2){
-        angle1 = convertToRealAngle(angle1);
-        angle2 = convertToRealAngle(angle2);
-        if (convertToRealAngle(angle2 - angle1) > Math.PI){
-            return (float)(2* Math.PI - convertToRealAngle(angle2 - angle1));
+        angle1 = normalizeAngle(angle1);
+        angle2 = normalizeAngle(angle2);
+        if (normalizeAngle(angle2 - angle1) > Math.PI){
+            return (float)(2* Math.PI - normalizeAngle(angle2 - angle1));
         } else {
-            return convertToRealAngle(angle2 - angle1);
+            return normalizeAngle(angle2 - angle1);
         }
     }
 
     //Returns true if angle2 is right of angle1 (meaning if I travel along angle1 then turn to angle2 will it be left or right)
     public static boolean rightForAngleDiffrenceBetweenTwoAngles(float angle1, float angle2){
-        angle1 = convertToRealAngle(angle1);
-        angle2 = convertToRealAngle(angle2);
-        if (convertToRealAngle(angle2 - angle1) > Math.PI){
+        angle1 = normalizeAngle(angle1);
+        angle2 = normalizeAngle(angle2);
+        if (normalizeAngle(angle2 - angle1) > Math.PI){
             return true;
         } else {
             return false;
@@ -199,23 +187,23 @@ public class AIUtil {
     }
 
     /**
-     * Refer to NPC Functions 5 - Same us plusing together a bunch of vectors
+     * Refer to NPC Functions 5 - Same as adding together a series of vectors
      * @param angles
      * @param forces
-     * @return An Array where its like a pair (Resultant force magnitude, Resultant force angle) [Basically a vector]
+     * @return An array acting as a pair (Resultant force magnitude, Resultant force angle) [Basically a vector]
      */
     public static Array<Float> resultantForce(Array<Float> angles, Array<Float> forces){
         Array<Float> force_angle = new Array<Float>();
         float N = 0, E = 0;
         double sigma;
         for (int i = 0; i<angles.size; i++){
-            if (convertToRealAngle(angles.get(i)) <= Math.PI/2){
+            if (normalizeAngle(angles.get(i)) <= Math.PI/2){
                 E += forces.get(i)*Math.sin(angles.get(i));
                 N -= forces.get(i)*Math.cos(angles.get(i));
-            } else if (convertToRealAngle(angles.get(i)) <= Math.PI){
+            } else if (normalizeAngle(angles.get(i)) <= Math.PI){
                 E += forces.get(i)*Math.cos(angles.get(i) - Math.PI/2);
                 N += forces.get(i)*Math.sin(angles.get(i) - Math.PI/2);
-            } else if (convertToRealAngle(angles.get(i)) <= 3*Math.PI/2){
+            } else if (normalizeAngle(angles.get(i)) <= 3*Math.PI/2){
                 E -= forces.get(i)*Math.sin(angles.get(i) - Math.PI);
                 N += forces.get(i)*Math.cos(angles.get(i) - Math.PI);
             } else {

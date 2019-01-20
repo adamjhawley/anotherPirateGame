@@ -49,7 +49,7 @@ public abstract class LivingEntity extends Entity {
         } else {
             setCollidedWithIsland(10);
         }
-        setAngle(AIUtil.convertToRealAngle(getAngle() - (float) Math.PI));
+        setAngle(AIUtil.normalizeAngle(getAngle() - (float) Math.PI));
         if (getSpeed() > getMaxSpeed() / 5) {
             setSpeed(getMaxSpeed() / 5);
         }
