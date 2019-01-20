@@ -43,13 +43,15 @@ public abstract class LivingEntity extends Entity {
      * Called to action collision action (boat reversal)
      * @param withBoat true if collision was with another LivingEntity (boat)
      */
-    public void collide(boolean withBoat) {
+    public void collide(boolean withBoat, float thetaTP) {
         if(withBoat) {
             setColliedWithBoat(10);
+            setAngle(thetaTP);
         } else {
             setCollidedWithIsland(10);
+            setAngle(AIUtil.normalizeAngle(getAngle() - (float) Math.PI));
         }
-        setAngle(AIUtil.normalizeAngle(getAngle() - (float) Math.PI));
+        //setAngle(AIUtil.normalizeAngle(getAngle() - (float) Math.PI));
         if (getSpeed() > getMaxSpeed() / 5) {
             setSpeed(getMaxSpeed() / 5);
         }

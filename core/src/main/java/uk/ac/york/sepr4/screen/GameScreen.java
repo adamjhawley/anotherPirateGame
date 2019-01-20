@@ -26,6 +26,7 @@ import uk.ac.york.sepr4.screen.hud.HUD;
 import uk.ac.york.sepr4.screen.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
+import uk.ac.york.sepr4.utils.AIUtil;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -255,7 +256,7 @@ public class GameScreen implements Screen, InputProcessor {
             //Between entity and map
             if(getPirateMap().isColliding(lE.getRectBounds())) {
                 if (lE.getCollidedWithIsland() == 0) {
-                    lE.collide(false);
+                    lE.collide(false, 0f);
                 }
             }
             if(lE.getCollidedWithIsland() >= 1) {
@@ -268,7 +269,7 @@ public class GameScreen implements Screen, InputProcessor {
                 if(!lE.equals(lE2)) {
                     if(lE.getRectBounds().overlaps(lE2.getRectBounds())) {
                         if(lE.getColliedWithBoat() == 0) {
-                            lE.collide(true);
+                            lE.collide(true, AIUtil.normalizeAngle((float)(lE.getAngleTowardsEntity(lE2) - Math.PI)));
                         }
                         //Gdx.app.log("gs", ""+lE.getColliedWithBoat());
                     }
