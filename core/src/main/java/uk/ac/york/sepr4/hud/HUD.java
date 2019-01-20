@@ -9,7 +9,6 @@ import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.entity.Player;
-
 import java.util.Optional;
 
 public class HUD {
@@ -20,6 +19,11 @@ public class HUD {
     @Getter
     private Table table;
 
+    /***
+     * Class responsible for storing and updating HUD variables.
+     * Creates table which is drawn to the stage!
+     * @param gameScreen instance of GameScreen from which to get HUD values.
+     */
     public HUD(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
 
@@ -30,6 +34,7 @@ public class HUD {
         //make the table fill the entire stage
         table.setFillParent(true);
 
+        //set default label values
         goldLabel = new Label("GOLD", new Label.LabelStyle(new BitmapFont(), Color.GOLD));
         goldValueLabel = new Label("0", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
 
@@ -49,12 +54,18 @@ public class HUD {
 
     }
 
+    /***
+     * Update label values - called during stage render
+     */
     public void update() {
         Player player = gameScreen.getEntityManager().getOrCreatePlayer();
 
+        //balance and xp overheads
         goldValueLabel.setText(""+player.getBalance());
-        xpValueLabel.setText(""+player.getLevel()+" ("+(player.getLevelProgress())*100+"%)");
+        //+" ("+(player.getLevelProgress())*100+"%)"
+        xpValueLabel.setText(""+player.getLevel());
 
+        //location overhead
         boolean captured = false;
         Optional<Building> loc = gameScreen.getEntityManager().getPlayerLocation();
         if(loc.isPresent()) {

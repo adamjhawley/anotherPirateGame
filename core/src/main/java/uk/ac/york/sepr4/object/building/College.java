@@ -31,6 +31,11 @@ public class College extends Building {
         // Empty constructor for JSON DAO.
     }
 
+    /***
+     * Checks whether TiledMap contains object indicating building's location
+     * @param pirateMap map to check
+     * @return true if object exists, false otherwise
+     */
     public boolean load(PirateMap pirateMap){
         Gdx.app.debug("College", "Load "+getName());
         if(super.load(pirateMap)) {
@@ -58,14 +63,17 @@ public class College extends Building {
         return new Rectangle(pos.x-(spawnRange/2), pos.y-(spawnRange/2), spawnRange, spawnRange);
     }
 
+    /***
+     * Get random location in college's spawn zone
+     * @return random vector position
+     */
     public Vector2 getRandomSpawnVector() {
-        //TODO: Very unsure if this works / is the best (or even good) way to do this.
         Random random = new Random();
         Rectangle rectangle = getCollegeSpawnZone();
         float randX = rectangle.x+(random.nextFloat() * (rectangle.width));
         float randY = rectangle.y+(random.nextFloat() * (rectangle.height));
-        Gdx.app.debug("RandSpawn", "x:"+randX+", y:"+randY);
-        Gdx.app.debug("RandSpawn", "w:"+rectangle.width+", h:"+rectangle.height);
+        //Gdx.app.debug("RandSpawn", "x:"+randX+", y:"+randY);
+        //Gdx.app.debug("RandSpawn", "w:"+rectangle.width+", h:"+rectangle.height);
 
         return new Vector2(randX, randY);
     }

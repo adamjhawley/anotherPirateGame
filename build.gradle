@@ -19,6 +19,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
+
     version = '1.0'
     ext {
         appName = "APirateGame"
@@ -54,8 +55,13 @@ project(":desktop") {
 
 project(":core") {
     apply plugin: "java"
-
-
+    apply plugin: "checkstyle"
+    
+    checkstyle {
+        configFile = rootProject.file('checkstyle/checkstyle.xml')
+        toolVersion = '8.11'
+    }
+    
     dependencies {
         compile "org.projectlombok:lombok:1.18.2"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
@@ -68,6 +74,7 @@ project(":core") {
         testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
+
 
 tasks.eclipse.doLast {
     delete ".project"

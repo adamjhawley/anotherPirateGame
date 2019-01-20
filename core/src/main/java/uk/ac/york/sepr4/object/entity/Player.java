@@ -85,7 +85,6 @@ public class Player extends LivingEntity implements InputProcessor {
     public void addBalance(Integer val) {
         balance+=val;
     }
-
     public void addXP(Integer val) {
         xp+=val;
     }
@@ -93,6 +92,8 @@ public class Player extends LivingEntity implements InputProcessor {
         inventory.addAll(items);
     }
 
+
+    //Methods below for taking keyboard input from player.
     @Override
     public boolean keyDown(int keycode) {
         if(keycode == Input.Keys.W) {
