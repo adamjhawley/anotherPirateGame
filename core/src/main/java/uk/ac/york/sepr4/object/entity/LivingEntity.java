@@ -63,10 +63,6 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public void act(float deltaTime) {
-        // do nothing if paused
-        if (GameScreen.isPaused()) {
-            return;
-        }
         setCurrentCooldown(getCurrentCooldown() + deltaTime);
 
         if (!this.isDying) {

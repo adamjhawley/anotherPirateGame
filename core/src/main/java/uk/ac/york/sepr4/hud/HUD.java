@@ -14,13 +14,10 @@ import java.util.Optional;
 public class HUD {
 
     private GameScreen gameScreen;
-    // add label pausedLabel
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus;
+
+    private Label goldLabel, goldValueLabel, xpLabel, xpValueLabel, locationLabel, captureStatus;
     @Getter
     private Table table;
-    //add the table for displaying pause
-    @Getter
-    private Table pausedTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -47,7 +44,6 @@ public class HUD {
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
-
         table.add(goldLabel).expandX().padTop(5);
         table.add(locationLabel).expandX().padTop(5);
         table.add(xpLabel).expandX().padTop(5);
@@ -56,15 +52,6 @@ public class HUD {
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
 
-        // Print Pause in the screen  mw1622
-
-        pausedLabel = new Label("PAUSED", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        pausedLabel.setFontScale(4);
-
-        pausedTable = new Table();
-        pausedTable.center();
-        pausedTable.setFillParent(true);
-        pausedTable.add(pausedLabel).padBottom(200).expandX();
     }
 
     /***
@@ -97,7 +84,6 @@ public class HUD {
             captureStatus.setText("");
         }
 
-        pausedTable.setVisible(GameScreen.isPaused());
     }
 
 }

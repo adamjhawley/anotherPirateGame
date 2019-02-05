@@ -9,7 +9,6 @@ buildscript {
         jcenter()
         google()
     }
-
     dependencies {
         
 
@@ -64,9 +63,7 @@ project(":core") {
     }
     
     dependencies {
-        compileOnly "org.projectlombok:lombok:1.18.4"
-        annotationProcessor "org.projectlombok:lombok:1.18.4"
-
+        compile "org.projectlombok:lombok:1.18.2"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         
