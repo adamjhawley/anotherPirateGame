@@ -16,10 +16,11 @@ import java.util.List;
 @Data
 public class Player extends LivingEntity implements InputProcessor {
 
-    private Integer balance = 0, xp = 0;
+    private Integer balance = 0, xp = 0, level = 1;
     private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
+
 
     public Player(Vector2 pos) {
         super(TextureManager.PLAYER, pos);
@@ -30,9 +31,9 @@ public class Player extends LivingEntity implements InputProcessor {
         //setMaxHealth(1000.0);
         //setHealth(1000.0);
 
-        setMaxHealth(20.0+(0.5*(getLevel()-1)));
-        setMaxSpeed(100f+(5f*(getLevel()-1)));
-        setDamage(0.5+(0.1*(getLevel()-1)));
+        setMaxHealth(20.0);
+        setMaxSpeed(100f);
+        setDamage(0.5);
     }
 
     @Override
@@ -50,11 +51,14 @@ public class Player extends LivingEntity implements InputProcessor {
         Gdx.app.debug("Player", "Captured "+college.getName());
     }
 
+    // Assessment 3: modified to enable level up rewards
     public Integer getLevel() {
-        int i = 0, level = 0;
-        while(i<=xp){
-            i+=((level+1)*10);
-            level++;
+        if (xp >= (level+1)*10) {
+            level += 1;
+            xp = 0;
+            setMaxHealth(getMaxHealth() + 10);
+            setMaxSpeed(getMaxSpeed() + 20);
+            setDamage(getDamage() + 0.1);
         }
         return level;
     }
