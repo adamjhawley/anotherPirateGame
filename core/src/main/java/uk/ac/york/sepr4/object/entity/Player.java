@@ -38,7 +38,7 @@ public class Player extends LivingEntity implements InputProcessor {
 
     @Override
     public void act(float deltaTime) {
-        if(!isDying() && !isDead()) {
+        if(!isDying() && !isDead() && !GameScreen.isPaused()) {
             float angle = getAngle();
             angle += ((getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed())) % (float) (2 * Math.PI);
             setAngle(angle);

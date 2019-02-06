@@ -348,6 +348,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (isPaused()) {
+            return false;
+        }
         if (button == Input.Buttons.LEFT) {
             Player player = entityManager.getOrCreatePlayer();
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
