@@ -8,6 +8,7 @@ import lombok.Getter;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
+import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.entity.Player;
 import java.util.Optional;
 

@@ -57,27 +57,11 @@ public class Player extends LivingEntity implements InputProcessor {
             level += 1;
             xp = 0;
             setMaxHealth(getMaxHealth() + 10);
+            setHealth(getMaxHealth());
             setMaxSpeed(getMaxSpeed() + 20);
             setDamage(getDamage() + 0.1);
         }
         return level;
-    }
-
-    public Double getLevelProgress() {
-        if(xp==0){
-            return 0.0;
-        }
-        Integer level = getLevel();
-        return((double)(xp-getXpRequired(level-1))/(getXpRequired(level)-getXpRequired(level-1)));
-    }
-
-    public Integer getXpRequired(Integer level) {
-        Integer xpReq = 0;
-        for(int i=1; i<=level; i++) {
-            xpReq+=(i*10);
-
-        }
-        return xpReq;
     }
 
     public void issueReward(Reward reward) {
