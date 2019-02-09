@@ -14,10 +14,10 @@ public class PirateGame extends Game {
 	@Override
 	public void create () {
 		PIRATEGAME = this;
-	    //switchScreen(ScreenType.MENU);
+	    switchScreen(ScreenType.MENU);
 
 		//FOR DEVELOPMENT
-		switchScreen(ScreenType.GAME);
+		//switchScreen(ScreenType.GAME);
 	}
 
 	public void gameOver() {

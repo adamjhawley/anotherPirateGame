@@ -239,7 +239,7 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
         }
-        Array<Actor> toRemove = new Array<Actor>();
+        Array<Actor> toRemove = new Array<>();
         for (Actor actors : stage.getActors()) {
             if (actors instanceof HealthBar) {
                 HealthBar healthBar = (HealthBar) actors;
