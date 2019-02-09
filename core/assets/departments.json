@@ -2,11 +2,16 @@
   {
     "class": "uk.ac.york.sepr4.object.building.Department",
     "name": "Department of Computer Science",
-    "mapObjectStr": "compsci"
+    "mapObjectStr": "computer science"
   },
   {
     "class": "uk.ac.york.sepr4.object.building.Department",
     "name": "Department of Physics",
     "mapObjectStr": "physics"
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.building.Department",
+    "name": "Department of Biology",
+    "mapObjectStr": "biology"
   }
 ]
