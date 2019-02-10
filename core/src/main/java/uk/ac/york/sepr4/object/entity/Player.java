@@ -56,7 +56,7 @@ public class Player extends LivingEntity implements InputProcessor {
         if (xp >= (level+1)*10) {
             level += 1;
             xp = 0;
-            setMaxHealth(getMaxHealth() + 10);
+            setMaxHealth(getMaxHealth() + 5);
             setHealth(getMaxHealth());
             setMaxSpeed(getMaxSpeed() + 20);
             setDamage(getDamage() + 0.1);
@@ -81,6 +81,13 @@ public class Player extends LivingEntity implements InputProcessor {
     }
 
 
+    public boolean deduceBalance(int deduction) {
+        if(deduction <= balance) {
+            balance -= deduction;
+            return true;
+        }
+        return false;
+    }
     //Methods below for taking keyboard input from player.
     @Override
     public boolean keyDown(int keycode) {
@@ -95,12 +102,14 @@ public class Player extends LivingEntity implements InputProcessor {
         }
 
         if(keycode == Input.Keys.A) {
-            setAngularSpeed(getTurningSpeed());
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() + getTurningSpeed());
             return true;
         }
 
         if(keycode == Input.Keys.D) {
-            setAngularSpeed(-getTurningSpeed());
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() - getTurningSpeed());
             return true;
         }
         if(keycode == Input.Keys.M) {
@@ -125,12 +134,14 @@ public class Player extends LivingEntity implements InputProcessor {
         }
 
         if(keycode == Input.Keys.A) {
-            setAngularSpeed(0);
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() - getTurningSpeed());
             return true;
         }
 
         if(keycode == Input.Keys.D) {
-            setAngularSpeed(0);
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() + getTurningSpeed());
             return true;
         }
         if(keycode == Input.Keys.M) {

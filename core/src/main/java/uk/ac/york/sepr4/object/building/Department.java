@@ -1,7 +1,6 @@
 package uk.ac.york.sepr4.object.building;
 
 import lombok.Data;
-import uk.ac.york.sepr4.object.entity.Player;
 
 @Data
 public class Department extends Building {
