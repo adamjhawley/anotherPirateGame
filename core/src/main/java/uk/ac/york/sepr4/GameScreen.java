@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
+import uk.ac.york.sepr4.object.building.ShopUI;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
@@ -26,6 +27,9 @@ import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
+
+import javax.naming.Name;
+import javax.naming.NameNotFoundException;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -47,7 +51,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Getter
     PirateMap pirateMap;
-    TiledMapRenderer tiledMapRenderer;
+    private TiledMapRenderer tiledMapRenderer;
 
     private ItemManager itemManager;
     @Getter
@@ -60,6 +64,7 @@ public class GameScreen implements Screen, InputProcessor {
     private InputMultiplexer inputMultiplexer;
 
     private HUD hud;
+    private ShopUI shopUI;
 
     private static GameScreen gameScreen;
 
@@ -118,7 +123,11 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
-        hudStage.addActor(this.hud.getTable());
+        try{
+            this.shopUI = new ShopUI(this, "biology");
+        } catch (NameNotFoundException e) {}
+
+        hudStage.addActor(this.shopUI.getTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
