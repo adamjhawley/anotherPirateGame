@@ -1,13 +1,10 @@
 package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -20,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
+import uk.ac.york.sepr4.object.building.ShopUI;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
@@ -29,6 +27,9 @@ import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
+
+import javax.naming.Name;
+import javax.naming.NameNotFoundException;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -44,14 +45,13 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage stage;
     private Stage hudStage;
     private SpriteBatch batch;
-    public boolean paused;
 
     @Getter
     private OrthographicCamera orthographicCamera;
 
     @Getter
     PirateMap pirateMap;
-    TiledMapRenderer tiledMapRenderer;
+    private TiledMapRenderer tiledMapRenderer;
 
     private ItemManager itemManager;
     @Getter
@@ -64,6 +64,7 @@ public class GameScreen implements Screen, InputProcessor {
     private InputMultiplexer inputMultiplexer;
 
     private HUD hud;
+    private ShopUI shopUI;
 
     private static GameScreen gameScreen;
 
@@ -122,9 +123,11 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
-        hudStage.addActor(this.hud.getTable());
-        // and pause
-        hudStage.addActor(this.hud.getPausedTable());
+        try{
+            this.shopUI = new ShopUI(this, "biology");
+        } catch (NameNotFoundException e) {}
+
+        hudStage.addActor(this.shopUI.getTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
@@ -134,13 +137,6 @@ public class GameScreen implements Screen, InputProcessor {
 
         //create and spawnn player
         startGame();
-    }
-    // check if the game is paused
-    public static boolean isPaused() {
-        if (getInstance() != null) {
-            return getInstance().paused;
-        }
-        return false;
     }
 
     private void startGame() {
@@ -348,9 +344,6 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (isPaused()) {
-            return false;
-        }
         if (button == Input.Buttons.LEFT) {
             Player player = entityManager.getOrCreatePlayer();
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
@@ -368,11 +361,6 @@ public class GameScreen implements Screen, InputProcessor {
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
-        //check if the pause button is pressed (continue the game when press twice)
-        if (keycode == Input.Keys.SPACE){
-            paused = !paused;
-            return true;
-        }
         return false;
     }
 
