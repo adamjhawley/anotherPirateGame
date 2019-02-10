@@ -125,13 +125,17 @@ public class GameScreen implements Screen, InputProcessor {
         this.hud = new HUD(this);
         try{
             this.shopUI = new ShopUI(this, "biology");
-        } catch (NameNotFoundException e) {}
+        } catch (NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         hudStage.addActor(this.shopUI.getTable());
+        hudStage.addActor(this.hud.getTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
+        inputMultiplexer.addProcessor(shopUI.getStage());
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
