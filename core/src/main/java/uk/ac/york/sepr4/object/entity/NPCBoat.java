@@ -49,6 +49,10 @@ public class NPCBoat extends LivingEntity {
      * @param deltaTime time since last act
      */
     public void act(float deltaTime) {
+        // do nothing if paused
+        if (GameScreen.isPaused()) {
+            return;
+        }
         //Clears arrays for later use
         Array<Float> forces = new Array<>();
         Array<Float> angles = new Array<>();
