@@ -27,8 +27,6 @@ import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
-
-import javax.naming.Name;
 import javax.naming.NameNotFoundException;
 
 /**
@@ -65,6 +63,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private HUD hud;
     private ShopUI shopUI;
+    private boolean inDepartment;
 
     private static GameScreen gameScreen;
 
@@ -123,23 +122,17 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
-        try{
-            this.shopUI = new ShopUI(this, "biology");
-        } catch (NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        inDepartment = true;
 
-        hudStage.addActor(this.shopUI.getTable());
         hudStage.addActor(this.hud.getTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
-        inputMultiplexer.addProcessor(shopUI.getStage());
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        //create and spawnn player
+        //create and spawn player
         startGame();
     }
 
@@ -153,6 +146,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
+        enterDepartment("physics");
     }
 
     /**
@@ -219,6 +213,10 @@ public class GameScreen implements Screen, InputProcessor {
         stage.draw();
         hudStage.act();
         hudStage.draw();
+        if(inDepartment) {
+            shopUI.getStage().act();
+            shopUI.getStage().draw();
+        }
     }
 
     /**
@@ -324,6 +322,22 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    public void enterDepartment(String name) {
+        try {
+            this.shopUI = new ShopUI(this, name);
+        } catch (NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Gdx.input.setInputProcessor(shopUI.getStage());
+        inDepartment = true;
+    }
+
+    public void exitDepartment() {
+        shopUI.dispose();
+        Gdx.input.setInputProcessor(inputMultiplexer);
+        inDepartment = false;
+    }
+
     @Override
     public void resize(int width, int height) {
         orthographicCamera.setToOrtho(false, (float) width, (float) height);
@@ -360,8 +374,6 @@ public class GameScreen implements Screen, InputProcessor {
         }
         return false;
     }
-
-
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {

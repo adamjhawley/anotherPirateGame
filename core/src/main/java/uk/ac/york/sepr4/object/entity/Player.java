@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class Player extends LivingEntity implements InputProcessor {
 
-    private Integer balance = 0, xp = 0, level = 1;
+    private Integer balance = 10000, xp = 0, level = 1;
     private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
@@ -32,6 +32,7 @@ public class Player extends LivingEntity implements InputProcessor {
         //setHealth(1000.0);
 
         setMaxHealth(20.0);
+        setHealth(getMaxHealth());
         setMaxSpeed(100f);
         setDamage(0.5);
     }
