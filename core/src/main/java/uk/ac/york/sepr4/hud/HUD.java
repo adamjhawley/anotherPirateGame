@@ -16,9 +16,9 @@ public class HUD {
 
     private GameScreen gameScreen;
 
-    private Label goldLabel, goldValueLabel, xpLabel, xpValueLabel, locationLabel, captureStatus;
+    private Label goldLabel, goldValueLabel, xpLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
     @Getter
-    private Table table;
+    private Table table, promptTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -53,6 +53,11 @@ public class HUD {
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
 
+        promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        promptTable = new Table();
+        promptTable.center();
+        promptTable.setFillParent(true);
+        promptTable.add(promptLabel).padBottom(100).expandX();
     }
 
     /***
@@ -76,7 +81,11 @@ public class HUD {
                     captured = true;
                 }
             }
+            else if(loc.get() instanceof Department) {
+                gameScreen.setNearDepartment(true);
+            }
         } else {
+            gameScreen.setNearDepartment(false);
             locationLabel.setText("OPEN SEAS");
         }
         if(captured) {
@@ -84,7 +93,7 @@ public class HUD {
         } else {
             captureStatus.setText("");
         }
-
+        promptTable.setVisible(gameScreen.getNearDepartment());
     }
 
 }

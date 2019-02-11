@@ -26,6 +26,7 @@ public class ShopUI {
     private String name;
     @Getter
     private Stage stage;
+    private Label balanceLabel;
 
     public ShopUI (GameScreen gameScreen, String name) throws NameNotFoundException {
         this.name = name;
@@ -53,7 +54,10 @@ public class ShopUI {
 
 
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
-
+        balanceLabel = new Label("Gold available: " + player.getBalance(), new Label.LabelStyle(
+                                                                                        new BitmapFont(), Color.GOLD));
+        table.add(balanceLabel).fillX().uniformX();
+        table.row().pad(10,0,10,0);
         Label shopLabel = new Label("Department of " + name, new Label.LabelStyle(new BitmapFont(), Color.GOLD));
         table.add(shopLabel).fillX().uniformX();
         table.row().pad(10,0,10,0);
@@ -115,6 +119,7 @@ public class ShopUI {
             case "computer science":
                break;
         }
+        balanceLabel.setText("Gold available: " + player.getBalance());
     }
 
 

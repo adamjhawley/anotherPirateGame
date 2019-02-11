@@ -53,7 +53,10 @@ public class BuildingManager {
         for (Department department : departments) {
             Player player = gameScreen.getEntityManager().getOrCreatePlayer();
             if (department.getBuildingZone().contains(player.getRectBounds())) {
-                //TODO: user prompt: press space to enter department
+                gameScreen.setNearDepartment(true);
+            }
+            else {
+                gameScreen.setNearDepartment(false);
             }
         }
     }
