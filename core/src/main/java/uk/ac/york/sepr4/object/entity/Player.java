@@ -100,11 +100,6 @@ public class Player extends LivingEntity implements InputProcessor {
     //Methods below for taking keyboard input from player.
     @Override
     public boolean keyDown(int keycode) {
-        // do nothing if paused
-        if (GameScreen.isPaused()) {
-            return false;
-        }
-
         if(keycode == Input.Keys.W) {
             setAccelerating(true);
             return true;

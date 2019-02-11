@@ -1,13 +1,10 @@
 package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -44,7 +41,6 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage stage;
     private Stage hudStage;
     private SpriteBatch batch;
-    public boolean paused;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -123,8 +119,6 @@ public class GameScreen implements Screen, InputProcessor {
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
         hudStage.addActor(this.hud.getTable());
-        // and pause
-        hudStage.addActor(this.hud.getPausedTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
@@ -134,13 +128,6 @@ public class GameScreen implements Screen, InputProcessor {
 
         //create and spawnn player
         startGame();
-    }
-    // check if the game is paused
-    public static boolean isPaused() {
-        if (getInstance() != null) {
-            return getInstance().paused;
-        }
-        return false;
     }
 
     private void startGame() {
@@ -368,11 +355,6 @@ public class GameScreen implements Screen, InputProcessor {
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
-        //check if the pause button is pressed (continue the game when press twice)
-        if (keycode == Input.Keys.SPACE){
-            paused = !paused;
-            return true;
-        }
         return false;
     }
 
