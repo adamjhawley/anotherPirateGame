@@ -49,6 +49,15 @@ public class BuildingManager {
         }
     }
 
+    public void departmentPrompt() {
+        for (Department department : departments) {
+            Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+            if (department.getBuildingZone().contains(player.getRectBounds())) {
+                //TODO: user prompt: press space to enter department
+            }
+        }
+    }
+
     //TODO: Could have a cooldown here
     public void checkBossSpawn() {
         for(College college : colleges) {
