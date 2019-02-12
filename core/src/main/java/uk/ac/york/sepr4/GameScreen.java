@@ -325,6 +325,10 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
+    public PirateGame getGame(){
+        return pirateGame;
+    }
+
     @Override
     public void resize(int width, int height) {
         orthographicCamera.setToOrtho(false, (float) width, (float) height);
