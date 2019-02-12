@@ -35,9 +35,11 @@ public class PirateGame extends Game {
             case GAME:
                 if(gameScreen == null) gameScreen = new GameScreen(this);
                 this.setScreen(gameScreen);
+                break;
 			case MINIGAME:
 				if(minigameScreen == null) minigameScreen = new MinigameScreen(this, gameScreen);
 				this.setScreen(minigameScreen);
+				break;
 		}
 	}
 
