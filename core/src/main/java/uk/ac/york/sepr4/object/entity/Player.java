@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class Player extends LivingEntity implements InputProcessor {
 
-    private Integer balance = 0, xp = 0, level = 1;
+    private Integer balance = 10000, xp = 0, level = 1;
     private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
@@ -32,6 +32,7 @@ public class Player extends LivingEntity implements InputProcessor {
         //setHealth(1000.0);
 
         setMaxHealth(20.0);
+        setHealth(getMaxHealth());
         setMaxSpeed(100f);
         setDamage(0.5);
     }
@@ -56,28 +57,12 @@ public class Player extends LivingEntity implements InputProcessor {
         if (xp >= (level+1)*10) {
             level += 1;
             xp = 0;
-            setMaxHealth(getMaxHealth() + 10);
+            setMaxHealth(getMaxHealth() + 5);
+            setHealth(getMaxHealth());
             setMaxSpeed(getMaxSpeed() + 20);
             setDamage(getDamage() + 0.1);
         }
         return level;
-    }
-
-    public Double getLevelProgress() {
-        if(xp==0){
-            return 0.0;
-        }
-        Integer level = getLevel();
-        return((double)(xp-getXpRequired(level-1))/(getXpRequired(level)-getXpRequired(level-1)));
-    }
-
-    public Integer getXpRequired(Integer level) {
-        Integer xpReq = 0;
-        for(int i=1; i<=level; i++) {
-            xpReq+=(i*10);
-
-        }
-        return xpReq;
     }
 
     public void issueReward(Reward reward) {
@@ -97,6 +82,13 @@ public class Player extends LivingEntity implements InputProcessor {
     }
 
 
+    public boolean deduceBalance(int deduction) {
+        if(deduction <= balance) {
+            balance -= deduction;
+            return true;
+        }
+        return false;
+    }
     //Methods below for taking keyboard input from player.
     @Override
     public boolean keyDown(int keycode) {
@@ -116,12 +108,14 @@ public class Player extends LivingEntity implements InputProcessor {
         }
 
         if(keycode == Input.Keys.A) {
-            setAngularSpeed(getTurningSpeed());
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() + getTurningSpeed());
             return true;
         }
 
         if(keycode == Input.Keys.D) {
-            setAngularSpeed(-getTurningSpeed());
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() - getTurningSpeed());
             return true;
         }
         if(keycode == Input.Keys.M) {
@@ -150,12 +144,15 @@ public class Player extends LivingEntity implements InputProcessor {
         }
 
         if(keycode == Input.Keys.A) {
-            setAngularSpeed(0);
+            // Assessmnent 3 - changed to make turning more responsive
+            setAngularSpeed(getAngularSpeed() - getTurningSpeed());
             return true;
         }
 
         if(keycode == Input.Keys.D) {
-            setAngularSpeed(0);
+            // Assessmnent 3 - changed to make turning more responsive
+            // TODO: unexpected behaviour when changing input managers
+            setAngularSpeed(getAngularSpeed() + getTurningSpeed());
             return true;
         }
         if(keycode == Input.Keys.M) {

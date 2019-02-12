@@ -1,13 +1,10 @@
 package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -20,6 +17,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
+import lombok.Setter;
+import uk.ac.york.sepr4.object.building.ShopUI;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
@@ -29,6 +28,7 @@ import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
+import javax.naming.NameNotFoundException;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -51,7 +51,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Getter
     PirateMap pirateMap;
-    TiledMapRenderer tiledMapRenderer;
+    private TiledMapRenderer tiledMapRenderer;
 
     private ItemManager itemManager;
     @Getter
@@ -64,6 +64,10 @@ public class GameScreen implements Screen, InputProcessor {
     private InputMultiplexer inputMultiplexer;
 
     private HUD hud;
+    private ShopUI shopUI;
+    private boolean inDepartment;
+    @Getter @Setter
+    private boolean nearDepartment;
 
     private static GameScreen gameScreen;
 
@@ -122,8 +126,10 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
+        inDepartment = true;
+
         hudStage.addActor(this.hud.getTable());
-        // and pause
+        hudStage.addActor(this.hud.getPromptTable());
         hudStage.addActor(this.hud.getPausedTable());
 
         // Set input processor and focus
@@ -133,12 +139,12 @@ public class GameScreen implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        //create and spawnn player
+        //create and spawn player
         startGame();
     }
-    // check if the game is paused
-    public static boolean isPaused() {
-        if (getInstance() != null) {
+
+    public static boolean isPaused(){
+        if(getInstance() != null) {
             return getInstance().paused;
         }
         return false;
@@ -154,6 +160,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
+        enterDepartment("physics");
     }
 
     /**
@@ -188,6 +195,7 @@ public class GameScreen implements Screen, InputProcessor {
             if (pirateMap.isObjectsEnabled()) {
                 buildingManager.spawnCollegeEnemies(delta);
                 buildingManager.checkBossSpawn();
+                buildingManager.departmentPrompt();
             }
 
             handleHealthBars();
@@ -218,8 +226,13 @@ public class GameScreen implements Screen, InputProcessor {
 
         stage.act(delta);
         stage.draw();
-        hudStage.act();
-        hudStage.draw();
+        if(inDepartment) {
+            shopUI.getStage().act();
+            shopUI.getStage().draw();
+        } else {
+            hudStage.act();
+            hudStage.draw();
+        }
     }
 
     /**
@@ -240,7 +253,7 @@ public class GameScreen implements Screen, InputProcessor {
                 }
             }
         }
-        Array<Actor> toRemove = new Array<Actor>();
+        Array<Actor> toRemove = new Array<>();
         for (Actor actors : stage.getActors()) {
             if (actors instanceof HealthBar) {
                 HealthBar healthBar = (HealthBar) actors;
@@ -325,8 +338,26 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
-    public PirateGame getGame(){
+    public PirateGame getGame() {
         return pirateGame;
+    }
+
+    public void enterDepartment(String name) {
+        try {
+            this.shopUI = new ShopUI(this, name);
+        } catch (NameNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        Gdx.input.setInputProcessor(shopUI.getStage());
+        inDepartment = true;
+        paused = true;
+    }
+
+    public void exitDepartment() {
+        shopUI.dispose();
+        Gdx.input.setInputProcessor(inputMultiplexer);
+        inDepartment = false;
+        paused = false;
     }
 
     @Override
@@ -368,15 +399,20 @@ public class GameScreen implements Screen, InputProcessor {
         }
         return false;
     }
-
-
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
-        //check if the pause button is pressed (continue the game when press twice)
         if (keycode == Input.Keys.SPACE){
             paused = !paused;
             return true;
+        }
+        if (keycode == Input.Keys.E) {
+            if (nearDepartment) {
+                nearDepartment = false;
+                inDepartment = true;
+                enterDepartment(gameScreen.getEntityManager().getPlayerLocation().get().getName());
+                return true;
+            }
         }
         return false;
     }
@@ -411,4 +447,7 @@ public class GameScreen implements Screen, InputProcessor {
         return false;
     }
 
+    public boolean getNearDepartment() {
+        return nearDepartment;
+    }
 }
