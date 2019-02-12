@@ -11,7 +11,7 @@
   },
   {
     "class": "uk.ac.york.sepr4.object.building.Department",
-    "name": "physics",
+    "name": "biology",
     "mapObjectStr": "biology"
   }
 ]

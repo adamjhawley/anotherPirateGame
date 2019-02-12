@@ -44,6 +44,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage stage;
     private Stage hudStage;
     private SpriteBatch batch;
+    public boolean paused;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -129,6 +130,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         hudStage.addActor(this.hud.getTable());
         hudStage.addActor(this.hud.getPromptTable());
+        hudStage.addActor(this.hud.getPausedTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
@@ -138,6 +140,13 @@ public class GameScreen implements Screen, InputProcessor {
 
         //create and spawn player
         startGame();
+    }
+
+    public static boolean isPaused(){
+        if(getInstance() != null) {
+            return getInstance().paused;
+        }
+        return false;
     }
 
     private void startGame() {
@@ -336,12 +345,14 @@ public class GameScreen implements Screen, InputProcessor {
         }
         Gdx.input.setInputProcessor(shopUI.getStage());
         inDepartment = true;
+        paused = true;
     }
 
     public void exitDepartment() {
         shopUI.dispose();
         Gdx.input.setInputProcessor(inputMultiplexer);
         inDepartment = false;
+        paused = false;
     }
 
     @Override
@@ -368,6 +379,9 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        if (isPaused()) {
+            return false;
+        }
         if (button == Input.Buttons.LEFT) {
             Player player = entityManager.getOrCreatePlayer();
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
@@ -383,6 +397,10 @@ public class GameScreen implements Screen, InputProcessor {
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
+        if (keycode == Input.Keys.SPACE){
+            paused = !paused;
+            return true;
+        }
         if (keycode == Input.Keys.E) {
             if (nearDepartment) {
                 nearDepartment = false;

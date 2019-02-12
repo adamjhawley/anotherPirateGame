@@ -16,9 +16,9 @@ public class HUD {
 
     private GameScreen gameScreen;
 
-    private Label goldLabel, goldValueLabel, xpLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
     @Getter
-    private Table table, promptTable;
+    private Table table, promptTable, pausedTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -53,6 +53,16 @@ public class HUD {
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
 
+        // Print Pause during paused state
+
+        pausedLabel = new Label("PAUSED", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        pausedLabel.setFontScale(4);
+        pausedTable = new Table();
+        pausedTable.center();
+        pausedTable.setFillParent(true);
+        pausedTable.add(pausedLabel).padBottom(200).expandX();
+
+        // Assessment 3: Add the department prompt
         promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         promptTable = new Table();
         promptTable.center();
@@ -94,6 +104,7 @@ public class HUD {
             captureStatus.setText("");
         }
         promptTable.setVisible(gameScreen.getNearDepartment());
+        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment());
     }
 
 }
