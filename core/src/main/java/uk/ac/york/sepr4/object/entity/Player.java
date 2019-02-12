@@ -5,11 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
-import uk.ac.york.sepr4.TextureManager;
+import uk.ac.york.sepr4.*;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.item.Item;
 import uk.ac.york.sepr4.object.item.Reward;
-import uk.ac.york.sepr4.GameScreen;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,6 +119,10 @@ public class Player extends LivingEntity implements InputProcessor {
             //minimap
             GameScreen.getInstance().getOrthographicCamera().zoom = 3;
             return true;
+        }
+        if(keycode == Input.Keys.L){
+            PirateGame pirateGame = GameScreen.getInstance().getGame();
+            pirateGame.switchScreen(ScreenType.MINIGAME);
         }
 
         return false;
