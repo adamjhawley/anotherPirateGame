@@ -19,6 +19,7 @@ public class MinigameScreen implements Screen {
 
 	public MinigameScreen(PirateGame pirateGame, GameScreen gameScreen){
 		this.pirateGame = pirateGame;
+		this.gameScreen = gameScreen;
 
 		// create stage and set it as input processor
 		stage = new Stage(new ScreenViewport());
@@ -41,6 +42,8 @@ public class MinigameScreen implements Screen {
 				pirateGame.switchScreen(gameScreen);
 			}
 		});
+
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
