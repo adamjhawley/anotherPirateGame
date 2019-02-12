@@ -1,11 +1,18 @@
 package uk.ac.york.sepr4.hud;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import lombok.Getter;
 import uk.ac.york.sepr4.GameScreen;
+import uk.ac.york.sepr4.PirateGame;
+import uk.ac.york.sepr4.ScreenType;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.entity.Player;
@@ -13,6 +20,7 @@ import java.util.Optional;
 
 public class HUD {
 
+    private final TextButton btnMenu;
     private GameScreen gameScreen;
     // add label pausedLabel
     private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus;
@@ -48,6 +56,16 @@ public class HUD {
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
 
+        // temporary until we have asset manager in
+        Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
+        btnMenu = new TextButton("Menu", skin);
+        btnMenu.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                PirateGame.PIRATEGAME.switchScreen(ScreenType.MENU);
+            }
+        });
+
         table.add(goldLabel).expandX().padTop(5);
         table.add(locationLabel).expandX().padTop(5);
         table.add(xpLabel).expandX().padTop(5);
@@ -55,6 +73,7 @@ public class HUD {
         table.add(goldValueLabel).expandX();
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
+        table.add(btnMenu).expandX();
 
         // Print Pause in the screen  mw1622
 

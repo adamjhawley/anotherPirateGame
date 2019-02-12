@@ -128,6 +128,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(hudStage);
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
