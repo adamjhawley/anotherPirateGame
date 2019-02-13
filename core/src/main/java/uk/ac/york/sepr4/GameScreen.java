@@ -45,7 +45,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage hudStage;
     private SpriteBatch batch;
     public boolean paused;
-    private boolean gameOver;
+    private boolean gameOver = false;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -357,11 +357,9 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
 
-    // Gameover
-    public void gameOver() {
-        paused = true;
 
-    }
+
+
     @Override
     public void resize(int width, int height) {
         orthographicCamera.setToOrtho(false, (float) width, (float) height);
@@ -409,10 +407,14 @@ public class GameScreen implements Screen, InputProcessor {
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.SPACE){
-            paused = !paused;
-            return true;
+
+        if (keycode == Input.Keys.SPACE) {
+            if (gameScreen.getGameOver() != true) {
+                paused = !paused;
+                return true;
+            }
         }
+
         if (keycode == Input.Keys.E) {
             if (nearDepartment) {
                 nearDepartment = false;
@@ -422,7 +424,9 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
         if (keycode == Input.Keys.K) {
+            paused = true;
             gameOver = true;
+
             return true;
         }
         return false;

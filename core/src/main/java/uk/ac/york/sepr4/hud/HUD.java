@@ -112,8 +112,15 @@ public class HUD {
             captureStatus.setText("");
         }
         promptTable.setVisible(gameScreen.getNearDepartment());
-        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment());
-        gameoverTable.setVisible(gameScreen.getGameOver());
+        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
+
+        if (gameScreen.getGameOver() == true);{
+            gameoverTable.setVisible(gameScreen.getGameOver());
+            // causes normal pause to be invisible
+            //pausedTable.setVisible(false);
+        }
+
+
     }
 
 }
