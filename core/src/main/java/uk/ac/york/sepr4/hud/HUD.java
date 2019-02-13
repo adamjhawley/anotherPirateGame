@@ -71,6 +71,7 @@ public class HUD {
 
         // Assessment 3: GameOver screen
         gameoverLabel = new Label("CONGRATULATIONS! YOU WIN!", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        gameoverLabel.setFontScale(4);
         gameoverTable = new Table();
         gameoverTable.center();
         gameoverTable.setFillParent(true);
@@ -112,6 +113,7 @@ public class HUD {
         }
         promptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment());
+        gameoverTable.setVisible(gameScreen.getGameOver());
     }
 
 }

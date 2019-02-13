@@ -131,6 +131,7 @@ public class GameScreen implements Screen, InputProcessor {
         hudStage.addActor(this.hud.getTable());
         hudStage.addActor(this.hud.getPromptTable());
         hudStage.addActor(this.hud.getPausedTable());
+        hudStage.addActor(this.hud.getGameoverTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
@@ -359,7 +360,7 @@ public class GameScreen implements Screen, InputProcessor {
     // Gameover
     public void gameOver() {
         paused = true;
-        gameOver = true;
+
     }
     @Override
     public void resize(int width, int height) {
@@ -420,6 +421,10 @@ public class GameScreen implements Screen, InputProcessor {
                 return true;
             }
         }
+        if (keycode == Input.Keys.K) {
+            gameOver = true;
+            return true;
+        }
         return false;
     }
 
@@ -455,5 +460,14 @@ public class GameScreen implements Screen, InputProcessor {
 
     public boolean getNearDepartment() {
         return nearDepartment;
+    }
+
+    public boolean getGameOver()    {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean newBool) {
+        gameOver = newBool;
+
     }
 }
