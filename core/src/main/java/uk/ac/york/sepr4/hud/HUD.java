@@ -16,9 +16,9 @@ public class HUD {
 
     private GameScreen gameScreen;
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel;
     @Getter
-    private Table table, promptTable, pausedTable;
+    private Table table, promptTable, pausedTable, gameoverTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -68,6 +68,13 @@ public class HUD {
         promptTable.center();
         promptTable.setFillParent(true);
         promptTable.add(promptLabel).padBottom(100).expandX();
+
+        // Assessment 3: GameOver screen
+        gameoverLabel = new Label("CONGRATULATIONS! YOU WIN!", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        gameoverTable = new Table();
+        gameoverTable.center();
+        gameoverTable.setFillParent(true);
+        gameoverTable.add(gameoverLabel).padBottom(200).expandX();
     }
 
     /***

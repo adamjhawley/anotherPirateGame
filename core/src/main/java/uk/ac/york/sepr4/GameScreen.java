@@ -45,6 +45,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage hudStage;
     private SpriteBatch batch;
     public boolean paused;
+    private boolean gameOver;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -354,6 +355,12 @@ public class GameScreen implements Screen, InputProcessor {
         paused = false;
     }
 
+
+    // Gameover
+    public void gameOver() {
+        paused = true;
+        gameOver = true;
+    }
     @Override
     public void resize(int width, int height) {
         orthographicCamera.setToOrtho(false, (float) width, (float) height);
