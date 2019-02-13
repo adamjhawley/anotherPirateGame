@@ -17,7 +17,7 @@ public class College extends Building {
     private Double bossDifficulty;
 
     //Can be set optionally in file to change college parameters
-    private float spawnRange = 500f;
+    private float spawnRange = 1500f;
     private Double spawnChance = 0.1, enemyDifficulty = 0.1;
     private Integer maxEntities = 2;
     private List<String> requiresCollegeStr = new ArrayList<>(); //yet to be implemented (questing)

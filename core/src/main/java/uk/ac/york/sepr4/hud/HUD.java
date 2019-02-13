@@ -8,19 +8,17 @@ import lombok.Getter;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
+import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.entity.Player;
 import java.util.Optional;
 
 public class HUD {
 
     private GameScreen gameScreen;
-    // add label pausedLabel
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus;
+
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
     @Getter
-    private Table table;
-    //add the table for displaying pause
-    @Getter
-    private Table pausedTable;
+    private Table table, promptTable, pausedTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -47,7 +45,6 @@ public class HUD {
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
-
         table.add(goldLabel).expandX().padTop(5);
         table.add(locationLabel).expandX().padTop(5);
         table.add(xpLabel).expandX().padTop(5);
@@ -56,15 +53,21 @@ public class HUD {
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
 
-        // Print Pause in the screen  mw1622
+        // Print Pause during paused state
 
         pausedLabel = new Label("PAUSED", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         pausedLabel.setFontScale(4);
-
         pausedTable = new Table();
         pausedTable.center();
         pausedTable.setFillParent(true);
         pausedTable.add(pausedLabel).padBottom(200).expandX();
+
+        // Assessment 3: Add the department prompt
+        promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        promptTable = new Table();
+        promptTable.center();
+        promptTable.setFillParent(true);
+        promptTable.add(promptLabel).padBottom(100).expandX();
     }
 
     /***
@@ -88,7 +91,11 @@ public class HUD {
                     captured = true;
                 }
             }
+            else if(loc.get() instanceof Department) {
+                gameScreen.setNearDepartment(true);
+            }
         } else {
+            gameScreen.setNearDepartment(false);
             locationLabel.setText("OPEN SEAS");
         }
         if(captured) {
@@ -96,8 +103,8 @@ public class HUD {
         } else {
             captureStatus.setText("");
         }
-
-        pausedTable.setVisible(GameScreen.isPaused());
+        promptTable.setVisible(gameScreen.getNearDepartment());
+        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment());
     }
 
 }

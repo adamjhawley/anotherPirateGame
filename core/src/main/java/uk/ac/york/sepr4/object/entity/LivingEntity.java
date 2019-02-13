@@ -13,7 +13,7 @@ public abstract class LivingEntity extends Entity {
 
     private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
     private boolean isAccelerating, isBraking, isDead, isDying;
-    private Integer turningSpeed = 2;
+    private float turningSpeed = 2.3f;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f, angularSpeed = 0f;
 
     //TODO: Better ways to monitor this
@@ -112,14 +112,27 @@ public abstract class LivingEntity extends Entity {
      * @param angle angle at which to fire
      * @return true if cooldown sufficient and shot has been fired
      */
-    public boolean fire(float angle) {
+    public boolean fire(float angle, double damage) {
+        EntityManager entityManager = GameScreen.getInstance().getEntityManager();
             if (currentCooldown >= reqCooldown) {
                 setCurrentCooldown(0f);
-                GameScreen.getInstance().getEntityManager().getProjectileManager().spawnProjectile( this, getSpeed(), angle);
-                GameScreen.getInstance().getEntityManager().getAnimationManager().addFiringAnimation(this,angle - (float)Math.PI/2);
+                entityManager.getProjectileManager().spawnProjectile( this, getSpeed(), angle, damage);
+                entityManager.getAnimationManager().addFiringAnimation(this,angle - (float)Math.PI/2);
                 return true;
             }
 
+        return false;
+    }
+
+    public boolean tripleFire(float angle, double damage) {
+        EntityManager entityManager = GameScreen.getInstance().getEntityManager();
+        if (currentCooldown >= reqCooldown) {
+            setCurrentCooldown(0f);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle, damage);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle + 0.15f, damage);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle - 0.15f, damage);
+            return true;
+        }
         return false;
     }
 }
