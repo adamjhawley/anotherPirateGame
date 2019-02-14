@@ -95,9 +95,13 @@ public class HUD {
         if(loc.isPresent()) {
             locationLabel.setText(loc.get().getName().toUpperCase());
             if(loc.get() instanceof College) {
+
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
-                    if (loc.get().getName().toUpperCase() == "DERWENT"){
+
+                    // check if the college captured was derwent, if so endgame
+                     {
+                        locationLabel.setText("GAMEOVER");
                         gameScreen.paused = true;
                         gameScreen.setGameOver(true);
 

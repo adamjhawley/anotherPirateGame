@@ -4,35 +4,39 @@
     "name": "Halifax College",
     "mapObjectStr": "halifax",
     "bossName": "Oleg",
-    "bossDifficulty": 0.6,
-    "spawnChance": 0.8,
-    "enemyDifficulty": 0.2
+
+    "bossDifficulty": 0.1,
+    "spawnChance": 0.1,
+    "enemyDifficulty": 0.1
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Constantine College",
     "mapObjectStr": "constantine",
     "bossName": "Brutus",
-    "bossDifficulty": 0.7,
-    "spawnChance": 0.8,
-    "enemyDifficulty": 0.4
+
+    "bossDifficulty": 0.1,
+    "spawnChance": 0.1,
+    "enemyDifficulty": 0.1
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Langwith College",
     "mapObjectStr": "langwith",
     "bossName": "GlassHouse Manager",
-    "bossDifficulty": 0.8,
-    "spawnChance": 0.8,
-    "enemyDifficulty": 0.6
+
+    "bossDifficulty": 0.1,
+    "spawnChance": 0.1,
+    "enemyDifficulty": 0.1
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Derwent College",
     "mapObjectStr": "derwent",
     "bossName": "Asbest-Boss",
-    "bossDifficulty": 0.9,
-    "spawnChance": 0.9,
-    "enemyDifficulty": 0.7
+
+    "bossDifficulty": 0.1,
+    "spawnChance": 0.1,
+    "enemyDifficulty": 0.1
   }
 ]

@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import lombok.Setter;
+import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.ShopUI;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.PirateMap;
@@ -426,6 +427,9 @@ public class GameScreen implements Screen, InputProcessor {
 
           //  return true;
         //}
+        //if (keycode == Input.Keys.K){
+         //   gameScreen.entityManager.getOrCreatePlayer().capture(College.);
+    //}
         return false;
     }
 
