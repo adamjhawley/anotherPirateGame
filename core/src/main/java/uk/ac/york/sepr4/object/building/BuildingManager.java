@@ -11,6 +11,7 @@ import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.entity.NPCBoat;
 
+import javax.naming.NameNotFoundException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -45,6 +46,18 @@ public class BuildingManager {
 
         } else {
             Gdx.app.error("Building Manager", "Objects not enabled, not loading buildings!");
+        }
+    }
+
+    public void departmentPrompt() {
+        for (Department department : departments) {
+            Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+            if (department.getBuildingZone().contains(player.getRectBounds())) {
+                gameScreen.setNearDepartment(true);
+            }
+            else {
+                gameScreen.setNearDepartment(false);
+            }
         }
     }
 
@@ -87,11 +100,8 @@ public class BuildingManager {
             Optional<Vector2> pos = getValidRandomSpawn(college, 250f);
             if(pos.isPresent()) {
                 NPCBoat boat = new NPCBuilder()
-                        .generateRandomEnemy(
-                                pos.get(),
-                                college,
-                                boss ? college.getBossDifficulty() : college.getEnemyDifficulty(),
-                                boss);
+                        .generateRandomEnemy( pos.get(), college,
+                                              boss ? college.getBossDifficulty() : college.getEnemyDifficulty(), boss);
                 return Optional.of(boat);
             }
         }

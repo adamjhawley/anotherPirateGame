@@ -49,6 +49,10 @@ public class NPCBoat extends LivingEntity {
      * @param deltaTime time since last act
      */
     public void act(float deltaTime) {
+        // do nothing if paused
+        if (GameScreen.isPaused()) {
+            return;
+        }
         //Clears arrays for later use
         Array<Float> forces = new Array<>();
         Array<Float> angles = new Array<>();
@@ -196,13 +200,13 @@ public class NPCBoat extends LivingEntity {
                 if (target.getSpeed() < target.getMaxSpeed() / 5) {
                     float fireangle = getAngleTowardsEntity(target);
                     //Calls fire at angle
-                    fire((float) (fireangle + (-(1 / getAccuracy()) * (Math.PI / 32) + r.nextFloat() * (2 * (1 / getAccuracy()) * (Math.PI / 32)))));
+                    fire((float) (fireangle + (-(1 / getAccuracy()) * (Math.PI / 32) + r.nextFloat() * (2 * (1 / getAccuracy()) * (Math.PI / 32)))), getDamage());
                 } else {
                     //Stops the AI shooting at distances that are longer than 3 seconds due to infinte inteception points, if going parrell
                     if (AIUtil.timeForPerfectAngleToCollide(this, target, AIUtil.thetaForAngleDiffrence(AIUtil.normalizeAngle(target.getAngle()), getAngleTowardsEntity(target)), 100) < 3) {
                         float fireangle = AIUtil.perfectAngleToCollide(this, target, 100);
                         //calls fire at angle
-                        fire((float) (fireangle + (-(1 / getAccuracy()) * (Math.PI / 32) + r.nextFloat() * (2 * (1 / getAccuracy()) * (Math.PI / 32)))));
+                        fire((float) (fireangle + (-(1 / getAccuracy()) * (Math.PI / 32) + r.nextFloat() * (2 * (1 / getAccuracy()) * (Math.PI / 32)))), getDamage());
                     }
                 }
                 //******************************

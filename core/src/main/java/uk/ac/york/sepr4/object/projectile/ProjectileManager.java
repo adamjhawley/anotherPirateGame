@@ -24,6 +24,10 @@ public class ProjectileManager {
         projectileList.add(projectile);
     }
 
+    public void spawnProjectile(LivingEntity livingEntity, float speed, float angle, double damage) {
+        Projectile projectile = new Projectile(livingEntity, speed, angle, damage);
+        projectileList.add(projectile);
+    }
     public Array<Projectile> getProjectileInArea(Rectangle rectangle) {
         Array<Projectile> projectiles = new Array<>();
         for(Projectile projectile : projectileList) {

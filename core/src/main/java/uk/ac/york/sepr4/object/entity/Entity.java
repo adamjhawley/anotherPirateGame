@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import lombok.Data;
+import uk.ac.york.sepr4.GameScreen;
 
 @Data
 public abstract class Entity extends Actor {
@@ -41,6 +42,10 @@ public abstract class Entity extends Actor {
 
     @Override
     public void act(float deltaTime) {
+        // do nothing if paused
+        if (GameScreen.isPaused()) {
+            return;
+        }
         super.act(deltaTime);
 
         float speed = getSpeed();
