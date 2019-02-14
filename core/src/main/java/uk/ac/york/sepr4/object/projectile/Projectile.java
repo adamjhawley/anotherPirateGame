@@ -26,6 +26,16 @@ public class Projectile extends Entity {
         setSpeed(speed + baseSpeed);
     }
 
+    public Projectile(LivingEntity shooter, float speed, float angle, double damage){
+         super(TextureManager.CANNONBALL, shooter.getCentre());
+
+        this.shooter = shooter;
+
+        setAngle(angle);
+        setSpeed(speed + baseSpeed);
+        setDamage(damage);
+    }
+
     @Override
     public void act(float deltaTime) {
         if(this.distanceFrom(shooter) > 1000) {

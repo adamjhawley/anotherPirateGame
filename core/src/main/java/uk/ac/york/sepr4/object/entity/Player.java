@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.*;
+import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.item.Item;
 import uk.ac.york.sepr4.object.item.Reward;
@@ -20,6 +21,8 @@ public class Player extends LivingEntity implements InputProcessor {
     private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
+    private boolean turningLeft, turningRight, tripleShot = false;
+    private double bulletDamage = 5;
 
 
     public Player(Vector2 pos) {
@@ -41,7 +44,14 @@ public class Player extends LivingEntity implements InputProcessor {
     public void act(float deltaTime) {
         if(!isDying() && !isDead() && !GameScreen.isPaused()) {
             float angle = getAngle();
-            angle += ((getAngularSpeed() * deltaTime) * (getSpeed() / getMaxSpeed())) % (float) (2 * Math.PI);
+            float angularSpeed = 0;
+            if (turningLeft) {
+                angularSpeed += getTurningSpeed();
+            }
+            if (turningRight) {
+                angularSpeed -= getTurningSpeed();
+            }
+            angle += ((angularSpeed * deltaTime) * (getSpeed() / getMaxSpeed())) % (float) (2 * Math.PI);
             setAngle(angle);
             super.act(deltaTime);
         }
@@ -59,6 +69,7 @@ public class Player extends LivingEntity implements InputProcessor {
             xp = 0;
             setMaxHealth(getMaxHealth() + 5);
             setHealth(getMaxHealth());
+            updateHealthBar();
             setMaxSpeed(getMaxSpeed() + 20);
             setDamage(getDamage() + 0.1);
         }
@@ -89,6 +100,10 @@ public class Player extends LivingEntity implements InputProcessor {
         }
         return false;
     }
+
+    public void updateHealthBar(){
+        setHealthBar(new HealthBar(this));
+    }
     //Methods below for taking keyboard input from player.
     @Override
     public boolean keyDown(int keycode) {
@@ -109,13 +124,13 @@ public class Player extends LivingEntity implements InputProcessor {
 
         if(keycode == Input.Keys.A) {
             // Assessmnent 3 - changed to make turning more responsive
-            setAngularSpeed(getAngularSpeed() + getTurningSpeed());
+            turningLeft = true;
             return true;
         }
 
         if(keycode == Input.Keys.D) {
             // Assessmnent 3 - changed to make turning more responsive
-            setAngularSpeed(getAngularSpeed() - getTurningSpeed());
+            turningRight = true;
             return true;
         }
         if(keycode == Input.Keys.M) {
@@ -145,14 +160,14 @@ public class Player extends LivingEntity implements InputProcessor {
 
         if(keycode == Input.Keys.A) {
             // Assessmnent 3 - changed to make turning more responsive
-            setAngularSpeed(getAngularSpeed() - getTurningSpeed());
+            turningLeft = false;
             return true;
         }
 
         if(keycode == Input.Keys.D) {
             // Assessmnent 3 - changed to make turning more responsive
             // TODO: unexpected behaviour when changing input managers
-            setAngularSpeed(getAngularSpeed() + getTurningSpeed());
+            turningRight = false;
             return true;
         }
         if(keycode == Input.Keys.M) {

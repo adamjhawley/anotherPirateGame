@@ -10,9 +10,9 @@
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
-    "name": "Derwent College",
-    "mapObjectStr": "derwent",
-    "bossName": "DBoss",
+    "name": "Constantine College",
+    "mapObjectStr": "constantine",
+    "bossName": "Brutus",
     "bossDifficulty": 0.7,
     "spawnChance": 0.8,
     "enemyDifficulty": 0.4
@@ -21,9 +21,18 @@
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Langwith College",
     "mapObjectStr": "langwith",
-    "bossName": "LBoss",
+    "bossName": "GlassHouse Manager",
     "bossDifficulty": 0.8,
     "spawnChance": 0.8,
     "enemyDifficulty": 0.6
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.building.College",
+    "name": "Derwent College",
+    "mapObjectStr": "derwent",
+    "bossName": "Asbest-Boss",
+    "bossDifficulty": 0.9,
+    "spawnChance": 0.9,
+    "enemyDifficulty": 0.7
   }
 ]

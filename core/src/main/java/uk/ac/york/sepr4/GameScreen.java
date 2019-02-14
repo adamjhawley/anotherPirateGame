@@ -45,6 +45,7 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage hudStage;
     private SpriteBatch batch;
     public boolean paused;
+    private boolean gameOver = false;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -126,11 +127,12 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
-        inDepartment = true;
+        inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
         hudStage.addActor(this.hud.getPromptTable());
         hudStage.addActor(this.hud.getPausedTable());
+        hudStage.addActor(this.hud.getGameoverTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
@@ -360,6 +362,10 @@ public class GameScreen implements Screen, InputProcessor {
         paused = false;
     }
 
+
+
+
+
     @Override
     public void resize(int width, int height) {
         orthographicCamera.setToOrtho(false, (float) width, (float) height);
@@ -392,7 +398,12 @@ public class GameScreen implements Screen, InputProcessor {
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float) (-Math.atan2(player.getCentre().x - clickLoc.x, player.getCentre().y - clickLoc.y));
             Gdx.app.debug("GameScreen", "Firing: Click at (rad) " + fireAngle);
-            if (!player.fire(fireAngle)) {
+            if (player.isTripleShot()) {
+                if (player.tripleFire(fireAngle, player.getBulletDamage())) {
+                    Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
+                }
+            }
+            else if (player.fire(fireAngle, player.getBulletDamage())) {
                 Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
             }
             return true;
@@ -402,10 +413,14 @@ public class GameScreen implements Screen, InputProcessor {
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.SPACE){
-            paused = !paused;
-            return true;
+
+        if (keycode == Input.Keys.SPACE) {
+            if (gameScreen.getGameOver() != true) {
+                paused = !paused;
+                return true;
+            }
         }
+
         if (keycode == Input.Keys.E) {
             if (nearDepartment) {
                 nearDepartment = false;
@@ -413,6 +428,12 @@ public class GameScreen implements Screen, InputProcessor {
                 enterDepartment(gameScreen.getEntityManager().getPlayerLocation().get().getName());
                 return true;
             }
+        }
+        if (keycode == Input.Keys.K) {
+            paused = true;
+            gameOver = true;
+
+            return true;
         }
         return false;
     }
@@ -449,5 +470,14 @@ public class GameScreen implements Screen, InputProcessor {
 
     public boolean getNearDepartment() {
         return nearDepartment;
+    }
+
+    public boolean getGameOver()    {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean newBool) {
+        gameOver = newBool;
+
     }
 }
