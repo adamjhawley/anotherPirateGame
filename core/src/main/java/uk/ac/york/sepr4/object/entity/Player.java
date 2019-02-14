@@ -140,6 +140,7 @@ public class Player extends LivingEntity implements InputProcessor {
             return true;
         }
         if(keycode == Input.Keys.L){
+            //used to test minigame easily!
             PirateGame pirateGame = GameScreen.getInstance().getGame();
             pirateGame.switchScreen(ScreenType.MINIGAME);
         }

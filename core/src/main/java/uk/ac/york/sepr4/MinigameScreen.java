@@ -5,12 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
+import javax.xml.soap.Text;
+
+/**
+ * Added for assessment 3, manages instances of the minigame.
+ */
 public class MinigameScreen implements Screen {
 
 	private PirateGame pirateGame;
@@ -32,11 +38,28 @@ public class MinigameScreen implements Screen {
 		table.setFillParent(true);
 		stage.addActor(table);
 		Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
-		TextButton newGame = new TextButton("Go back to game", skin);
 
-		table.add(newGame).fillX().uniformX();
+		Label minigameText = new Label("How difficult do you want your minigame to be?", skin);
 
-		newGame.addListener(new ChangeListener() {
+		TextButton quitMinigame = new TextButton("Go back to game", skin);
+		TextButton easyMinigame = new TextButton("Easy", skin);
+		TextButton mediumMinigame = new TextButton("Medium", skin);
+		TextButton hardMinigame = new TextButton("Hard", skin);
+		TextButton reallyhardMinigame = new TextButton("Very Hard", skin);
+
+		table.add(minigameText).fillX().uniformX();
+		table.row().pad(20, 0, 0, 0);
+		table.add(easyMinigame).fillX().uniformX();
+		table.row();
+		table.add(mediumMinigame).fillX().uniformX();
+		table.row();
+		table.add(hardMinigame).fillX().uniformX();
+		table.row();
+		table.add(reallyhardMinigame).fillX().uniformX();
+		table.row().pad(20, 0, 10, 0);
+		table.add(quitMinigame).fillX().uniformX();
+
+		quitMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				pirateGame.switchScreen(gameScreen);
