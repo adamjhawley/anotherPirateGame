@@ -48,7 +48,8 @@ public class ShopUI {
                 itemNames = new String[]{"Increase shot damage : 100g", "Triple shot: 1000g"};
                 break;
             case "physics":
-                itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g"};
+                itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g",
+                                         "Increase acceleration: 300g"};
                 break;
             default:
                 throw new NameNotFoundException();
@@ -120,6 +121,11 @@ public class ShopUI {
                         player.setTurningSpeed(player.getTurningSpeed() + 0.25f);
                     }
                 }
+                else if (finalI == 2) {
+                    if (player.deduceBalance(300)) {
+                        player.setAcceleration(player.getAcceleration() + 10f);
+                    }
+                }
                 break;
             case "computer science":
                 if (finalI == 0) {
@@ -135,6 +141,9 @@ public class ShopUI {
                             // Update button to indicate upgrade has been gotten
                             items[finalI].setText("Triple shot out of stock");
                         }
+                    }
+                    else {
+                        items[finalI].setText("Triple shot out of stock");
                     }
                 }
                break;
