@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uk.ac.york.sepr4.GameScreen;
+import uk.ac.york.sepr4.hud.HealthBar;
+import uk.ac.york.sepr4.object.entity.LivingEntity;
 import uk.ac.york.sepr4.object.entity.Player;
 import lombok.Getter;
 
@@ -27,6 +29,7 @@ public class ShopUI {
     @Getter
     private Stage stage;
     private Label balanceLabel;
+    private TextButton[] items;
 
     public ShopUI (GameScreen gameScreen, String name) throws NameNotFoundException {
         this.name = name;
@@ -42,10 +45,11 @@ public class ShopUI {
                 itemNames = new String[]{"Full heal : 100g", "Increase Max Health : 200g"};
                 break;
             case "computer science":
-                itemNames = new String[]{"Increase shot damage : 100g", "Piercing shots : 200g"};
+                itemNames = new String[]{"Increase shot damage : 100g", "Triple shot: 1000g"};
                 break;
             case "physics":
-                itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g"};
+                itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g",
+                                         "Increase acceleration: 300g"};
                 break;
             default:
                 throw new NameNotFoundException();
@@ -61,7 +65,7 @@ public class ShopUI {
         Label shopLabel = new Label("Department of " + name, new Label.LabelStyle(new BitmapFont(), Color.GOLD));
         table.add(shopLabel).fillX().uniformX();
         table.row().pad(10,0,10,0);
-        TextButton[] items = new TextButton[itemNames.length];
+        items = new TextButton[itemNames.length];
         for (int i = 0; i < items.length; i++) {
             items[i] = new TextButton(itemNames[i], skin);
             int finalI = i;
@@ -95,12 +99,14 @@ public class ShopUI {
                 if (finalI == 0) {
                     if (player.getHealth() != player.getMaxHealth() && player.deduceBalance(100)) {
                         player.setHealth(player.getMaxHealth());
+                        player.updateHealthBar();
                     }
                 }
                 else if (finalI == 1) {
                     if (player.deduceBalance(200)) {
                         player.setMaxHealth(player.getMaxHealth() + 5f);
                         player.setHealth(player.getHealth() + 5f);
+                        player.updateHealthBar();
                     }
                 }
                 break;
@@ -115,8 +121,31 @@ public class ShopUI {
                         player.setTurningSpeed(player.getTurningSpeed() + 0.25f);
                     }
                 }
+                else if (finalI == 2) {
+                    if (player.deduceBalance(300)) {
+                        player.setAcceleration(player.getAcceleration() + 10f);
+                    }
+                }
                 break;
             case "computer science":
+                if (finalI == 0) {
+                    if (player.deduceBalance(100)) {
+                        player.setBulletDamage(player.getBulletDamage() + 1);
+                    }
+                }
+                else if (finalI == 1) {
+                    if (!player.isTripleShot()) {
+                        if (player.deduceBalance(1000)) {
+                            player.setTripleShot(true);
+                            player.setReqCooldown(1.0f);
+                            // Update button to indicate upgrade has been gotten
+                            items[finalI].setText("Triple shot out of stock");
+                        }
+                    }
+                    else {
+                        items[finalI].setText("Triple shot out of stock");
+                    }
+                }
                break;
         }
         balanceLabel.setText("Gold available: " + player.getBalance());

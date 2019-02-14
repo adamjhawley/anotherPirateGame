@@ -128,7 +128,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
-        inDepartment = true;
+        inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
         hudStage.addActor(this.hud.getPromptTable());
@@ -394,7 +394,12 @@ public class GameScreen implements Screen, InputProcessor {
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float) (-Math.atan2(player.getCentre().x - clickLoc.x, player.getCentre().y - clickLoc.y));
             Gdx.app.debug("GameScreen", "Firing: Click at (rad) " + fireAngle);
-            if (!player.fire(fireAngle)) {
+            if (player.isTripleShot()) {
+                if (player.tripleFire(fireAngle, player.getBulletDamage())) {
+                    Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
+                }
+            }
+            else if (player.fire(fireAngle, player.getBulletDamage())) {
                 Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
             }
             return true;
