@@ -127,6 +127,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
+        inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
         hudStage.addActor(this.hud.getPromptTable());
@@ -160,7 +161,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
-        enterDepartment("computer science");
+        enterDepartment("physics");
     }
 
     /**
