@@ -3,7 +3,17 @@
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Halifax College",
     "mapObjectStr": "halifax",
-    "bossName": "Oleg",
+    "bossName": "Mud-Man",
+
+    "bossDifficulty": 0.1,
+    "spawnChance": 0.1,
+    "enemyDifficulty": 0.1
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.building.College",
+    "name": "James College",
+    "mapObjectStr": "james",
+    "bossName": "PE Teacher",
 
     "bossDifficulty": 0.1,
     "spawnChance": 0.1,
@@ -13,7 +23,7 @@
     "class": "uk.ac.york.sepr4.object.building.College",
     "name": "Constantine College",
     "mapObjectStr": "constantine",
-    "bossName": "Brutus",
+    "bossName": "Big Boi",
 
     "bossDifficulty": 0.1,
     "spawnChance": 0.1,

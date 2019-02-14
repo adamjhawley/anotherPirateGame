@@ -99,13 +99,15 @@ public class HUD {
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
 
-                    // check if the college captured was derwent, if so endgame
-                     {
+                    if (locationLabel.getText().toString() == "HALIFAX COLLEGE"){
                         locationLabel.setText("GAMEOVER");
                         gameScreen.paused = true;
                         gameScreen.setGameOver(true);
-
                     }
+
+
+
+
                 }
             }
             else if(loc.get() instanceof Department) {
