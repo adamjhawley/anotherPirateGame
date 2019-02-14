@@ -419,12 +419,13 @@ public class GameScreen implements Screen, InputProcessor {
                 return true;
             }
         }
-        if (keycode == Input.Keys.K) {
-            paused = true;
-            gameOver = true;
+        //placeholder to check if gameover overlay is working
+       // if (keycode == Input.Keys.K) {
+         //   paused = true;
+           // gameOver = true;
 
-            return true;
-        }
+          //  return true;
+        //}
         return false;
     }
 

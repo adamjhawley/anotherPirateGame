@@ -97,6 +97,11 @@ public class HUD {
             if(loc.get() instanceof College) {
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
+                    if (loc.get().getName().toUpperCase() == "DERWENT"){
+                        gameScreen.paused = true;
+                        gameScreen.setGameOver(true);
+
+                    }
                 }
             }
             else if(loc.get() instanceof Department) {
@@ -116,8 +121,7 @@ public class HUD {
 
         if (gameScreen.getGameOver() == true);{
             gameoverTable.setVisible(gameScreen.getGameOver());
-            // causes normal pause to be invisible
-            //pausedTable.setVisible(false);
+
         }
 
 
