@@ -154,6 +154,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void startGame() {
         stage.addActor(entityManager.getOrCreatePlayer());
+
     }
 
     /**
@@ -162,7 +163,8 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
-        enterDepartment("physics");
+
+
     }
 
     /**

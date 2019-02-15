@@ -25,6 +25,10 @@ public class HUD {
     private GameScreen gameScreen;
 
     private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel;
+
+
+    private  Label healthLabel, healthvalueLable;
+
     @Getter
     private Table table, promptTable, pausedTable, gameoverTable;
 
@@ -53,6 +57,16 @@ public class HUD {
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
+
+
+        healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+
+
+
+
+
+
         // temporary until we have asset manager in
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
         btnMenu = new TextButton("Menu", skin);
@@ -71,6 +85,14 @@ public class HUD {
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
         table.add(btnMenu).expandX();
+        table.row();
+
+        table.add(healthLabel).expandX();
+        table.row();
+
+        table.add(healthvalueLable).expandX();
+
+
 
         // Print Pause during paused state
 
@@ -108,6 +130,10 @@ public class HUD {
         //+" ("+(player.getLevelProgress())*100+"%)"
         xpValueLabel.setText(""+player.getLevel());
 
+        //
+        healthvalueLable.setText(""+player.getHealth());
+
+
         //location overhead
         boolean captured = false;
         Optional<Building> loc = gameScreen.getEntityManager().getPlayerLocation();
@@ -133,10 +159,12 @@ public class HUD {
         promptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
 
-        if (gameScreen.getGameOver() == true);{
-            gameoverTable.setVisible(gameScreen.getGameOver());
+        if (gameScreen.getGameOver()) {
+            gameoverTable.setVisible(true);
             // causes normal pause to be invisible
             //pausedTable.setVisible(false);
+        } else {
+            gameoverTable.setVisible(false);
         }
 
 
