@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
-import javax.xml.soap.Text;
 
 /**
  * Added for assessment 3, manages instances of the minigame.
