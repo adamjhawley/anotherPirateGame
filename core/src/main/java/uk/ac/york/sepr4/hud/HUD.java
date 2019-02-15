@@ -98,8 +98,7 @@ public class HUD {
 
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
-
-                    if (locationLabel.getText().toString() == "HALIFAX COLLEGE"){
+                    if (loc.get().getName().equals("Halifax College")){
                         locationLabel.setText("GAMEOVER");
                         gameScreen.paused = true;
                         gameScreen.setGameOver(true);
