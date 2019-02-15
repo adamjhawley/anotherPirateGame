@@ -177,6 +177,10 @@ public class Player extends LivingEntity implements InputProcessor {
         }
         return false;
     }
+    public void movePlayer(Vector2 pos){
+        this.setX(pos.x);
+        this.setY(pos.y);
+    }
 
     @Override
     public boolean keyTyped(char character) {

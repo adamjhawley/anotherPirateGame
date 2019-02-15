@@ -17,6 +17,8 @@ import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.entity.Player;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class HUD {
@@ -24,13 +26,12 @@ public class HUD {
     private final TextButton btnMenu;
     private GameScreen gameScreen;
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel;
 
-
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel, inDerwentBeforeEndLabel;
     private  Label healthLabel, healthvalueLable;
 
     @Getter
-    private Table table, promptTable, pausedTable, gameoverTable;
+    private Table table, promptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -117,6 +118,14 @@ public class HUD {
         gameoverTable.center();
         gameoverTable.setFillParent(true);
         gameoverTable.add(gameoverLabel).padBottom(200).expandX();
+
+        //Assessment 3 Derwent forcefield
+        inDerwentBeforeEndLabel = new Label("You must defeat Asbest-Boss' subordinates before challenging him", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        inDerwentBeforeEndLabel.setFontScale(2);
+        inDerwentBeforeEndTable = new Table();
+        inDerwentBeforeEndTable.center();
+        inDerwentBeforeEndTable.setFillParent(true);
+        inDerwentBeforeEndTable.add(inDerwentBeforeEndLabel).padBottom(200).expandX();
     }
 
     /***
@@ -140,8 +149,23 @@ public class HUD {
         if(loc.isPresent()) {
             locationLabel.setText(loc.get().getName().toUpperCase());
             if(loc.get() instanceof College) {
+                ArrayList<College> capturedCheck = (ArrayList<College>)gameScreen.getEntityManager().getOrCreatePlayer().getCaptured();
+
+                if (loc.get().getName().equals("Derwent College") && !(capturedCheck.size() >=4)){
+                    gameScreen.setInDerwentBeforeEnd(true);
+                    player.movePlayer(gameScreen.getPirateMap().getSpawnPoint());
+                }
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
+                    if (loc.get().getName().equals("Derwent College")){
+                        locationLabel.setText("GAMEOVER");
+                        gameScreen.paused = true;
+                        gameScreen.setGameOver(true);
+                    }
+
+
+
+
                 }
             }
             else if(loc.get() instanceof Department) {
@@ -158,16 +182,9 @@ public class HUD {
         }
         promptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
+        gameoverTable.setVisible(gameScreen.getGameOver());
 
-        if (gameScreen.getGameOver()) {
-            gameoverTable.setVisible(true);
-            // causes normal pause to be invisible
-            //pausedTable.setVisible(false);
-        } else {
-            gameoverTable.setVisible(false);
-        }
-
-
+        inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
     }
 
 }

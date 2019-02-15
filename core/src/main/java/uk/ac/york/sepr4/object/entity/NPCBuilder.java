@@ -21,10 +21,12 @@ public class NPCBuilder {
 
     public NPCBoat buildNPC(Vector2 pos) {
         NPCBoat npcBoat;
+
         if(isBoss && texture == TextureManager.ENEMY) {
             //if boss and default texture
             npcBoat = new NPCBoat(TextureManager.BOSS, pos);
-        } else {
+        }
+        else {
             npcBoat = new NPCBoat(texture, pos);
         }
         npcBoat.setAngle(angle);
