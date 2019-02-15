@@ -47,6 +47,8 @@ public class GameScreen implements Screen, InputProcessor {
     private SpriteBatch batch;
     public boolean paused;
     private boolean gameOver = false;
+    @Getter @Setter
+    private boolean inDerwentBeforeEnd;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -70,12 +72,13 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean inDepartment;
     @Getter @Setter
     private boolean nearDepartment;
-
+    private float timer = 0;
     private static GameScreen gameScreen;
 
     private ShapeRenderer shapeRenderer;
 
     public static boolean DEBUG = false;
+
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -134,6 +137,7 @@ public class GameScreen implements Screen, InputProcessor {
         hudStage.addActor(this.hud.getPromptTable());
         hudStage.addActor(this.hud.getPausedTable());
         hudStage.addActor(this.hud.getGameoverTable());
+        hudStage.addActor(this.hud.getInDerwentBeforeEndTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
@@ -234,6 +238,14 @@ public class GameScreen implements Screen, InputProcessor {
         } else {
             hudStage.act();
             hudStage.draw();
+        }
+        if (inDerwentBeforeEnd) {
+            timer += delta;
+            if (timer > 5f) {
+
+                inDerwentBeforeEnd = false;
+                timer = 0f;
+            }
         }
     }
 
@@ -425,16 +437,7 @@ public class GameScreen implements Screen, InputProcessor {
                 return true;
             }
         }
-        //placeholder to check if gameover overlay is working
-       // if (keycode == Input.Keys.K) {
-         //   paused = true;
-           // gameOver = true;
 
-          //  return true;
-        //}
-        //if (keycode == Input.Keys.K){
-         //   gameScreen.entityManager.getOrCreatePlayer().capture(College.);
-    //}
         return false;
     }
 

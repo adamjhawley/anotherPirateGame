@@ -37,6 +37,8 @@ public class NPCBoat extends LivingEntity {
 
     private boolean isBoss;
 
+    private boolean hasTripleFire;
+
     public NPCBoat(Texture texture, Vector2 pos) {
         super(texture, pos);
     }
@@ -197,6 +199,7 @@ public class NPCBoat extends LivingEntity {
 
                 //FIRING************************
                 //Calculates perfectShot into fireangle then adds some randomness to the shot with the parameter of accuracy which is inveresed
+
                 if (target.getSpeed() < target.getMaxSpeed() / 5) {
                     float fireangle = getAngleTowardsEntity(target);
                     //Calls fire at angle
