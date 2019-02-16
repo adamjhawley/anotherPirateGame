@@ -134,7 +134,7 @@ public class Player extends LivingEntity implements InputProcessor {
             turningRight = true;
             return true;
         }
-        if(keycode == Input.Keys.M) {
+        if(keycode == Input.Keys.Q) {
             //minimap
             GameScreen.getInstance().getOrthographicCamera().zoom = 3;
             return true;
@@ -167,7 +167,7 @@ public class Player extends LivingEntity implements InputProcessor {
             turningRight = false;
             return true;
         }
-        if(keycode == Input.Keys.M) {
+        if(keycode == Input.Keys.Q) {
             //minimap
             GameScreen.getInstance().getOrthographicCamera().zoom = 1;
             return true;

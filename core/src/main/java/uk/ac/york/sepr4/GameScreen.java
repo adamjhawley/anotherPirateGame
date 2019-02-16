@@ -67,7 +67,7 @@ public class GameScreen implements Screen, InputProcessor {
     private ShopUI shopUI;
     private boolean inDepartment;
     @Getter @Setter
-    private boolean nearDepartment;
+    private boolean nearDepartment, nearMinigame;
 
     private static GameScreen gameScreen;
 
@@ -128,7 +128,8 @@ public class GameScreen implements Screen, InputProcessor {
         this.hud = new HUD(this);
 
         hudStage.addActor(this.hud.getTable());
-        hudStage.addActor(this.hud.getPromptTable());
+        hudStage.addActor(this.hud.getDepartmentPromptTable());
+        hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
 
         // Set input processor and focus
@@ -194,6 +195,7 @@ public class GameScreen implements Screen, InputProcessor {
                 buildingManager.spawnCollegeEnemies(delta);
                 buildingManager.checkBossSpawn();
                 buildingManager.departmentPrompt();
+                buildingManager.minigamePrompt();
             }
 
             handleHealthBars();
@@ -416,11 +418,14 @@ public class GameScreen implements Screen, InputProcessor {
                 enterDepartment(gameScreen.getEntityManager().getPlayerLocation().get().getName());
                 return true;
             }
+            else if (nearMinigame) {
+                nearMinigame = false;
+                PirateGame pirateGame = GameScreen.getInstance().getGame();
+                pirateGame.switchScreen(ScreenType.MINIGAME);
+            }
         }
         if(keycode == Input.Keys.L){
             //used to test minigame easily!
-            PirateGame pirateGame = GameScreen.getInstance().getGame();
-            pirateGame.switchScreen(ScreenType.MINIGAME);
         }
 
         return false;

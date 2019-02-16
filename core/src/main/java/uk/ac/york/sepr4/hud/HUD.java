@@ -16,9 +16,10 @@ public class HUD {
 
     private GameScreen gameScreen;
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
+                departmentPromptLabel, minigamePromptLabel;
     @Getter
-    private Table table, promptTable, pausedTable;
+    private Table table, departmentPromptTable, minigamePromptTable, pausedTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -63,11 +64,17 @@ public class HUD {
         pausedTable.add(pausedLabel).padBottom(200).expandX();
 
         // Assessment 3: Add the department prompt
-        promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        promptTable = new Table();
-        promptTable.center();
-        promptTable.setFillParent(true);
-        promptTable.add(promptLabel).padBottom(100).expandX();
+        departmentPromptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        departmentPromptTable = new Table();
+        departmentPromptTable.center();
+        departmentPromptTable.setFillParent(true);
+        departmentPromptTable.add(departmentPromptLabel).padBottom(100).expandX();
+
+        minigamePromptLabel = new Label("E to enter minigame", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        minigamePromptTable = new Table();
+        minigamePromptTable.center();
+        minigamePromptTable.setFillParent(true);
+        minigamePromptTable.add(minigamePromptLabel).padBottom(100).expand();
     }
 
     /***
@@ -103,8 +110,9 @@ public class HUD {
         } else {
             captureStatus.setText("");
         }
-        promptTable.setVisible(gameScreen.getNearDepartment());
-        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment());
+        departmentPromptTable.setVisible(gameScreen.getNearDepartment());
+        minigamePromptTable.setVisible(gameScreen.isNearMinigame());
+        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.isNearMinigame());
     }
 
 }
