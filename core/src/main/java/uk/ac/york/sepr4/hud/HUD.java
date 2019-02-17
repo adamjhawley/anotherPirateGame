@@ -106,11 +106,11 @@ public class HUD {
         pausedTable.add(pausedLabel).padBottom(200).expandX();
 
         //add college list in paused state
-        haliCollegeLabel = new Label("Halifax", new Label.LabelStyle(new BitmapFont(), Color.RED));
-        constCollegeLabel = new Label("Constantine", new Label.LabelStyle(new BitmapFont(), Color.RED));
-        jamesCollegeLabel = new Label("James", new Label.LabelStyle(new BitmapFont(), Color.RED));
-        langCollegeLabel = new Label("Langwith", new Label.LabelStyle(new BitmapFont(), Color.RED));
-        derwentCollegeLabel = new Label("Derwent", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        haliCollegeLabel = new Label("Halifax \n MudMan", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        constCollegeLabel = new Label("Constantine \n Big Boi", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        jamesCollegeLabel = new Label("James \n PE Teacher", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        langCollegeLabel = new Label("Langwith \n Glasshouse Manager", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        derwentCollegeLabel = new Label("Derwent \n Asbest-boss", new Label.LabelStyle(new BitmapFont(), Color.RED));
         collegeTable = new Table();
         collegeTable.setFillParent(true);
         collegeTable.add(haliCollegeLabel).expandX().padTop(5);
