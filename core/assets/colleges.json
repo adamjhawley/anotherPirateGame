@@ -5,9 +5,9 @@
     "mapObjectStr": "halifax",
     "bossName": "Mud-Man",
 
-    "bossDifficulty": 200,
-    "spawnChance": 0.1,
-    "enemyDifficulty": 0.1
+    "bossDifficulty": 30,
+    "spawnChance": 0.2,
+    "enemyDifficulty": 30
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
@@ -15,9 +15,9 @@
     "mapObjectStr": "james",
     "bossName": "PE Teacher",
 
-    "bossDifficulty": 0.1,
-    "spawnChance": 0.1,
-    "enemyDifficulty": 0.1
+    "bossDifficulty": 130,
+    "spawnChance": 0.6,
+    "enemyDifficulty": 130
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
@@ -25,9 +25,9 @@
     "mapObjectStr": "constantine",
     "bossName": "Big Boi",
 
-    "bossDifficulty": 0.1,
-    "spawnChance": 0.1,
-    "enemyDifficulty": 0.1
+    "bossDifficulty": 80,
+    "spawnChance": 0.4,
+    "enemyDifficulty": 80
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
@@ -35,9 +35,9 @@
     "mapObjectStr": "langwith",
     "bossName": "GlassHouse Manager",
 
-    "bossDifficulty": 0.1,
-    "spawnChance": 0.1,
-    "enemyDifficulty": 0.1
+    "bossDifficulty": 200,
+    "spawnChance": 0.8,
+    "enemyDifficulty": 200
   },
   {
     "class": "uk.ac.york.sepr4.object.building.College",
@@ -45,8 +45,8 @@
     "mapObjectStr": "derwent",
     "bossName": "Asbest-Boss",
 
-    "bossDifficulty": 100,
-    "spawnChance": 0.1,
-    "enemyDifficulty": 0.1
+    "bossDifficulty": 350,
+    "spawnChance": 1.0,
+    "enemyDifficulty": 350
   }
 ]
