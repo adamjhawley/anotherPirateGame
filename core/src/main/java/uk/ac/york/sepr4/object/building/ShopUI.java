@@ -12,8 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uk.ac.york.sepr4.GameScreen;
-import uk.ac.york.sepr4.hud.HealthBar;
-import uk.ac.york.sepr4.object.entity.LivingEntity;
 import uk.ac.york.sepr4.object.entity.Player;
 import lombok.Getter;
 
@@ -33,10 +31,10 @@ public class ShopUI {
     private TextButton[] items;
 
     private Label shopLabel;
-    private Label maxspeedLabel;
+    private Label maxSpeedLabel;
     private Label healthLabel;
-    private Label turningspeedLable;
-    private Label maxhealthLabel;
+    private Label turningSpeedLabel;
+    private Label maxHealthLabel;
     private Label bulletDamage;
 
     public ShopUI (GameScreen gameScreen, String name) throws NameNotFoundException {
@@ -64,42 +62,31 @@ public class ShopUI {
         }
         stage.addActor(table);
 
-
-
-
-
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
         balanceLabel = new Label("Gold available: " + player.getBalance(), new Label.LabelStyle(
                                                                                         new BitmapFont(), Color.GOLD));
-        shopLabel = new Label("Department of " + name, new Label.LabelStyle(new BitmapFont(), Color.GOLD));
+        shopLabel = new Label("Department of " + name, new Label.LabelStyle(new BitmapFont(), Color.BLUE));
         //
-        maxspeedLabel = new Label("MaxSpeed: " + player.getMaxSpeed(), new Label.LabelStyle(
+        maxSpeedLabel = new Label("Max Speed: " + (int)player.getMaxSpeed(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
-        turningspeedLable = new Label("TurningSpeed: " + player.getTurningSpeed(), new Label.LabelStyle(
+        turningSpeedLabel = new Label("Turning Speed: " + player.getTurningSpeed(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
-        healthLabel = new Label("Health: " + player.getHealth(), new Label.LabelStyle(
+        healthLabel = new Label("Health: " + player.getHealth().intValue(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
-        maxhealthLabel = new Label("MaxHealth: " + player.getMaxHealth(), new Label.LabelStyle(
+        maxHealthLabel = new Label("Max Health: " + player.getMaxHealth().intValue(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
-        bulletDamage = new Label("BulletDamage:  " + player.getBulletDamage(), new Label.LabelStyle(
+        bulletDamage = new Label("Bullet Damage: " + (int)player.getBulletDamage(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
 
-
-
-
-
-        table.add(balanceLabel).fillX().uniformX();
+        table.add(shopLabel).colspan(3).center();
+        table.row().pad(20,0,0,10);
+        table.add(balanceLabel).colspan(3).center();
         table.row().pad(10,0,10,0);
-        table.add(shopLabel).fillX().uniformX();
-        table.row().pad(10,0,10,0);
-        table.add(maxspeedLabel).fillX().uniformX();
-        table.row().pad(10,0,10,0);
-        table.add(turningspeedLable).fillX().uniformX();
-        table.row().pad(10,0,10,0);
+        table.add(maxSpeedLabel).fillX().uniformX();
+        table.add(turningSpeedLabel).fillX().uniformX();
+        table.row().pad(0,0,0,10);
         table.add(healthLabel).fillX().uniformX();
-        table.row().pad(10,0,10,0);
-        table.add(maxhealthLabel).fillX().uniformX();
-        table.row().pad(10,0,10,0);
+        table.add(maxHealthLabel).fillX().uniformX();
         table.add(bulletDamage).fillX().uniformX();
         table.row().pad(10,0,10,0);
 
@@ -115,7 +102,7 @@ public class ShopUI {
                     shopEvent(finalI);
                 }
             });
-            table.add(items[i]).fillX().uniformX();
+            table.add(items[i]).colspan(3).center();
             table.row().pad(10,0,10,0);
         }
         TextButton exit = new TextButton("Exit shop", skin);
@@ -125,7 +112,7 @@ public class ShopUI {
                 gameScreen.exitDepartment();
             }
         });
-        table.add(exit).fillX().uniformX();
+        table.add(exit).colspan(3).center();
     }
 
     public void dispose() {
@@ -189,11 +176,11 @@ public class ShopUI {
                break;
         }
         balanceLabel.setText("Gold available: " + player.getBalance());
-        maxspeedLabel.setText("MaxSpeed: " + player.getMaxSpeed());
-        turningspeedLable.setText("TurningSpeed: " + player.getTurningSpeed());
-        maxhealthLabel.setText("Health: " + player.getHealth());
-        healthLabel.setText("MaxHealth: " + player.getMaxHealth());
-        bulletDamage.setText("BulletDamage: "+ player.getBulletDamage());
+        maxSpeedLabel.setText("MaxSpeed: " + (int)player.getMaxSpeed());
+        turningSpeedLabel.setText("TurningSpeed: " + player.getTurningSpeed());
+        maxHealthLabel.setText("Health: " + player.getHealth().intValue());
+        healthLabel.setText("MaxHealth: " + player.getMaxHealth().intValue());
+        bulletDamage.setText("BulletDamage: "+ (int) player.getBulletDamage());
     }
 
 

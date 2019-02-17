@@ -1,6 +1,5 @@
 package uk.ac.york.sepr4;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -37,17 +36,14 @@ public class MenuScreen implements Screen {
 
         //create buttons
         TextButton newGame = new TextButton("New Game", skin);
-        TextButton preferences = new TextButton("Preferences", skin);
         TextButton exit = new TextButton("Exit", skin);
         TextButton back = new TextButton("Back",skin);
 
         //add buttons to table
         table.add(newGame).fillX().uniformX();
-        table.row().pad(10, 0, 10, 0);
-        table.add(preferences).fillX().uniformX();
-        table.row();
+        table.row().pad(10,0,10,0);
         table.add(exit).fillX().uniformX();
-        table.row().pad(10, 0, 10, 0);;
+        table.row().pad(0, 0, 10, 0);
         table.add(back).fillX().uniformX();
 
         // create button listeners
