@@ -71,8 +71,10 @@ public class GameScreen implements Screen, InputProcessor {
     private ShopUI shopUI;
     private boolean inDepartment;
     @Getter @Setter
-    private boolean nearDepartment;
+
+    private boolean nearDepartment, nearMinigame;
     private float timer = 0;
+
     private static GameScreen gameScreen;
 
     private ShapeRenderer shapeRenderer;
@@ -134,7 +136,8 @@ public class GameScreen implements Screen, InputProcessor {
         inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
-        hudStage.addActor(this.hud.getPromptTable());
+        //hudStage.addActor(this.hud.getDepartmentPromptTable());
+        hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
         hudStage.addActor(this.hud.getGameoverTable());
         hudStage.addActor(this.hud.getInDerwentBeforeEndTable());
@@ -168,8 +171,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
-        enterDepartment("computer science");
-
     }
 
     /**
@@ -205,6 +206,7 @@ public class GameScreen implements Screen, InputProcessor {
                 buildingManager.spawnCollegeEnemies(delta);
                 buildingManager.checkBossSpawn();
                 buildingManager.departmentPrompt();
+                buildingManager.minigamePrompt();
             }
 
             handleHealthBars();
@@ -391,7 +393,9 @@ public class GameScreen implements Screen, InputProcessor {
     public void pause() {}
 
     @Override
-    public void resume() {}
+    public void resume() {
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
 
     @Override
     public void hide() {
@@ -443,6 +447,16 @@ public class GameScreen implements Screen, InputProcessor {
                 enterDepartment(gameScreen.getEntityManager().getPlayerLocation().get().getName());
                 return true;
             }
+            else if (nearMinigame) {
+                nearMinigame = false;
+                PirateGame pirateGame = GameScreen.getInstance().getGame();
+                pirateGame.switchScreen(ScreenType.MINIGAME);
+            }
+        }
+        
+        if(keycode == Input.Keys.L){
+            // DEBUG code used to test minigame easily!
+            pirateGame.switchScreen(ScreenType.MINIGAME);
         }
 
         if (keycode == Input.Keys.ESCAPE) {

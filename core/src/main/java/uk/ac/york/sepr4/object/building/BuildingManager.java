@@ -20,6 +20,7 @@ public class BuildingManager {
 
     private Array<College> colleges = new Array<>();
     private Array<Department> departments = new Array<>();
+    private MinigameBuilding minigame;
 
     private GameScreen gameScreen;
 
@@ -41,6 +42,7 @@ public class BuildingManager {
             Json json = new Json();
             loadBuildings(json.fromJson(Array.class, College.class, Gdx.files.internal("colleges.json")));
             loadBuildings(json.fromJson(Array.class, Department.class, Gdx.files.internal("departments.json")));
+            loadBuildings(json.fromJson(Array.class, MinigameBuilding.class, Gdx.files.internal("minigame.json")));
             Gdx.app.log("BuildingManager",
                     "Loaded "+colleges.size+" colleges and "+departments.size+" departments!");
 
@@ -58,6 +60,16 @@ public class BuildingManager {
             else {
                 gameScreen.setNearDepartment(false);
             }
+        }
+    }
+
+    public void minigamePrompt(){
+        Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+        if (minigame.getBuildingZone().contains(player.getRectBounds())) {
+            gameScreen.setNearMinigame(true);
+        }
+        else {
+            gameScreen.setNearMinigame(false);
         }
     }
 
@@ -136,6 +148,8 @@ public class BuildingManager {
                     colleges.add((College) building);
                 } else if (building instanceof Department) {
                     departments.add((Department) building);
+                } else if (building instanceof MinigameBuilding) {
+                    minigame = (MinigameBuilding) building;
                 }
                 Gdx.app.debug("BuildingManager", "Loaded " + building.getName());
             } else {

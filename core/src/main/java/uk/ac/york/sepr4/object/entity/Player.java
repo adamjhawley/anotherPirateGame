@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.*;
+import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.item.Item;
@@ -133,14 +134,10 @@ public class Player extends LivingEntity implements InputProcessor {
             turningRight = true;
             return true;
         }
-        if(keycode == Input.Keys.M) {
+        if(keycode == Input.Keys.Q) {
             //minimap
             GameScreen.getInstance().getOrthographicCamera().zoom = 3;
             return true;
-        }
-        if(keycode == Input.Keys.L){
-            PirateGame pirateGame = GameScreen.getInstance().getGame();
-            pirateGame.switchScreen(ScreenType.MINIGAME);
         }
 
         return false;
@@ -170,7 +167,7 @@ public class Player extends LivingEntity implements InputProcessor {
             turningRight = false;
             return true;
         }
-        if(keycode == Input.Keys.M) {
+        if(keycode == Input.Keys.Q) {
             //minimap
             GameScreen.getInstance().getOrthographicCamera().zoom = 1;
             return true;

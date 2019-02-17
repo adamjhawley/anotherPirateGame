@@ -21,6 +21,7 @@ public class PirateGame extends Game {
 
 		//FOR DEVELOPMENT
 		//switchScreen(ScreenType.GAME);
+		//switchScreen(ScreenType.MINIGAME);
 	}
 
 	public void gameOver() {
@@ -37,7 +38,7 @@ public class PirateGame extends Game {
                 if(gameScreen == null) gameScreen = new GameScreen(this);
                 this.setScreen(gameScreen);
                 break;
-			case MINIGAME:
+			case MINIGAME: //added for assessment 3
 				if(minigameScreen == null) minigameScreen = new MinigameScreen(this, gameScreen);
 				this.setScreen(minigameScreen);
 				break;
