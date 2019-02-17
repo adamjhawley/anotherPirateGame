@@ -27,11 +27,11 @@ public class HUD {
     private GameScreen gameScreen;
 
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel, inDerwentBeforeEndLabel;
-    private Label healthLabel, healthvalueLable, departmentPromptLabel, minigamePromptLabel;
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, departmentPromptLabel, gameoverLabel, inDerwentBeforeEndLabel;
+    private Label healthLabel, healthvalueLable, minigamePromptLabel;
 
     @Getter
-    private Table table, promptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable, departmentPromptTable, minigamePromptTable;
+    private Table table, departmentPromptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable, minigamePromptTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -105,11 +105,11 @@ public class HUD {
         pausedTable.add(pausedLabel).padBottom(200).expandX();
 
         // Assessment 3: Add the department prompt
-        promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        promptTable = new Table();
-        promptTable.center();
-        promptTable.setFillParent(true);
-        promptTable.add(promptLabel).padBottom(100).expandX();
+        departmentPromptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        departmentPromptTable = new Table();
+        departmentPromptTable.center();
+        departmentPromptTable.setFillParent(true);
+        departmentPromptTable.add(departmentPromptLabel).padBottom(100).expandX();
 
         // Assessment 3: GameOver screen
         gameoverLabel = new Label("CONGRATULATIONS! YOU WIN!", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
@@ -188,12 +188,11 @@ public class HUD {
             captureStatus.setText("");
         }
         
-        promptTable.setVisible(gameScreen.getNearDepartment());
+        departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
         gameoverTable.setVisible(gameScreen.getGameOver());
-        //departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
-        
+        departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
     }
 
