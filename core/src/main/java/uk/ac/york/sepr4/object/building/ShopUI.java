@@ -12,8 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import uk.ac.york.sepr4.GameScreen;
-import uk.ac.york.sepr4.hud.HealthBar;
-import uk.ac.york.sepr4.object.entity.LivingEntity;
 import uk.ac.york.sepr4.object.entity.Player;
 import lombok.Getter;
 
@@ -28,8 +26,16 @@ public class ShopUI {
     private String name;
     @Getter
     private Stage stage;
+
     private Label balanceLabel;
     private TextButton[] items;
+
+    private Label shopLabel;
+    private Label maxSpeedLabel;
+    private Label healthLabel;
+    private Label turningSpeedLabel;
+    private Label maxHealthLabel;
+    private Label bulletDamage;
 
     public ShopUI (GameScreen gameScreen, String name) throws NameNotFoundException {
         this.name = name;
@@ -48,22 +54,45 @@ public class ShopUI {
                 itemNames = new String[]{"Increase shot damage : 100g", "Triple shot: 1000g"};
                 break;
             case "physics":
-                itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g"};
+                itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g",
+                                         "Increase acceleration: 300g"};
                 break;
             default:
                 throw new NameNotFoundException();
         }
         stage.addActor(table);
 
-
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
         balanceLabel = new Label("Gold available: " + player.getBalance(), new Label.LabelStyle(
                                                                                         new BitmapFont(), Color.GOLD));
-        table.add(balanceLabel).fillX().uniformX();
+        shopLabel = new Label("Department of " + name, new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+        //
+        maxSpeedLabel = new Label("Max Speed: " + (int)player.getMaxSpeed(), new Label.LabelStyle(
+                new BitmapFont(), Color.BLACK));
+        turningSpeedLabel = new Label("Turning Speed: " + player.getTurningSpeed(), new Label.LabelStyle(
+                new BitmapFont(), Color.BLACK));
+        healthLabel = new Label("Health: " + player.getHealth().intValue(), new Label.LabelStyle(
+                new BitmapFont(), Color.BLACK));
+        maxHealthLabel = new Label("Max Health: " + player.getMaxHealth().intValue(), new Label.LabelStyle(
+                new BitmapFont(), Color.BLACK));
+        bulletDamage = new Label("Bullet Damage: " + (int)player.getBulletDamage(), new Label.LabelStyle(
+                new BitmapFont(), Color.BLACK));
+
+        table.add(shopLabel).colspan(3).center();
+        table.row().pad(20,0,0,10);
+        table.add(balanceLabel).colspan(3).center();
         table.row().pad(10,0,10,0);
-        Label shopLabel = new Label("Department of " + name, new Label.LabelStyle(new BitmapFont(), Color.GOLD));
-        table.add(shopLabel).fillX().uniformX();
+        table.add(maxSpeedLabel);
+        table.add();
+        table.add(turningSpeedLabel);
+        table.row().pad(0,0,0,10);
+        table.add(healthLabel).fillX().uniformX();
+        table.add(maxHealthLabel).fillX().uniformX();
+        table.add(bulletDamage).fillX().uniformX();
         table.row().pad(10,0,10,0);
+
+
+
         items = new TextButton[itemNames.length];
         for (int i = 0; i < items.length; i++) {
             items[i] = new TextButton(itemNames[i], skin);
@@ -74,7 +103,7 @@ public class ShopUI {
                     shopEvent(finalI);
                 }
             });
-            table.add(items[i]).fillX().uniformX();
+            table.add(items[i]).colspan(3).center();
             table.row().pad(10,0,10,0);
         }
         TextButton exit = new TextButton("Exit shop", skin);
@@ -84,7 +113,7 @@ public class ShopUI {
                 gameScreen.exitDepartment();
             }
         });
-        table.add(exit).fillX().uniformX();
+        table.add(exit).colspan(3).center();
     }
 
     public void dispose() {
@@ -120,6 +149,11 @@ public class ShopUI {
                         player.setTurningSpeed(player.getTurningSpeed() + 0.25f);
                     }
                 }
+                else if (finalI == 2) {
+                    if (player.deduceBalance(300)) {
+                        player.setAcceleration(player.getAcceleration() + 10f);
+                    }
+                }
                 break;
             case "computer science":
                 if (finalI == 0) {
@@ -136,10 +170,18 @@ public class ShopUI {
                             items[finalI].setText("Triple shot out of stock");
                         }
                     }
+                    else {
+                        items[finalI].setText("Triple shot out of stock");
+                    }
                 }
                break;
         }
         balanceLabel.setText("Gold available: " + player.getBalance());
+        maxSpeedLabel.setText("MaxSpeed: " + (int)player.getMaxSpeed());
+        turningSpeedLabel.setText("TurningSpeed: " + player.getTurningSpeed());
+        maxHealthLabel.setText("Health: " + player.getHealth().intValue());
+        healthLabel.setText("MaxHealth: " + player.getMaxHealth().intValue());
+        bulletDamage.setText("BulletDamage: "+ (int) player.getBulletDamage());
     }
 
 

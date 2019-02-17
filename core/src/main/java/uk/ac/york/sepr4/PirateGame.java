@@ -12,6 +12,7 @@ public class PirateGame extends Game {
 	private MinigameScreen minigameScreen;
 
 	public static PirateGame PIRATEGAME;
+	public static PirateGame newpirategame;
 	
 	@Override
 	public void create () {
@@ -42,6 +43,15 @@ public class PirateGame extends Game {
 				this.setScreen(minigameScreen);
 				break;
 		}
+	}
+
+	public void restartGame(){
+		PIRATEGAME = this;
+		this.gameOver();
+		switchScreen(ScreenType.GAME);
+
+
+
 	}
 
 	public void switchScreen(GameScreen activeGameScreen){

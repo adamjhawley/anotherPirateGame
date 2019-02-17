@@ -1,25 +1,37 @@
 package uk.ac.york.sepr4.hud;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import lombok.Getter;
 import uk.ac.york.sepr4.GameScreen;
+import uk.ac.york.sepr4.PirateGame;
+import uk.ac.york.sepr4.ScreenType;
 import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.entity.Player;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class HUD {
 
+    private final TextButton btnMenu;
     private GameScreen gameScreen;
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
-                departmentPromptLabel, minigamePromptLabel;
+
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel, inDerwentBeforeEndLabel;
+    private Label healthLabel, healthvalueLable, departmentPromptLabel, minigamePromptLabel;
+
     @Getter
-    private Table table, departmentPromptTable, minigamePromptTable, pausedTable;
+    private Table table, promptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable, departmentPromptTable, minigamePromptTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -46,6 +58,26 @@ public class HUD {
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
+
+
+        healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+
+
+
+
+
+
+        // temporary until we have asset manager in
+        Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
+        btnMenu = new TextButton("Menu", skin);
+        btnMenu.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                PirateGame.PIRATEGAME.switchScreen(ScreenType.MENU);
+            }
+        });
+
         table.add(goldLabel).expandX().padTop(5);
         table.add(locationLabel).expandX().padTop(5);
         table.add(xpLabel).expandX().padTop(5);
@@ -53,6 +85,15 @@ public class HUD {
         table.add(goldValueLabel).expandX();
         table.add(captureStatus).expandX();
         table.add(xpValueLabel).expandX();
+        table.add(btnMenu).expandX();
+        table.row();
+
+        table.add(healthLabel).expandX();
+        table.row();
+
+        table.add(healthvalueLable).expandX();
+
+
 
         // Print Pause during paused state
 
@@ -64,17 +105,34 @@ public class HUD {
         pausedTable.add(pausedLabel).padBottom(200).expandX();
 
         // Assessment 3: Add the department prompt
-        departmentPromptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
-        departmentPromptTable = new Table();
-        departmentPromptTable.center();
-        departmentPromptTable.setFillParent(true);
-        departmentPromptTable.add(departmentPromptLabel).padBottom(100).expandX();
+        promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        promptTable = new Table();
+        promptTable.center();
+        promptTable.setFillParent(true);
+        promptTable.add(promptLabel).padBottom(100).expandX();
 
+        // Assessment 3: GameOver screen
+        gameoverLabel = new Label("CONGRATULATIONS! YOU WIN!", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        gameoverLabel.setFontScale(4);
+        gameoverTable = new Table();
+        gameoverTable.center();
+        gameoverTable.setFillParent(true);
+        gameoverTable.add(gameoverLabel).padBottom(200).expandX();
+
+        // Assessment 3: Minigame screen
         minigamePromptLabel = new Label("E to enter minigame", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         minigamePromptTable = new Table();
         minigamePromptTable.center();
         minigamePromptTable.setFillParent(true);
         minigamePromptTable.add(minigamePromptLabel).padBottom(100).expand();
+
+        //Assessment 3 Derwent forcefield
+        inDerwentBeforeEndLabel = new Label("You must defeat Asbest-Boss' subordinates before challenging him", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
+        inDerwentBeforeEndLabel.setFontScale(2);
+        inDerwentBeforeEndTable = new Table();
+        inDerwentBeforeEndTable.center();
+        inDerwentBeforeEndTable.setFillParent(true);
+        inDerwentBeforeEndTable.add(inDerwentBeforeEndLabel).padBottom(200).expandX();
     }
 
     /***
@@ -88,14 +146,33 @@ public class HUD {
         //+" ("+(player.getLevelProgress())*100+"%)"
         xpValueLabel.setText(""+player.getLevel());
 
+        //
+        healthvalueLable.setText(""+player.getHealth());
+
+
         //location overhead
         boolean captured = false;
         Optional<Building> loc = gameScreen.getEntityManager().getPlayerLocation();
         if(loc.isPresent()) {
             locationLabel.setText(loc.get().getName().toUpperCase());
             if(loc.get() instanceof College) {
+                ArrayList<College> capturedCheck = (ArrayList<College>)gameScreen.getEntityManager().getOrCreatePlayer().getCaptured();
+
+                if (loc.get().getName().equals("Derwent College") && !(capturedCheck.size() >=4)){
+                    gameScreen.setInDerwentBeforeEnd(true);
+                    player.movePlayer(gameScreen.getPirateMap().getSpawnPoint());
+                }
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
+                    if (loc.get().getName().equals("Derwent College")){
+                        locationLabel.setText("GAMEOVER");
+                        gameScreen.paused = true;
+                        gameScreen.setGameOver(true);
+                    }
+
+
+
+
                 }
             }
             else if(loc.get() instanceof Department) {
@@ -110,9 +187,14 @@ public class HUD {
         } else {
             captureStatus.setText("");
         }
+        
+        promptTable.setVisible(gameScreen.getNearDepartment());
+        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
+        gameoverTable.setVisible(gameScreen.getGameOver());
         departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
-        pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.isNearMinigame());
+        
+        inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
     }
 
 }

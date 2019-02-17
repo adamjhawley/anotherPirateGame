@@ -21,10 +21,12 @@ public class NPCBuilder {
 
     public NPCBoat buildNPC(Vector2 pos) {
         NPCBoat npcBoat;
+
         if(isBoss && texture == TextureManager.ENEMY) {
             //if boss and default texture
             npcBoat = new NPCBoat(TextureManager.BOSS, pos);
-        } else {
+        }
+        else {
             npcBoat = new NPCBoat(texture, pos);
         }
         npcBoat.setAngle(angle);
@@ -108,17 +110,33 @@ public class NPCBuilder {
     }
 
     public NPCBoat generateRandomEnemy(Vector2 pos, College allied, Double difficulty, boolean isBoss) {
-        NPCBuilder builder = new NPCBuilder();
         Random random = new Random();
-        builder.boss(isBoss);
-        builder.maxSpeed((float)(difficulty*random.nextDouble())+maxSpeed);
-        builder.turningSpeed((int)Math.round(difficulty*random.nextDouble())+turningSpeed);
-        builder.health((float)(difficulty*random.nextDouble())+maxHealth);
-        builder.reqCooldown((float)(1/(difficulty*reqCooldown)));
-        builder.allied(allied);
-        builder.angle((float) (2*Math.PI*random.nextDouble()));
 
-        return builder.buildNPC(pos);
+        NPCBoat npcBoat;
+
+        if (isBoss) {
+            npcBoat = new NPCBoat(TextureManager.BOSS, pos);
+        } else {
+            npcBoat = new NPCBoat(TextureManager.ENEMY, pos);
+        }
+
+        npcBoat.setAngle((float) (2*Math.PI*random.nextDouble()));;
+        npcBoat.setAccuracy(accuracy);
+        npcBoat.setSpeed(speed);
+        npcBoat.setMaxSpeed((float)(difficulty*random.nextDouble())+maxSpeed);
+        npcBoat.setRange(range);
+        npcBoat.setIdealDistFromTarget(idealDistFromTarget);
+        npcBoat.setGradientForNormalDist(gradientFromNormalDist);
+        npcBoat.setHealth((float)(difficulty*random.nextDouble())+maxHealth);
+        npcBoat.setMaxHealth(maxHealth);
+        npcBoat.setTurningSpeed((int)Math.round(difficulty*random.nextDouble())+turningSpeed);
+        npcBoat.setAllied(Optional.of(allied));
+        npcBoat.setBoss(isBoss);
+        npcBoat.setDamage(damage);
+        npcBoat.setReqCooldown(reqCooldown);
+
+
+        return npcBoat;
     }
 
 }

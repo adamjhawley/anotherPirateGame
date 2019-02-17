@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import lombok.Setter;
+import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.ShopUI;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.PirateMap;
@@ -45,6 +46,9 @@ public class GameScreen implements Screen, InputProcessor {
     private Stage hudStage;
     private SpriteBatch batch;
     public boolean paused;
+    private boolean gameOver = false;
+    @Getter @Setter
+    private boolean inDerwentBeforeEnd;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -67,13 +71,16 @@ public class GameScreen implements Screen, InputProcessor {
     private ShopUI shopUI;
     private boolean inDepartment;
     @Getter @Setter
+
     private boolean nearDepartment, nearMinigame;
+    private float timer = 0;
 
     private static GameScreen gameScreen;
 
     private ShapeRenderer shapeRenderer;
 
     public static boolean DEBUG = false;
+
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -126,14 +133,18 @@ public class GameScreen implements Screen, InputProcessor {
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
+        inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
         hudStage.addActor(this.hud.getDepartmentPromptTable());
         hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
+        hudStage.addActor(this.hud.getGameoverTable());
+        hudStage.addActor(this.hud.getInDerwentBeforeEndTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(hudStage);
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -151,6 +162,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     private void startGame() {
         stage.addActor(entityManager.getOrCreatePlayer());
+
     }
 
     /**
@@ -160,6 +172,7 @@ public class GameScreen implements Screen, InputProcessor {
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
         enterDepartment("computer science");
+
     }
 
     /**
@@ -232,6 +245,14 @@ public class GameScreen implements Screen, InputProcessor {
         } else {
             hudStage.act();
             hudStage.draw();
+        }
+        if (inDerwentBeforeEnd) {
+            timer += delta;
+            if (timer > 5f) {
+
+                inDerwentBeforeEnd = false;
+                timer = 0f;
+            }
         }
     }
 
@@ -338,7 +359,7 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
-    public PirateGame getGame(){
+    public PirateGame getGame() {
         return pirateGame;
     }
 
@@ -359,6 +380,10 @@ public class GameScreen implements Screen, InputProcessor {
         inDepartment = false;
         paused = false;
     }
+
+
+
+
 
     @Override
     public void resize(int width, int height) {
@@ -407,10 +432,14 @@ public class GameScreen implements Screen, InputProcessor {
     // Stub methods for InputProcessor (unused) - must return false
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.SPACE){
-            paused = !paused;
-            return true;
+
+        if (keycode == Input.Keys.SPACE) {
+            if (gameScreen.getGameOver() != true) {
+                paused = !paused;
+                return true;
+            }
         }
+
         if (keycode == Input.Keys.E) {
             if (nearDepartment) {
                 nearDepartment = false;
@@ -424,9 +453,14 @@ public class GameScreen implements Screen, InputProcessor {
                 pirateGame.switchScreen(ScreenType.MINIGAME);
             }
         }
+        
         if(keycode == Input.Keys.L){
             // DEBUG code used to test minigame easily!
             pirateGame.switchScreen(ScreenType.MINIGAME);
+        }
+
+        if (keycode == Input.Keys.ESCAPE) {
+            Gdx.app.exit();
         }
 
         return false;
@@ -464,5 +498,14 @@ public class GameScreen implements Screen, InputProcessor {
 
     public boolean getNearDepartment() {
         return nearDepartment;
+    }
+
+    public boolean getGameOver()    {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean newBool) {
+        gameOver = newBool;
+
     }
 }
