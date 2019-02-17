@@ -262,9 +262,10 @@ public class MinigameScreen implements Screen, InputProcessor {
 			// render sprites
 			float w = Gdx.graphics.getWidth();
 			float h = Gdx.graphics.getHeight();
+			System.out.println(w);
 			spriteBatch.begin();
-			spriteBatch.draw(player, 100f, h-player.getHeight()-200f);
-			spriteBatch.draw(enemy, w-enemy.getWidth()-100, h-enemy.getHeight()-200);
+			spriteBatch.draw(player, w*0.1f, h-player.getHeight()-(h*0.3f));
+			spriteBatch.draw(enemy, w-enemy.getWidth()-(w*0.1f), h-enemy.getHeight()-(h*0.3f));
 			spriteBatch.end();
 		}
 

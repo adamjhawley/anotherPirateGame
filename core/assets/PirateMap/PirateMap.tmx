@@ -923,6 +923,7 @@
   <object id="35" name="biology" type="department" x="12603" y="10563.6" width="72.7273" height="63.6364"/>
   <object id="36" name="derwent" x="13568" y="14016" width="112" height="112"/>
   <object id="37" x="6752" y="8976"/>
+  <object id="38" name="minigame" x="5315" y="12868" width="57" height="57"/>
   <object id="39" name="james" x="9824" y="4864" width="144" height="160"/>
  </objectgroup>
  <layer id="23" name="Land decoration" width="300" height="300">

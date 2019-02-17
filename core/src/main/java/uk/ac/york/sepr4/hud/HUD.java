@@ -191,7 +191,7 @@ public class HUD {
         promptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
         gameoverTable.setVisible(gameScreen.getGameOver());
-        departmentPromptTable.setVisible(gameScreen.getNearDepartment());
+        //departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
         
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());

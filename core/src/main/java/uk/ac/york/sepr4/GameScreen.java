@@ -136,7 +136,7 @@ public class GameScreen implements Screen, InputProcessor {
         inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
-        hudStage.addActor(this.hud.getDepartmentPromptTable());
+        //hudStage.addActor(this.hud.getDepartmentPromptTable());
         hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
         hudStage.addActor(this.hud.getGameoverTable());
@@ -395,7 +395,9 @@ public class GameScreen implements Screen, InputProcessor {
     public void pause() {}
 
     @Override
-    public void resume() {}
+    public void resume() {
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
 
     @Override
     public void hide() {
