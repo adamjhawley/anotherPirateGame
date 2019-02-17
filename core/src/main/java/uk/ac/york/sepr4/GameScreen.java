@@ -169,8 +169,6 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
-        enterDepartment("computer science");
-
     }
 
     /**

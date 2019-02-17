@@ -5,7 +5,7 @@
     "mapObjectStr": "halifax",
     "bossName": "Mud-Man",
 
-    "bossDifficulty": 0.1,
+    "bossDifficulty": 200,
     "spawnChance": 0.1,
     "enemyDifficulty": 0.1
   },
@@ -45,7 +45,7 @@
     "mapObjectStr": "derwent",
     "bossName": "Asbest-Boss",
 
-    "bossDifficulty": 0.1,
+    "bossDifficulty": 100,
     "spawnChance": 0.1,
     "enemyDifficulty": 0.1
   }
