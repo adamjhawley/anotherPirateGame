@@ -18,6 +18,9 @@ import lombok.Getter;
 import javax.naming.NameNotFoundException;
 
 
+/**
+ * Added for assessment 3, manages interactions with departments
+ */
 public class ShopUI {
 
     private GameScreen gameScreen;
@@ -124,6 +127,10 @@ public class ShopUI {
     }
 
 
+    /**
+     * Handle attempts by the player to purchase an upgrade
+     * @param finalI index of the element the player clicked on
+     */
     private void shopEvent(int finalI) {
         switch(name) {
             case "biology":

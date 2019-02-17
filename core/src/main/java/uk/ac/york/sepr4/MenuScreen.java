@@ -54,6 +54,7 @@ public class MenuScreen implements Screen {
             }
         });
 
+	//Changed for Assessment 3: Added a resume button to the menu
         newGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {

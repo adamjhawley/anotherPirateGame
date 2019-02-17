@@ -51,7 +51,7 @@ public class NPCBoat extends LivingEntity {
      * @param deltaTime time since last act
      */
     public void act(float deltaTime) {
-        // do nothing if paused
+        // Assessment 3: do nothing if paused
         if (GameScreen.isPaused()) {
             return;
         }

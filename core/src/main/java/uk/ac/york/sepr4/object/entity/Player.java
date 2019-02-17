@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 public class Player extends LivingEntity implements InputProcessor {
 
-    private Integer balance = 10000, xp = 0, level = 1;
+    private Integer balance = 0, xp = 0, level = 1;
     private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
@@ -35,6 +35,7 @@ public class Player extends LivingEntity implements InputProcessor {
         //setMaxHealth(1000.0);
         //setHealth(1000.0);
 
+	//Changed for Assessment 3: only default values instead of computations in the constructor
         setMaxHealth(20.0);
         setHealth(getMaxHealth());
         setMaxSpeed(100f);
@@ -46,6 +47,7 @@ public class Player extends LivingEntity implements InputProcessor {
         if(!isDying() && !isDead() && !GameScreen.isPaused()) {
             float angle = getAngle();
             float angularSpeed = 0;
+	    //Changed for Assessment 3: improved responsiveness on turning functions
             if (turningLeft) {
                 angularSpeed += getTurningSpeed();
             }
@@ -63,7 +65,11 @@ public class Player extends LivingEntity implements InputProcessor {
         Gdx.app.debug("Player", "Captured "+college.getName());
     }
 
-    // Assessment 3: modified to enable level up rewards
+    //Changed for Assessment 3: removed unused functions returning level progress
+    /**
+     * Compute whether the player will level up and give rewards if true
+     * @return The level of the player
+     */
     public Integer getLevel() {
         if (xp >= (level+1)*10) {
             level += 1;
@@ -94,6 +100,7 @@ public class Player extends LivingEntity implements InputProcessor {
     }
 
 
+    //Added for Assessment 3: Allow interaction with shops
     public boolean deduceBalance(int deduction) {
         if(deduction <= balance) {
             balance -= deduction;
@@ -174,6 +181,7 @@ public class Player extends LivingEntity implements InputProcessor {
         }
         return false;
     }
+    //Added for Assessment 3: enable events that move the player
     public void movePlayer(Vector2 pos){
         this.setX(pos.x);
         this.setY(pos.y);

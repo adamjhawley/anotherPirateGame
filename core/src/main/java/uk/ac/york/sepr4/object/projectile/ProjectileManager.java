@@ -24,6 +24,9 @@ public class ProjectileManager {
         projectileList.add(projectile);
     }
 
+    /**
+     * Added for Assessment 3: overloaded spawnProjectile to add a damage parameter
+     */
     public void spawnProjectile(LivingEntity livingEntity, float speed, float angle, double damage) {
         Projectile projectile = new Projectile(livingEntity, speed, angle, damage);
         projectileList.add(projectile);

@@ -42,7 +42,7 @@ public abstract class Entity extends Actor {
 
     @Override
     public void act(float deltaTime) {
-        // do nothing if paused
+        //Assessment 3 do nothing if paused
         if (GameScreen.isPaused()) {
             return;
         }

@@ -15,7 +15,11 @@ public class HealthBar extends ProgressBar {
     @Getter
     private LivingEntity livingEntity;
 
+    /**
+     * Class which handles health bars above living entities
+     */
     public HealthBar(LivingEntity livingEntity) {
+    //Changed for Assessment 3: improved resolution on HealthBar to accomodate higher health enemies
         super(0f, 1f, 0.001f, false, new ProgressBarStyle());
         this.livingEntity = livingEntity;
 

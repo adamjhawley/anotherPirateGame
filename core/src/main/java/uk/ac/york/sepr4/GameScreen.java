@@ -136,6 +136,7 @@ public class GameScreen implements Screen, InputProcessor {
         inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
+	// Added for assessment 3: HUD improvements
         hudStage.addActor(this.hud.getDepartmentPromptTable());
         hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
@@ -154,6 +155,7 @@ public class GameScreen implements Screen, InputProcessor {
         startGame();
     }
 
+    //Added for assessment 3: pause function
     public static boolean isPaused(){
         if(getInstance() != null) {
             return getInstance().paused;
@@ -238,6 +240,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         stage.act(delta);
         stage.draw();
+	//Added for assessment 3: enabled changes to HUD for entering shops
         if(inDepartment) {
             shopUI.getStage().act();
             shopUI.getStage().draw();
@@ -245,6 +248,7 @@ public class GameScreen implements Screen, InputProcessor {
             hudStage.act();
             hudStage.draw();
         }
+	//Added for assessment 3: added message if player tries to fight Derwent without defeating the other colleges
         if (inDerwentBeforeEnd) {
             timer += delta;
             if (timer > 5f) {
@@ -362,6 +366,12 @@ public class GameScreen implements Screen, InputProcessor {
         return pirateGame;
     }
 
+
+    //Added for assessment 3: Methods to enter and exit departments
+    /**
+     * Switch the interface to interact with a department
+     * @param name the name of the department
+     */
     public void enterDepartment(String name) {
         try {
             this.shopUI = new ShopUI(this, name);
@@ -373,6 +383,10 @@ public class GameScreen implements Screen, InputProcessor {
         paused = true;
     }
 
+    /**
+     * Exit department
+     * Should only be called when in a department
+     */
     public void exitDepartment() {
         shopUI.dispose();
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -393,6 +407,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void pause() {}
 
+    //Added for Assessment 3: resume method
     @Override
     public void resume() {
         Gdx.input.setInputProcessor(inputMultiplexer);
@@ -410,6 +425,7 @@ public class GameScreen implements Screen, InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+   //Added for Assessment 3: code for pausing game
         if (isPaused()) {
             return false;
         }
@@ -418,6 +434,7 @@ public class GameScreen implements Screen, InputProcessor {
             Vector3 clickLoc = orthographicCamera.unproject(new Vector3(screenX, screenY, 0));
             float fireAngle = (float) (-Math.atan2(player.getCentre().x - clickLoc.x, player.getCentre().y - clickLoc.y));
             Gdx.app.debug("GameScreen", "Firing: Click at (rad) " + fireAngle);
+	    //Added for Assessment 3: Allow player to use triple shot
             if (player.isTripleShot()) {
                 if (player.tripleFire(fireAngle, player.getBulletDamage())) {
                     Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
@@ -430,7 +447,7 @@ public class GameScreen implements Screen, InputProcessor {
         }
         return false;
     }
-    // Stub methods for InputProcessor (unused) - must return false
+    //Added for Assessment 3: key listener for game events
     @Override
     public boolean keyDown(int keycode) {
 
@@ -454,7 +471,7 @@ public class GameScreen implements Screen, InputProcessor {
                 pirateGame.switchScreen(ScreenType.MINIGAME);
             }
         }
-        
+
         if(keycode == Input.Keys.L){
             // DEBUG code used to test minigame easily!
             pirateGame.switchScreen(ScreenType.MINIGAME);
@@ -497,6 +514,7 @@ public class GameScreen implements Screen, InputProcessor {
         return false;
     }
 
+    //Added for Assessment 3: miscellaneous getters and setters
     public boolean getNearDepartment() {
         return nearDepartment;
     }

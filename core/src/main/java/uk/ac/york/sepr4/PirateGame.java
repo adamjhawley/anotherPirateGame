@@ -10,18 +10,13 @@ public class PirateGame extends Game {
 	private GameScreen gameScreen;
 
 	private MinigameScreen minigameScreen;
-
 	public static PirateGame PIRATEGAME;
 	public static PirateGame newpirategame;
-	
+
 	@Override
 	public void create () {
 		PIRATEGAME = this;
 	    switchScreen(ScreenType.MENU);
-
-		//FOR DEVELOPMENT
-		//switchScreen(ScreenType.GAME);
-		//switchScreen(ScreenType.MINIGAME);
 	}
 
 	public void gameOver() {
@@ -45,13 +40,11 @@ public class PirateGame extends Game {
 		}
 	}
 
+	//Added for Assessment 3
 	public void restartGame(){
 		PIRATEGAME = this;
 		this.gameOver();
 		switchScreen(ScreenType.GAME);
-
-
-
 	}
 
 	public void switchScreen(GameScreen activeGameScreen){

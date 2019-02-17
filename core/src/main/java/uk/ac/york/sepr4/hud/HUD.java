@@ -26,10 +26,10 @@ public class HUD {
     private final TextButton btnMenu;
     private GameScreen gameScreen;
 
-
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus;
-    private  Label healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel;
-    private Label jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel;
+    //Added for Assessment 3: Many labels and tables for the different features added in HUD
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
+    healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel,
+    jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel;
 
     @Getter
     private Table table, gameoverTable, inDerwentBeforeEndTable, collegeTable, departmentPromptTable, pausedTable, minigamePromptTable;
@@ -59,15 +59,12 @@ public class HUD {
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
+	//Added for Assessment 3: Health counter
         healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
 
 
-
-
-
-
-        // temporary until we have asset manager in
+	//Added for Assessment 3: Menu button
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
         btnMenu = new TextButton("Menu", skin);
         btnMenu.addListener(new ChangeListener() {
@@ -94,7 +91,7 @@ public class HUD {
 
 
 
-        // Print Pause during paused state
+        //Assessment 3: print pause during paused state
 
         pausedLabel = new Label("PAUSED", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         pausedLabel.setFontScale(4);
@@ -103,7 +100,7 @@ public class HUD {
         pausedTable.setFillParent(true);
         pausedTable.add(pausedLabel).padBottom(200).expandX();
 
-        //add college list in paused state
+        //Assessment 3: add college list in paused state
         haliCollegeLabel = new Label("Halifax \n MudMan", new Label.LabelStyle(new BitmapFont(), Color.RED));
         constCollegeLabel = new Label("Constantine \n Big Boi", new Label.LabelStyle(new BitmapFont(), Color.RED));
         jamesCollegeLabel = new Label("James \n PE Teacher", new Label.LabelStyle(new BitmapFont(), Color.RED));
@@ -161,8 +158,7 @@ public class HUD {
         //+" ("+(player.getLevelProgress())*100+"%)"
         xpValueLabel.setText(""+player.getLevel());
 
-        //
-        healthvalueLable.setText(""+player.getHealth());
+        healthvalueLable.setText(""+player.getHealth().intValue());
 
 
         //location overhead
@@ -171,6 +167,7 @@ public class HUD {
         if(loc.isPresent()) {
             locationLabel.setText(loc.get().getName().toUpperCase());
             if(loc.get() instanceof College) {
+		//Changed for Assessment 3: Check if all other colleges have been captured to gain access to Derwent
                 ArrayList<College> capturedCheck = (ArrayList<College>)gameScreen.getEntityManager().getOrCreatePlayer().getCaptured();
 
                 if (loc.get().getName().equals("Derwent College") && !(capturedCheck.size() >=4)){
@@ -179,6 +176,7 @@ public class HUD {
                 }
                 if (gameScreen.getEntityManager().getOrCreatePlayer().getCaptured().contains(loc.get())) {
                     captured = true;
+		    //Added for Assessment 3: Highlight captured colleges in pause screen
                     if (loc.get().getName().equals("Derwent College")){
                         locationLabel.setText("GAMEOVER");
                         gameScreen.paused = true;
@@ -203,6 +201,7 @@ public class HUD {
 
                 }
             }
+	    //Added for Assessment 3: allow player to enter department if near
             else if(loc.get() instanceof Department) {
                 gameScreen.setNearDepartment(true);
             }
@@ -216,6 +215,7 @@ public class HUD {
             captureStatus.setText("");
         }
 
+	//Added for Assessment 3: Set the visibility conditions of each temporary prompt
         departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
         collegeTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());

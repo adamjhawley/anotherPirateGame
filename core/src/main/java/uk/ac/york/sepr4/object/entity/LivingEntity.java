@@ -63,7 +63,7 @@ public abstract class LivingEntity extends Entity {
 
     @Override
     public void act(float deltaTime) {
-        // do nothing if paused
+        //Assessment 3 - do nothing if paused
         if (GameScreen.isPaused()) {
             return;
         }
@@ -77,6 +77,7 @@ public abstract class LivingEntity extends Entity {
                 if (speed > maxSpeed) {
                     speed = maxSpeed;
                 } else {
+                    //Changed for Assessment 3: acceleration is now a variable
                     speed += acceleration * deltaTime;
                 }
             } else if (isBraking) {
@@ -110,6 +111,7 @@ public abstract class LivingEntity extends Entity {
     /***
      * Called when a LivingEntity is to fire a shot.
      * @param angle angle at which to fire
+     * @param damage damage the fired bullet deals
      * @return true if cooldown sufficient and shot has been fired
      */
     public boolean fire(float angle, double damage) {
@@ -124,6 +126,13 @@ public abstract class LivingEntity extends Entity {
         return false;
     }
 
+    //Added for Assessment 3: tripleFire method to enable the triple fire upgrade for the player
+    /***
+      * Make a LivingEntity fire 3 bullets
+      * @param angle angle at which to fire
+      * @param damage damage the bullet will deal
+      * @return true if cooldown sufficient and shot has been fired
+      */
     public boolean tripleFire(float angle, double damage) {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
         if (currentCooldown >= reqCooldown) {

@@ -51,6 +51,9 @@ public class BuildingManager {
         }
     }
 
+    /**
+     * Added for Assessment 3: Added a text prompt to enter department when near
+     */
     public void departmentPrompt() {
         for (Department department : departments) {
             Player player = gameScreen.getEntityManager().getOrCreatePlayer();
@@ -63,6 +66,9 @@ public class BuildingManager {
         }
     }
 
+    /**
+     * Added for Assessment 3: Text prompt to access minigame
+     */
     public void minigamePrompt(){
         Player player = gameScreen.getEntityManager().getOrCreatePlayer();
         if (minigame.getBuildingZone().contains(player.getRectBounds())) {
@@ -106,6 +112,12 @@ public class BuildingManager {
         return Optional.empty();
     }
 
+    /**
+     * Generate an NPCBoat which has the appropriate position and difficulty for a college
+     * @param college College for which the NPCBoat is being generated
+     * @param boss Whether the generated npc is a boss
+     * @return       An NPCBoat with correct parameters
+     */
     private Optional<NPCBoat> generateCollegeNPC(College college, boolean boss) {
         Random random = new Random();
         if(random.nextDouble() <= college.getSpawnChance()){

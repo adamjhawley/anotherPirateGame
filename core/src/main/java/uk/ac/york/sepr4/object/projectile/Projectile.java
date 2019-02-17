@@ -26,6 +26,13 @@ public class Projectile extends Entity {
         setSpeed(speed + baseSpeed);
     }
 
+    /**
+     * Added for Assessment 3: overloaded projectile constructor to add a damage parameter
+     * @param shooter The entity shooting the projectile
+     * @param speed Speed of the projectile
+     * @param angle Angle at which the projectile is shot
+     * @param damage Damage dealt on impact by projectile
+     */
     public Projectile(LivingEntity shooter, float speed, float angle, double damage){
          super(TextureManager.CANNONBALL, shooter.getCentre());
 

@@ -16,7 +16,17 @@ public class NPCBuilder {
 
     public NPCBuilder() {}
 
-public NPCBoat generateRandomEnemy(Vector2 pos, College allied, float difficulty, boolean isBoss) {
+    //Changed for Assessment 3: changed the factory method to create a new boat instead of creating another NPCBuilder
+    //Removed the getters and setters for the builder itself as they are never used when using a factory properly
+    /**
+     * Generate an enemy NPCBoat from base stats and difficulty
+     * @param pos The position the NPCBoat is to have
+     * @param allied The college the NPCBoat is allied to
+     * @param difficulty Arbitrary difficulty value which determines health, damage, speed and accuracy
+     * @param isBoss Is the NPCBoat a college boss
+     * @return An NPCBoat with correct stats
+     */
+    public NPCBoat generateRandomEnemy(Vector2 pos, College allied, float difficulty, boolean isBoss) {
         Random random = new Random();
 
         NPCBoat npcBoat;
