@@ -36,6 +36,7 @@ public class ShopUI {
     private Label turningSpeedLabel;
     private Label maxHealthLabel;
     private Label bulletDamage;
+    private Label accelerationLabel;
 
     public ShopUI (GameScreen gameScreen, String name) throws NameNotFoundException {
         this.name = name;
@@ -69,6 +70,8 @@ public class ShopUI {
         //
         maxSpeedLabel = new Label("Max Speed: " + (int)player.getMaxSpeed(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
+        accelerationLabel = new Label("Acceleration " + (int)player.getAcceleration(), new Label.LabelStyle(
+                new BitmapFont(), Color.BLACK));
         turningSpeedLabel = new Label("Turning Speed: " + player.getTurningSpeed(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
         healthLabel = new Label("Health: " + player.getHealth().intValue(), new Label.LabelStyle(
@@ -79,11 +82,11 @@ public class ShopUI {
                 new BitmapFont(), Color.BLACK));
 
         table.add(shopLabel).colspan(3).center();
-        table.row().pad(20,0,0,10);
+        table.row().pad(10,0,0,10);
         table.add(balanceLabel).colspan(3).center();
         table.row().pad(10,0,10,0);
         table.add(maxSpeedLabel);
-        table.add();
+        table.add(accelerationLabel);
         table.add(turningSpeedLabel);
         table.row().pad(0,0,0,10);
         table.add(healthLabel).fillX().uniformX();
@@ -178,6 +181,7 @@ public class ShopUI {
         }
         balanceLabel.setText("Gold available: " + player.getBalance());
         maxSpeedLabel.setText("MaxSpeed: " + (int)player.getMaxSpeed());
+        accelerationLabel.setText("Acceleration " + (int)player.getAcceleration());
         turningSpeedLabel.setText("TurningSpeed: " + player.getTurningSpeed());
         maxHealthLabel.setText("Health: " + player.getHealth().intValue());
         healthLabel.setText("MaxHealth: " + player.getMaxHealth().intValue());

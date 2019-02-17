@@ -16,7 +16,7 @@ public class HealthBar extends ProgressBar {
     private LivingEntity livingEntity;
 
     public HealthBar(LivingEntity livingEntity) {
-        super(0f, 1f, 0.01f, false, new ProgressBarStyle());
+        super(0f, 1f, 0.001f, false, new ProgressBarStyle());
         this.livingEntity = livingEntity;
 
 

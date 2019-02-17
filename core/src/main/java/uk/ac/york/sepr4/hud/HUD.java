@@ -27,11 +27,12 @@ public class HUD {
     private GameScreen gameScreen;
 
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, departmentPromptLabel, gameoverLabel, inDerwentBeforeEndLabel;
-    private Label healthLabel, healthvalueLable, minigamePromptLabel;
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus;
+    private  Label healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel;
+    private Label jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel;
 
     @Getter
-    private Table table, departmentPromptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable, minigamePromptTable;
+    private Table table, gameoverTable, inDerwentBeforeEndTable, collegeTable, departmentPromptTable, pausedTable, minigamePromptTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -57,8 +58,6 @@ public class HUD {
 
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
-
-
 
         healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
@@ -103,6 +102,22 @@ public class HUD {
         pausedTable.center();
         pausedTable.setFillParent(true);
         pausedTable.add(pausedLabel).padBottom(200).expandX();
+
+        //add college list in paused state
+        haliCollegeLabel = new Label("Halifax \n MudMan", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        constCollegeLabel = new Label("Constantine \n Big Boi", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        jamesCollegeLabel = new Label("James \n PE Teacher", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        langCollegeLabel = new Label("Langwith \n Glasshouse Manager", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        derwentCollegeLabel = new Label("Derwent \n Asbest-boss", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        collegeTable = new Table();
+        collegeTable.setFillParent(true);
+        collegeTable.add(haliCollegeLabel).expandX().padTop(5);
+        collegeTable.add(constCollegeLabel).expandX().padTop(5);
+        collegeTable.add(jamesCollegeLabel).expandX().padTop(5);
+        collegeTable.add(langCollegeLabel).expandX().padTop(5);
+        collegeTable.add(derwentCollegeLabel).expandX().padTop(5);
+
+
 
         // Assessment 3: Add the department prompt
         departmentPromptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
@@ -169,6 +184,19 @@ public class HUD {
                         gameScreen.paused = true;
                         gameScreen.setGameOver(true);
                     }
+                    if (loc.get().getName().equals("Halifax College")){
+                        haliCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+                    if (loc.get().getName().equals("Constantine College")){
+                        constCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+                    if (loc.get().getName().equals("James College")){
+                        jamesCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+                    if (loc.get().getName().equals("Langwith College")){
+                        langCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+
 
 
 
@@ -187,12 +215,12 @@ public class HUD {
         } else {
             captureStatus.setText("");
         }
-        
+
         departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
+        collegeTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
         gameoverTable.setVisible(gameScreen.getGameOver());
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
-        departmentPromptTable.setVisible(gameScreen.getNearDepartment());
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
     }
 

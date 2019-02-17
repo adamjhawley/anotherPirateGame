@@ -37,7 +37,7 @@ public class MenuScreen implements Screen {
         //create buttons
         TextButton newGame = new TextButton("New Game", skin);
         TextButton exit = new TextButton("Exit", skin);
-        TextButton back = new TextButton("Back",skin);
+        TextButton back = new TextButton("Resume",skin);
 
         //add buttons to table
         table.add(newGame).fillX().uniformX();

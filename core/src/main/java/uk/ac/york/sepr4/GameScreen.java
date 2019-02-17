@@ -136,11 +136,12 @@ public class GameScreen implements Screen, InputProcessor {
         inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
-        //hudStage.addActor(this.hud.getDepartmentPromptTable());
+        hudStage.addActor(this.hud.getDepartmentPromptTable());
         hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
         hudStage.addActor(this.hud.getGameoverTable());
         hudStage.addActor(this.hud.getInDerwentBeforeEndTable());
+        hudStage.addActor(this.hud.getCollegeTable());
 
         // Set input processor and focus
         inputMultiplexer = new InputMultiplexer();
