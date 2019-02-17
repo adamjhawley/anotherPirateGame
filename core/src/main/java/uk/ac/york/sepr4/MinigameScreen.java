@@ -6,16 +6,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import javax.xml.soap.Text;
+import java.util.Random;
 
 
 /**
@@ -28,11 +27,17 @@ public class MinigameScreen implements Screen, InputProcessor {
 	private Stage stage;
 	private String state = "menu";
 	private SpriteBatch spriteBatch;
+	private InputMultiplexer inputMultiplexer;
 
 	//minigame variables
 	private boolean playerAlive = true;
 	private boolean enemyAlive = true;
 	private boolean playerWon = false;
+	private boolean playerDisqualified = false;
+	private boolean gameStarted = false;
+	private float countdown;
+	private float enemyShotCountdown;
+	private String difficulty; //easy, medium, hard, very hard
 
 	public MinigameScreen(PirateGame pirateGame, GameScreen gameScreen){
 		this.pirateGame = pirateGame;
@@ -41,7 +46,12 @@ public class MinigameScreen implements Screen, InputProcessor {
 
 		// create stage and set it as input processor
 		stage = new Stage(new ScreenViewport());
-		Gdx.input.setInputProcessor(stage);
+
+		inputMultiplexer = new InputMultiplexer();
+		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(this);
+
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
 	@Override
@@ -49,7 +59,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 
 		showMenu();
 
-		Gdx.input.setInputProcessor(stage);
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
 	private void showMenu(){
@@ -60,14 +70,14 @@ public class MinigameScreen implements Screen, InputProcessor {
 
 		Label minigameText = new Label("How difficult do you want your minigame to be?", skin);
 		minigameText.setColor(0f, 0f, 0f, 1f);
-		Label instructionText = new Label("Wait for the signal, then use the space bar to shoot before your opponent does.", skin);
+		Label instructionText = new Label("Wait for the signal, then use the Z key to shoot before your opponent does.", skin);
 		instructionText.setColor(0f, 0f, 0f, 1f);
 
 		TextButton quitMinigame = new TextButton("Go back to game", skin);
 		TextButton easyMinigame = new TextButton("Easy", skin);
 		TextButton mediumMinigame = new TextButton("Medium", skin);
 		TextButton hardMinigame = new TextButton("Hard", skin);
-		TextButton reallyhardMinigame = new TextButton("Very Hard", skin);
+		TextButton veryhardMinigame = new TextButton("Very Hard", skin);
 
 		table.add(minigameText).fillX().uniformX();
 		table.row().pad(20, 0, 0, 0);
@@ -77,7 +87,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 		table.row();
 		table.add(hardMinigame).fillX().uniformX();
 		table.row();
-		table.add(reallyhardMinigame).fillX().uniformX();
+		table.add(veryhardMinigame).fillX().uniformX();
 		table.row().pad(20, 0, 10, 0);
 		table.add(quitMinigame).fillX().uniformX();
 		table.row().pad(20,0,0,0);
@@ -94,6 +104,31 @@ public class MinigameScreen implements Screen, InputProcessor {
 		easyMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				difficulty = "easy";
+				setMinigameStateGame();
+			}
+		});
+
+		mediumMinigame.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				difficulty = "medium";
+				setMinigameStateGame();
+			}
+		});
+
+		hardMinigame.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				difficulty = "hard";
+				setMinigameStateGame();
+			}
+		});
+
+		veryhardMinigame.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				difficulty = "very hard";
 				setMinigameStateGame();
 			}
 		});
@@ -106,24 +141,42 @@ public class MinigameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		if(state.equals("game")){
+			showGame();
+			if(this.countdown > 0){
+				this.countdown -= Gdx.graphics.getDeltaTime();
+			}
+
+
+			if (gameStarted){
+
+				if(enemyShotCountdown > 0){
+					enemyShotCountdown -= Gdx.graphics.getDeltaTime();
+				} else {
+					handleShot("enemy");
+				}
+			}
+
 			Texture player;
 			Texture enemy;
 			if (playerAlive  && !enemyAlive) {
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_shooting.png"));
 				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_defeated.png"));
-			} else if (playerAlive){
+			} else if (playerAlive && enemyAlive){
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_holstered.png"));
 				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right.png"));
-			} else {
+			} else if (!playerAlive && enemyAlive){
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_defeated.png"));
 				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_shooting_right.png"));
+			} else {
+				player = new Texture(Gdx.files.internal("shootpirate/pirate_holstered.png"));
+				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right.png"));
 			}
 
 			float w = Gdx.graphics.getWidth();
 			float h = Gdx.graphics.getHeight();
 			spriteBatch.begin();
-			spriteBatch.draw(player, 50f, h-player.getHeight()-50f);
-			spriteBatch.draw(enemy, w-enemy.getWidth()-50, h-enemy.getHeight()-50);
+			spriteBatch.draw(player, 100f, h-player.getHeight()-200f);
+			spriteBatch.draw(enemy, w-enemy.getWidth()-100, h-enemy.getHeight()-200);
 			spriteBatch.end();
 		}
 
@@ -133,23 +186,131 @@ public class MinigameScreen implements Screen, InputProcessor {
 	}
 
 	private void showGame(){
+		stage.clear();
+		Table table = new Table();
+		table.setFillParent(true);
+		stage.addActor(table);
+		Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
 
+		if(!gameStarted){
+			Label readyText = new Label("Press SPACE when you're ready! Press Z to shoot!", skin);
+			readyText.setColor(0, 0, 0, 1);
+
+			table.add(readyText);
+		} else {
+			if(!playerWon && !playerDisqualified && playerAlive){
+				if(countdown > 0){
+					Label readyText = new Label("Ready...", skin);
+					readyText.setColor(0, 0, 0, 1);
+
+					table.add(readyText);
+				} else {
+					Texture fireTextTexture;
+					fireTextTexture = new Texture(Gdx.files.internal("shootpirate/fire_text.png"));
+
+					Image fireText;
+					fireText = new Image(fireTextTexture);
+
+
+					table.add(fireText);
+				}
+			} else if (playerDisqualified){
+				Label dqText = new Label("You shot early! Disqualified!", skin);
+				dqText.setColor(0, 0, 0, 1);
+
+				Label menuText = new Label("Press SPACE to go back to the menu.", skin);
+				menuText.setColor(0, 0, 0, 1);
+
+				table.add(dqText);
+				table.row();
+				table.add(menuText);
+			} else if (playerWon){
+				Label winText = new Label("You win! Press SPACE to go back to the menu.", skin);
+				winText.setColor(0, 0, 0, 1);
+
+				table.add(winText);
+			} else if (!playerAlive){
+				Label loseText = new Label("You lose! Press SPACE to go back to the menu.", skin);
+				loseText.setColor(0, 0, 0, 1);
+
+				table.add(loseText);
+			}
+		}
 	}
 
 	public void setMinigameStateMenu(){
 		this.state = "menu";
+		stage.clear();
+		gameStarted = false;
 		showMenu();
 	}
 
 	public void setMinigameStateGame(){
 		this.state = "game";
+		this.playerAlive = true;
+		this.enemyAlive = true;
+		this.playerDisqualified = false;
+		this.playerWon = false;
 		stage.clear();
+		showGame();
 	}
 
 	@Override
 	public boolean keyDown(int keycode){
-
+		if(!gameStarted){
+			if(keycode == Input.Keys.SPACE){
+				startGame();
+			}
+		}
+		else
+		{
+			if(keycode == Input.Keys.Z){
+				if(!playerWon && !playerDisqualified && playerAlive) {
+					handleShot("player");
+				}
+			}
+			if(keycode == Input.Keys.SPACE){
+				setMinigameStateMenu();
+			}
+		}
 		return false;
+	}
+
+	private void handleShot(String shooter){
+		if(shooter.equals("player")){
+			if(countdown > 0) {
+				playerDisqualified = true;
+			} else {
+				playerWon = true;
+				enemyAlive = false;
+			}
+		} else if (shooter.equals("enemy")){
+			if(enemyAlive){
+				playerAlive = false;
+			}
+		}
+
+	}
+
+	private void startGame(){
+		gameStarted = true;
+		Random randomiser = new Random();
+		countdown = randomiser.nextInt(4)+1;
+
+		switch(difficulty){
+			case "easy":
+				enemyShotCountdown = countdown+20;
+				break;
+			case "medium":
+				enemyShotCountdown = countdown+0.7f;
+				break;
+			case "hard":
+				enemyShotCountdown = countdown+0.4f;
+				break;
+			case "very hard":
+				enemyShotCountdown = countdown+0.2f;
+				break;
+		}
 	}
 
 	@Override
