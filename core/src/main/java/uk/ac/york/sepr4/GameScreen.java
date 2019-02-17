@@ -457,7 +457,7 @@ public class GameScreen implements Screen, InputProcessor {
         
         if(keycode == Input.Keys.L){
             // DEBUG code used to test minigame easily!
-            pirateGame.switchScreen(ScreenType.MINIGAME);
+            //pirateGame.switchScreen(ScreenType.MINIGAME);
         }
 
         if (keycode == Input.Keys.ESCAPE) {
