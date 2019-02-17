@@ -82,8 +82,9 @@ public class ShopUI {
         table.row().pad(20,0,0,10);
         table.add(balanceLabel).colspan(3).center();
         table.row().pad(10,0,10,0);
-        table.add(maxSpeedLabel).fillX().uniformX();
-        table.add(turningSpeedLabel).fillX().uniformX();
+        table.add(maxSpeedLabel);
+        table.add();
+        table.add(turningSpeedLabel);
         table.row().pad(0,0,0,10);
         table.add(healthLabel).fillX().uniformX();
         table.add(maxHealthLabel).fillX().uniformX();

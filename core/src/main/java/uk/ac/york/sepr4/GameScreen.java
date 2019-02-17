@@ -168,7 +168,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(inputMultiplexer);
-
+        enterDepartment("computer science");
 
     }
 
@@ -443,6 +443,10 @@ public class GameScreen implements Screen, InputProcessor {
                 enterDepartment(gameScreen.getEntityManager().getPlayerLocation().get().getName());
                 return true;
             }
+        }
+
+        if (keycode == Input.Keys.ESCAPE) {
+            Gdx.app.exit();
         }
 
         return false;
