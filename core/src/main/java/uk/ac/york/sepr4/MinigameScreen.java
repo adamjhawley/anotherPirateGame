@@ -2,18 +2,15 @@ package uk.ac.york.sepr4;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-import javax.xml.soap.Text;
 import java.util.Random;
 
 
@@ -47,6 +44,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 		// create stage and set it as input processor
 		stage = new Stage(new ScreenViewport());
 
+		// use input multiplexer to enable scene2d inputs and keyboard inputs at the same time
 		inputMultiplexer = new InputMultiplexer();
 		inputMultiplexer.addProcessor(stage);
 		inputMultiplexer.addProcessor(this);
@@ -62,12 +60,18 @@ public class MinigameScreen implements Screen, InputProcessor {
 		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
+	/**
+	 * Display the minigame's main menu.
+	 */
 	private void showMenu(){
+		// clear existing UI, initialise scene2d objects
+		stage.clear();
 		Table table = new Table();
 		table.setFillParent(true);
 		stage.addActor(table);
 		Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
 
+		// instantiate labels and buttons
 		Label minigameText = new Label("How difficult do you want your minigame to be?", skin);
 		minigameText.setColor(0f, 0f, 0f, 1f);
 		Label instructionText = new Label("Wait for the signal, then use the Z key to shoot before your opponent does.", skin);
@@ -79,6 +83,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 		TextButton hardMinigame = new TextButton("Hard", skin);
 		TextButton veryhardMinigame = new TextButton("Very Hard", skin);
 
+		// declare UI layout
 		table.add(minigameText).fillX().uniformX();
 		table.row().pad(20, 0, 0, 0);
 		table.add(easyMinigame).fillX().uniformX();
@@ -94,6 +99,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 		table.add(instructionText).fillX().uniformX();
 		table.row();
 
+		// declare button functionality
 		quitMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -140,15 +146,18 @@ public class MinigameScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(1f, 1f, 1f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		// renders player and enemy sprites on screen once the minigame is started
 		if(state.equals("game")){
+			// displays game interface when the minigame is started
 			showGame();
+
+			// counts down time from "Ready..." to "FIRE!"
 			if(this.countdown > 0){
 				this.countdown -= Gdx.graphics.getDeltaTime();
 			}
 
-
+			// if the game has started, counts down enemy's shot time
 			if (gameStarted){
-
 				if(enemyShotCountdown > 0){
 					enemyShotCountdown -= Gdx.graphics.getDeltaTime();
 				} else {
@@ -156,6 +165,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 				}
 			}
 
+			// selects sprite for player and enemy depending on game state and difficulty
 			Texture player;
 			Texture enemy;
 			if (playerAlive  && !enemyAlive) {
@@ -235,10 +245,11 @@ public class MinigameScreen implements Screen, InputProcessor {
 					table.add(readyText);
 				} else {
 					Texture fireTextTexture;
-					fireTextTexture = new Texture(Gdx.files.internal("shootpirate/fire_text.png"));
+					fireTextTexture = new Texture(Gdx.files.internal("shootpirate/fire_text_white.png"));
 
 					Image fireText;
 					fireText = new Image(fireTextTexture);
+					fireText.setColor(1, 0, 0, 1);
 
 
 					table.add(fireText);
@@ -305,8 +316,13 @@ public class MinigameScreen implements Screen, InputProcessor {
 		return false;
 	}
 
+	/**
+	 * Method used to resolve shooting.
+	 * @param shooter Has to be a string, "player" or "enemy". Other arguments do nothing.
+	 */
 	private void handleShot(String shooter){
 		if(shooter.equals("player")){
+			// Disqualify the player if they fire before the signal, have them win otherwise.
 			if(countdown > 0) {
 				playerDisqualified = true;
 			} else {
@@ -331,10 +347,10 @@ public class MinigameScreen implements Screen, InputProcessor {
 				enemyShotCountdown = countdown+20;
 				break;
 			case "medium":
-				enemyShotCountdown = countdown+0.7f;
+				enemyShotCountdown = countdown+0.3f;
 				break;
 			case "hard":
-				enemyShotCountdown = countdown+0.4f;
+				enemyShotCountdown = countdown+0.25f;
 				break;
 			case "very hard":
 				enemyShotCountdown = countdown+0.2f;

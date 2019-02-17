@@ -425,7 +425,8 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
         if(keycode == Input.Keys.L){
-            //used to test minigame easily!
+            // DEBUG code used to test minigame easily!
+            //pirateGame.switchScreen(ScreenType.MINIGAME);
         }
 
         return false;
