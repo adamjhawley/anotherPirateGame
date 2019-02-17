@@ -179,6 +179,19 @@ public class HUD {
                         gameScreen.paused = true;
                         gameScreen.setGameOver(true);
                     }
+                    if (loc.get().getName().equals("Halifax College")){
+                        haliCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+                    if (loc.get().getName().equals("Constantine College")){
+                        constCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+                    if (loc.get().getName().equals("James College")){
+                        jamesCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+                    if (loc.get().getName().equals("Langwith College")){
+                        langCollegeLabel.setStyle(new Label.LabelStyle(new BitmapFont(), Color.GREEN) );
+                    }
+
 
 
 
