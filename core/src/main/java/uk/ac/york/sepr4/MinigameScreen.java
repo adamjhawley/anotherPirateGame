@@ -140,6 +140,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 			}
 		});
 
+		// disable button if player doesn't have enough money
 		if (money < 1){
 			easyMinigame.setTouchable(Touchable.disabled);
 		}
@@ -244,6 +245,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 				}
 
 			} else {
+				// failsafe condition to prevent null pointer exception
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_holstered.png"));
 
 				if(difficulty.equals("easy")){
@@ -257,6 +259,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 				}
 			}
 
+			// render sprites
 			float w = Gdx.graphics.getWidth();
 			float h = Gdx.graphics.getHeight();
 			spriteBatch.begin();
@@ -270,6 +273,9 @@ public class MinigameScreen implements Screen, InputProcessor {
 		stage.draw();
 	}
 
+	/**
+	 * Used to display the scene2d elements of the game part of the minigame, like the "Ready..." and "FIRE!" text.
+	 */
 	private void showGame(){
 		stage.clear();
 		Table table = new Table();
@@ -277,13 +283,16 @@ public class MinigameScreen implements Screen, InputProcessor {
 		stage.addActor(table);
 		Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
 
+		// used to handle which text is displayed when
 		if(!gameStarted){
+			// displayed after the game is started, but before the player is ready
 			Label readyText = new Label("Press SPACE when you're ready! Press Z to shoot!", skin);
 			readyText.setColor(0, 0, 0, 1);
 
 			table.add(readyText);
 		} else {
 			if(!playerWon && !playerDisqualified && playerAlive){
+				// displayed during the countdown before the minigame has ended
 				if(countdown > 0){
 					Label readyText = new Label("Ready...", skin);
 					readyText.setColor(0, 0, 0, 1);
@@ -301,6 +310,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 					table.add(fireText);
 				}
 			} else if (playerDisqualified){
+				// displayed when the player fires prematurely
 				Label dqText = new Label("You shot early! Disqualified!", skin);
 				dqText.setColor(0, 0, 0, 1);
 
@@ -311,11 +321,13 @@ public class MinigameScreen implements Screen, InputProcessor {
 				table.row();
 				table.add(menuText);
 			} else if (playerWon){
+				// displayed when the player wins
 				Label winText = new Label("You win! Press SPACE to go back to the menu.", skin);
 				winText.setColor(0, 0, 0, 1);
 
 				table.add(winText);
 			} else if (!playerAlive){
+				// displayed when the player loses
 				Label loseText = new Label("You lose! Press SPACE to go back to the menu.", skin);
 				loseText.setColor(0, 0, 0, 1);
 
@@ -324,6 +336,9 @@ public class MinigameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	/**
+	 * Displays the minigame menu screen.
+	 */
 	public void setMinigameStateMenu(){
 		this.state = "menu";
 		stage.clear();
@@ -331,6 +346,9 @@ public class MinigameScreen implements Screen, InputProcessor {
 		showMenu();
 	}
 
+	/**
+	 * Displays the minigame game screen and starts an instance of a game.
+	 */
 	public void setMinigameStateGame(){
 		this.state = "game";
 		this.playerAlive = true;
@@ -344,6 +362,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 	@Override
 	public boolean keyDown(int keycode){
 		if(!gameStarted){
+			// if the game hasn't been started, space starts the game
 			if(keycode == Input.Keys.SPACE){
 				startGame();
 			}
@@ -352,9 +371,11 @@ public class MinigameScreen implements Screen, InputProcessor {
 		{
 			if(keycode == Input.Keys.Z){
 				if(!playerWon && !playerDisqualified && playerAlive) {
+					// allow the player to shoot if they have not yet lost or already won
 					handleShot("player");
 				}
 			}
+			// if the game has been started, space takes the player back to the minigame menu
 			if(keycode == Input.Keys.SPACE){
 				if(!playerAlive || !enemyAlive || playerDisqualified){
 					setMinigameStateMenu();
@@ -386,6 +407,10 @@ public class MinigameScreen implements Screen, InputProcessor {
 
 	}
 
+	/**
+	 * Gives the player a reward based on the difficulty of the minigame they selected.
+	 * Has to be called AFTER the difficulty variable has been set.
+	 */
 	private void giveReward(){
 		Player player = gameScreen.getEntityManager().getOrCreatePlayer();
 
@@ -405,6 +430,9 @@ public class MinigameScreen implements Screen, InputProcessor {
 		}
 	}
 
+	/**
+	 * Prepares a minigame by generating a countdown timer and the timer for the enemy's reaction.
+	 */
 	private void startGame(){
 		gameStarted = true;
 		Random randomiser = new Random();
@@ -418,10 +446,10 @@ public class MinigameScreen implements Screen, InputProcessor {
 				enemyShotCountdown = countdown+0.3f;
 				break;
 			case "hard":
-				enemyShotCountdown = countdown+0.25f;
+				enemyShotCountdown = countdown+0.26f;
 				break;
 			case "very hard":
-				enemyShotCountdown = countdown+0.2f;
+				enemyShotCountdown = countdown+0.23f;
 				break;
 		}
 	}
