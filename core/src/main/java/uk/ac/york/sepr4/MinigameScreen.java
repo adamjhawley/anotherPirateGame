@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -73,34 +74,55 @@ public class MinigameScreen implements Screen, InputProcessor {
 		Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
 
 		// instantiate labels and buttons
-		Label minigameText = new Label("How difficult do you want your minigame to be?", skin);
+		Label minigameText = new Label("How difficult do you want your minigame to be? Higher difficulty means higher rewards!", skin);
 		minigameText.setColor(0f, 0f, 0f, 1f);
 		Label instructionText = new Label("Wait for the signal, then use the Z key to shoot before your opponent does.", skin);
 		instructionText.setColor(0f, 0f, 0f, 1f);
 
 		TextButton quitMinigame = new TextButton("Go back to game", skin);
 		TextButton easyMinigame = new TextButton("Easy", skin);
+		Label easyText = new Label(" (1 gold)", skin);
+		easyText.setColor(0f, 0f, 0f, 1f);
 		TextButton mediumMinigame = new TextButton("Medium", skin);
+		Label mediumText = new Label(" (10 gold)", skin);
+		mediumText.setColor(0f, 0f, 0f, 1f);
 		TextButton hardMinigame = new TextButton("Hard", skin);
+		Label hardText = new Label(" (20 gold)", skin);
+		hardText.setColor(0f, 0f, 0f, 1f);
 		TextButton veryhardMinigame = new TextButton("Very Hard", skin);
+		Label veryhardText = new Label(" (50 gold)", skin);
+		veryhardText.setColor(0f, 0f, 0f, 1f);
+
+		// used to display player balance and later to enable/disable minigame buttons
+		Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+		Integer money = player.getBalance();
+
+		Label currentBalance = new Label("Balance: " + money.toString(), skin);
+		currentBalance.setColor(0f, 0f, 0f, 1f);
 
 		// declare UI layout
 		table.add(minigameText).fillX().uniformX();
 		table.row().pad(20, 0, 0, 0);
+		table.add(currentBalance);
+		table.row().pad(20, 0, 0, 0);
 		table.add(easyMinigame).fillX().uniformX();
+		table.add(easyText);
 		table.row();
 		table.add(mediumMinigame).fillX().uniformX();
+		table.add(mediumText);
 		table.row();
 		table.add(hardMinigame).fillX().uniformX();
+		table.add(hardText);
 		table.row();
 		table.add(veryhardMinigame).fillX().uniformX();
+		table.add(veryhardText);
 		table.row().pad(20, 0, 10, 0);
 		table.add(quitMinigame).fillX().uniformX();
 		table.row().pad(20,0,0,0);
 		table.add(instructionText).fillX().uniformX();
 		table.row();
 
-		// declare button functionality
+		// declare button functionality based on current balance
 		quitMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -108,37 +130,58 @@ public class MinigameScreen implements Screen, InputProcessor {
 			}
 		});
 
+
 		easyMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				difficulty = "easy";
+				player.deduceBalance(1);
 				setMinigameStateGame();
 			}
 		});
+
+		if (money < 1){
+			easyMinigame.setTouchable(Touchable.disabled);
+		}
 
 		mediumMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				difficulty = "medium";
+				player.deduceBalance(10);
 				setMinigameStateGame();
 			}
 		});
+
+		if(money < 10){
+			mediumMinigame.setTouchable(Touchable.disabled);
+		}
 
 		hardMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				difficulty = "hard";
+				player.deduceBalance(20);
 				setMinigameStateGame();
 			}
 		});
+
+		if(money < 20){
+			hardMinigame.setTouchable(Touchable.disabled);
+		}
 
 		veryhardMinigame.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				difficulty = "very hard";
+				player.deduceBalance(50);
 				setMinigameStateGame();
 			}
 		});
+
+		if(money < 50){
+			veryhardMinigame.setTouchable(Touchable.disabled);
+		}
 	}
 
 	@Override
@@ -348,7 +391,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 
 		switch(difficulty){
 			case "easy":
-				player.addBalance(1);
+				player.addBalance(2);
 				break;
 			case "medium":
 				player.addBalance(50);
@@ -429,7 +472,10 @@ public class MinigameScreen implements Screen, InputProcessor {
 
 	@Override
 	public void resume() {
-		Gdx.input.setInputProcessor(stage);
+		inputMultiplexer.addProcessor(stage);
+		inputMultiplexer.addProcessor(this);
+
+		Gdx.input.setInputProcessor(inputMultiplexer);
 	}
 
 	@Override
