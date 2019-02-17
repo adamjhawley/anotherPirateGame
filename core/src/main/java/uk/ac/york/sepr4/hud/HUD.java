@@ -27,11 +27,12 @@ public class HUD {
     private GameScreen gameScreen;
 
 
-    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel, gameoverLabel, inDerwentBeforeEndLabel;
-    private  Label healthLabel, healthvalueLable;
+    private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus, promptLabel;
+    private  Label healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel;
+    private Label jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel;
 
     @Getter
-    private Table table, promptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable;
+    private Table table, promptTable, pausedTable, gameoverTable, inDerwentBeforeEndTable, collegeTable;
 
     /***
      * Class responsible for storing and updating HUD variables.
@@ -103,6 +104,22 @@ public class HUD {
         pausedTable.center();
         pausedTable.setFillParent(true);
         pausedTable.add(pausedLabel).padBottom(200).expandX();
+
+        //add college list in paused state
+        haliCollegeLabel = new Label("Halifax", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        constCollegeLabel = new Label("Constantine", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        jamesCollegeLabel = new Label("James", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        langCollegeLabel = new Label("Langwith", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        derwentCollegeLabel = new Label("Derwent", new Label.LabelStyle(new BitmapFont(), Color.RED));
+        collegeTable = new Table();
+        collegeTable.setFillParent(true);
+        collegeTable.add(haliCollegeLabel).expandX().padTop(5);
+        collegeTable.add(constCollegeLabel).expandX().padTop(5);
+        collegeTable.add(jamesCollegeLabel).expandX().padTop(5);
+        collegeTable.add(langCollegeLabel).expandX().padTop(5);
+        collegeTable.add(derwentCollegeLabel).expandX().padTop(5);
+
+
 
         // Assessment 3: Add the department prompt
         promptLabel = new Label("E to enter department", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
@@ -182,6 +199,7 @@ public class HUD {
         }
         promptTable.setVisible(gameScreen.getNearDepartment());
         pausedTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
+        collegeTable.setVisible(GameScreen.isPaused() && !gameScreen.getNearDepartment() && !gameScreen.getGameOver());
         gameoverTable.setVisible(gameScreen.getGameOver());
 
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
