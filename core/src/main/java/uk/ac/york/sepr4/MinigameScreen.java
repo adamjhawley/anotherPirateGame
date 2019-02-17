@@ -163,13 +163,42 @@ public class MinigameScreen implements Screen, InputProcessor {
 				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_defeated.png"));
 			} else if (playerAlive && enemyAlive){
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_holstered.png"));
-				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right.png"));
+
+				if(difficulty.equals("easy")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right_easy.png"));
+				} else if(difficulty.equals("medium")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right_medium.png"));
+				} else if(difficulty.equals("very hard")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right_veryhard.png"));
+				} else {
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right.png"));
+				}
+
 			} else if (!playerAlive && enemyAlive){
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_defeated.png"));
-				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_shooting_right.png"));
+
+				if(difficulty.equals("easy")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_shooting_right_easy.png"));
+				} else if (difficulty.equals("medium")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_shooting_right_medium.png"));
+				} else if (difficulty.equals("very hard")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_shooting_right_veryhard.png"));
+				} else {
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_shooting_right.png"));
+				}
+
 			} else {
 				player = new Texture(Gdx.files.internal("shootpirate/pirate_holstered.png"));
-				enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right.png"));
+
+				if(difficulty.equals("easy")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right_easy.png"));
+				} else if(difficulty.equals("medium")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right_medium.png"));
+				} else if(difficulty.equals("very hard")){
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right_veryhard.png"));
+				} else {
+					enemy = new Texture(Gdx.files.internal("shootpirate/pirate_holstered_right.png"));
+				}
 			}
 
 			float w = Gdx.graphics.getWidth();
