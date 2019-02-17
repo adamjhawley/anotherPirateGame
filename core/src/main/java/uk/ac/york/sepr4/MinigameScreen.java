@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import uk.ac.york.sepr4.object.entity.Player;
 
 import java.util.Random;
 
@@ -161,7 +162,9 @@ public class MinigameScreen implements Screen, InputProcessor {
 				if(enemyShotCountdown > 0){
 					enemyShotCountdown -= Gdx.graphics.getDeltaTime();
 				} else {
-					handleShot("enemy");
+					if (!playerDisqualified){
+						handleShot("enemy");
+					}
 				}
 			}
 
@@ -310,7 +313,9 @@ public class MinigameScreen implements Screen, InputProcessor {
 				}
 			}
 			if(keycode == Input.Keys.SPACE){
-				setMinigameStateMenu();
+				if(!playerAlive || !enemyAlive || playerDisqualified){
+					setMinigameStateMenu();
+				}
 			}
 		}
 		return false;
@@ -328,6 +333,7 @@ public class MinigameScreen implements Screen, InputProcessor {
 			} else {
 				playerWon = true;
 				enemyAlive = false;
+				giveReward();
 			}
 		} else if (shooter.equals("enemy")){
 			if(enemyAlive){
@@ -335,6 +341,25 @@ public class MinigameScreen implements Screen, InputProcessor {
 			}
 		}
 
+	}
+
+	private void giveReward(){
+		Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+
+		switch(difficulty){
+			case "easy":
+				player.addBalance(1);
+				break;
+			case "medium":
+				player.addBalance(50);
+				break;
+			case "hard":
+				player.addBalance(200);
+				break;
+			case "very hard":
+				player.addBalance(500);
+				break;
+		}
 	}
 
 	private void startGame(){
