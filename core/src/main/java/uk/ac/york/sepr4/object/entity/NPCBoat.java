@@ -30,6 +30,7 @@ public class NPCBoat extends LivingEntity {
     private boolean turning = false; //This is wether the boat is turning or not. ~In conjuction these to help turnPreCalc determine the angularSpeed across multiple frames
 
     private int dodging = 0; //Not dodging = 0 anything other than 0 is meaning dodging. this is the amount of frames you want the NPC to dodge for
+    private float difficulty;
 
     private Random r = new Random(); //Just for randomness
 
@@ -39,8 +40,9 @@ public class NPCBoat extends LivingEntity {
 
     private boolean hasTripleFire;
 
-    public NPCBoat(Texture texture, Vector2 pos) {
+    public NPCBoat(Texture texture, Vector2 pos, float difficulty) {
         super(texture, pos);
+        this.difficulty = difficulty;
     }
 
     /***

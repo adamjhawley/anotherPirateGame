@@ -11,7 +11,7 @@ public class NPCBuilder {
 
     private float speed = 0f, maxSpeed = 100f, range = 500f, accuracy = 0.5f, idealDistFromTarget = 250f,
             gradientFromNormalDist = 50f, reqCooldown = 0.8f;
-    private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
+    private Double health = 15.0, maxHealth = 15.0, damage = 5.0;
     private Integer turningSpeed = 2;
 
     public NPCBuilder() {}
@@ -32,9 +32,9 @@ public class NPCBuilder {
         NPCBoat npcBoat;
 
         if (isBoss) {
-            npcBoat = new NPCBoat(TextureManager.BOSS, pos);
+            npcBoat = new NPCBoat(TextureManager.BOSS, pos, difficulty);
         } else {
-            npcBoat = new NPCBoat(TextureManager.ENEMY, pos);
+            npcBoat = new NPCBoat(TextureManager.ENEMY, pos, difficulty);
         }
 
         npcBoat.setAngle((float) (2*Math.PI*random.nextDouble()));;
@@ -48,7 +48,7 @@ public class NPCBuilder {
         npcBoat.setTurningSpeed(Math.round(difficulty/50)+turningSpeed);
         npcBoat.setAllied(Optional.of(allied));
         npcBoat.setBoss(isBoss);
-        npcBoat.setDamage(damage + difficulty / 20);
+        npcBoat.setDamage(damage + difficulty / 50);
         npcBoat.setReqCooldown(reqCooldown);
 
 

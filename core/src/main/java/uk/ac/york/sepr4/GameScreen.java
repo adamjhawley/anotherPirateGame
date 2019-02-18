@@ -23,6 +23,7 @@ import uk.ac.york.sepr4.object.building.ShopUI;
 import uk.ac.york.sepr4.object.entity.*;
 import uk.ac.york.sepr4.object.PirateMap;
 import uk.ac.york.sepr4.object.building.BuildingManager;
+import uk.ac.york.sepr4.object.item.Reward;
 import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.hud.HUD;
 import uk.ac.york.sepr4.hud.HealthBar;
@@ -344,7 +345,10 @@ public class GameScreen implements Screen, InputProcessor {
                             if(livingEntity instanceof NPCBoat) {
                                 Gdx.app.debug("GameScreen", "NPCBoat died.");
                                 NPCBoat npcBoat = (NPCBoat) livingEntity;
-                                player.issueReward(itemManager.generateReward());
+                                Reward reward = itemManager.generateReward();
+                                reward.setGold(reward.getGold() + (int)npcBoat.getDifficulty());
+                                reward.setXp(reward.getXp() + (int)npcBoat.getDifficulty());
+                                player.issueReward(reward);
                                 //if dead NPC is a boss then player can capture its respective college
                                 if(npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
                                     player.capture(npcBoat.getAllied().get());
