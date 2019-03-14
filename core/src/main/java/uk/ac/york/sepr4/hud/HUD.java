@@ -29,7 +29,8 @@ public class HUD {
     //Added for Assessment 3: Many labels and tables for the different features added in HUD
     private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
     healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel,
-    jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel;
+    jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel,
+            weatherLabel;
 
     @Getter
     private Table table, gameoverTable, inDerwentBeforeEndTable, collegeTable, departmentPromptTable, pausedTable, minigamePromptTable;
@@ -63,6 +64,8 @@ public class HUD {
         healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
 
+        //Assessment 4: Weather label
+        weatherLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.RED));
 
 	//Added for Assessment 3: Menu button
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
@@ -88,6 +91,8 @@ public class HUD {
         table.row();
 
         table.add(healthvalueLable).expandX();
+
+        table.add(weatherLabel).expandX();
 
 
 
@@ -222,6 +227,13 @@ public class HUD {
         gameoverTable.setVisible(gameScreen.getGameOver());
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
+
+        //Assessment 4: Weather label
+        if (gameScreen.weatherEffect) {
+            weatherLabel.setText("You are in bad weather!");
+        } else {
+            weatherLabel.setText("");
+        }
     }
 
 }

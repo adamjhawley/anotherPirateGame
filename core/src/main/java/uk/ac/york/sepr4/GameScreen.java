@@ -50,6 +50,7 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean gameOver = false;
     @Getter @Setter
     private boolean inDerwentBeforeEnd;
+    public boolean weatherEffect = false;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -137,7 +138,7 @@ public class GameScreen implements Screen, InputProcessor {
         inDepartment = false;
 
         hudStage.addActor(this.hud.getTable());
-	// Added for assessment 3: HUD improvements
+	    // Added for assessment 3: HUD improvements
         hudStage.addActor(this.hud.getDepartmentPromptTable());
         hudStage.addActor(this.hud.getMinigamePromptTable());
         hudStage.addActor(this.hud.getPausedTable());
@@ -151,6 +152,9 @@ public class GameScreen implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(this);
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        // Shaperenderer for weather effect
+        shapeRenderer = new ShapeRenderer();
 
         //create and spawn player
         startGame();
@@ -258,6 +262,22 @@ public class GameScreen implements Screen, InputProcessor {
                 timer = 0f;
             }
         }
+
+        // If the weather effect is required, call the weather renderer
+        if (this.weatherEffect) { weatherRenderer(); }
+
+    }
+
+    private void weatherRenderer() {
+        // Renders a transluscent box over the screen
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(new Color(0, 0, 0, 0.5f));
+        shapeRenderer.rect(0, 0, orthographicCamera.viewportWidth,
+                orthographicCamera.viewportHeight);
+        shapeRenderer.end();
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 
     /**
