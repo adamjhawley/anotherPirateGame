@@ -51,6 +51,8 @@ public class GameScreen implements Screen, InputProcessor {
     @Getter @Setter
     private boolean inDerwentBeforeEnd;
     public boolean weatherEffect = false;
+    private Integer weatherDuration;
+    private Random randInt = new Random();
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -262,10 +264,38 @@ public class GameScreen implements Screen, InputProcessor {
                 timer = 0f;
             }
         }
-
+        //Added for Assesement 4 weather system
+        updateWeather(player);
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
 
+    }
+
+     /**
+     * Updates the weather to active or un-active and handles damage
+     */
+    public void updateWeather(Player player){
+
+        if (weatherEffect && !(weatherDuration == 0)){
+            player.setHealth(player.getHealth() - 0.005);
+            if (player.getHealth() < 0) {
+                player.kill(false);
+            }
+            weatherDuration -= 1;
+            if (weatherDuration == 0){
+                weatherEffect = false;
+            }
+        }else{
+            Integer weatherChance = randInt.nextInt(1000);
+            if (weatherChance < 1) {
+                weatherEffect = true;
+                weatherDuration = randInt.nextInt(1000);
+                weatherDuration += 120;
+                
+            }
+
+
+        }
     }
 
     private void weatherRenderer() {
