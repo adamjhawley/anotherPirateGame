@@ -31,6 +31,7 @@ import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
 import javax.naming.NameNotFoundException;
+import java.util.Random;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -82,6 +83,10 @@ public class GameScreen implements Screen, InputProcessor {
     private ShapeRenderer shapeRenderer;
 
     public static boolean DEBUG = false;
+	
+    private Integer weatherDuration;
+    private Random randInt = new Random();
+    private Integer XpCounter;
 
 
     public static GameScreen getInstance() {
@@ -265,7 +270,56 @@ public class GameScreen implements Screen, InputProcessor {
 
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
+	    
+	//Added for Assesement 4 weather system and Xp incrementer
+        updateWeather(player);
+        Integer XpMultiple = 1;
+        if (weatherEffect ){XpMultiple = 2;}
 
+
+        updatePlayerXP(player, XpMultiple);
+        // If the weather effect is required, call the weather renderer
+
+    }
+	
+     /**
+     * Gives the player XP overtime
+     */
+    public void updatePlayerXP(Player player, int multiple){
+        if (this.XpCounter < 60){
+            this.XpCounter += 1;
+        }else{
+            player.addXP((1 * multiple));
+            this.XpCounter = 0;
+        }
+    }
+
+
+    /**
+     * Updates the weather to active or un-active and handles damage
+     */
+    public void updateWeather(Player player){
+
+        if (weatherEffect && !(weatherDuration == 0)){
+            player.setHealth(player.getHealth() - 0.005);
+            if (player.getHealth() < 0) {
+                player.kill(false);
+            }
+            weatherDuration -= 1;
+            if (weatherDuration == 0){
+                weatherEffect = false;
+            }
+        }else{
+            Integer weatherChance = randInt.nextInt(1000);
+            if (weatherChance < 1) {
+                weatherEffect = true;
+                weatherDuration = randInt.nextInt(1000);
+                weatherDuration += 120;
+
+            }
+
+
+        }
     }
 
     private void weatherRenderer() {
