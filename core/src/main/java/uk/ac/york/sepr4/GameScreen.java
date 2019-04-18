@@ -31,6 +31,7 @@ import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.object.projectile.Projectile;
 import uk.ac.york.sepr4.utils.AIUtil;
 import javax.naming.NameNotFoundException;
+import java.util.Random;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -54,7 +55,7 @@ public class GameScreen implements Screen, InputProcessor {
     public boolean weatherEffect = false;
     private Integer weatherDuration;
     private Random randInt = new Random();
-    private integer XpCounter;
+    private Integer XpCounter;
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -136,6 +137,7 @@ public class GameScreen implements Screen, InputProcessor {
         this.entityManager = new EntityManager(this);
         this.questManager = new QuestManager(entityManager);
         this.buildingManager = new BuildingManager(this);
+        this.XpCounter = 0;
 
         // Create HUD (display for xp, gold, etc..)
         this.hud = new HUD(this);
@@ -268,9 +270,12 @@ public class GameScreen implements Screen, InputProcessor {
         }
         //Added for Assesement 4 weather system and Xp incrementer
         updateWeather(player);
-        integer XpMultiple = 1
-        if (weatherEffect ){XpMultiple = 2;}
-        updatePlayerXP(XpCounter, player, XpMultiple)
+        Integer XpMultiple = 1;
+        if (weatherEffect) {
+            XpMultiple = 2;
+        }
+
+        updatePlayerXP( player, XpMultiple);
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
 
@@ -279,12 +284,12 @@ public class GameScreen implements Screen, InputProcessor {
      /**
      * Gives the player XP overtime
      */
-     public void updatePlayerXP(integer counter, Player player, float multiple){
-         if (counter < 60){
-             counter += 1
+     public void updatePlayerXP( Player player, float multiple){
+         if (this.XpCounter < 60){
+             this.XpCounter += 1;
          }else{
-             player.setXp(player.getXp + (1 * multiple))
-             counter = 0
+             player.setXp(player.getXp() + (1 * multiple));
+             this.XpCounter = 0;
          }
      }
 

@@ -18,7 +18,8 @@ import java.util.List;
 @Data
 public class Player extends LivingEntity implements InputProcessor {
 
-    private Integer balance = 0, xp = 0, level = 1;
+    private Integer balance = 0, level = 1;
+    private float xp = 0;
     private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
