@@ -51,7 +51,7 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean gameOver = false;
     @Getter @Setter
     private boolean inDerwentBeforeEnd;
-    public boolean weatherEffect = false;
+
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -83,10 +83,12 @@ public class GameScreen implements Screen, InputProcessor {
     private ShapeRenderer shapeRenderer;
 
     public static boolean DEBUG = false;
-	
+
+    //Added for assessment 4
     private Integer weatherDuration;
     private Random randInt = new Random();
     private Integer XpCounter= 0;
+    public boolean weatherEffect = false;
 
 
     public static GameScreen getInstance() {
@@ -271,7 +273,7 @@ public class GameScreen implements Screen, InputProcessor {
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
 	    
-	//Added for Assesement 4 weather system and Xp incrementer
+	    //Added for Assessment 4 weather system and Xp incrementer
         updateWeather(player);
         Integer XpMultiple = 1;
         if (weatherEffect ){XpMultiple = 2;}
@@ -281,7 +283,7 @@ public class GameScreen implements Screen, InputProcessor {
         // If the weather effect is required, call the weather renderer
 
     }
-	
+    //Added for Assessment 4
      /**
      * Gives the player XP overtime
      */
@@ -294,7 +296,7 @@ public class GameScreen implements Screen, InputProcessor {
         }
     }
 
-
+    //Added for Assessment 4
     /**
      * Updates the weather to active or un-active and handles damage
      */
@@ -321,7 +323,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         }
     }
-
+    //Added for Assessment 4
     private void weatherRenderer() {
         // Renders a transluscent box over the screen
         Gdx.gl.glEnable(GL20.GL_BLEND);
