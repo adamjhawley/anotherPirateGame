@@ -86,7 +86,7 @@ public class GameScreen implements Screen, InputProcessor {
 	
     private Integer weatherDuration;
     private Random randInt = new Random();
-    private Integer XpCounter;
+    private Integer XpCounter= 0;
 
 
     public static GameScreen getInstance() {
