@@ -427,7 +427,18 @@ public class GameScreen implements Screen, InputProcessor {
                                 reward.setXp(reward.getXp() + (int)npcBoat.getDifficulty());
                                 player.issueReward(reward);
                                 //if dead NPC is a boss then player can capture its respective college
-                                if(npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                if (npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                    // find if college is part of quest
+                                    // First null check is to avoid null pointer errors when checking the current quest
+                                    // The second predicate ensures the quest is a kill quest since this is section is checking whether a kill also completed a quest
+                                    if ((this.questManager.getCurrentQuest() != null) && (this.questManager.getCurrentQuest().getIsKillQuest())) {
+                                        //Compares the current target of the kill quest vs. the name of the allied college of the npc
+                                        //We use string matching here because quests do not store targets as College instances but as Strings for their name
+                                        if (this.questManager.getCurrentQuest().getTargetEntityName().equals(npcBoat.getAllied().get().getName())) {
+                                            this.questManager.finishCurrentQuest();
+                                            player.issueReward(itemManager.generateReward());
+                                        }
+                                    }
                                     player.capture(npcBoat.getAllied().get());
                                 }
                             } else {

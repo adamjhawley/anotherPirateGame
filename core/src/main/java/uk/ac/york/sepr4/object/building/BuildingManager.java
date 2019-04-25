@@ -6,12 +6,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import lombok.Data;
+import uk.ac.york.sepr4.object.entity.EntityManager;
 import uk.ac.york.sepr4.object.entity.NPCBuilder;
 import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.entity.NPCBoat;
 
 import javax.naming.NameNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -132,17 +135,25 @@ public class BuildingManager {
     }
 
     public void spawnCollegeEnemies(float delta) {
+        EntityManager entityManager = gameScreen.getEntityManager();
         spawnDelta+=delta;
+        List<College> captured = entityManager.getOrCreatePlayer().getCaptured();
+        List<College> notCaptured = new ArrayList<>();
+        for (College college : this.colleges){
+            if (!captured.contains(college)){
+                notCaptured.add(college);
+            }
+        }
         if(spawnDelta >= 1f) {
-            for (College college : this.colleges) {
+            for (College college : notCaptured) {
                 //check how many entities already exist in college zone (dont spawn too many)
-                if(gameScreen.getEntityManager().getLivingEntitiesInArea(college.getBuildingZone()).size
+                if(entityManager.getLivingEntitiesInArea(college.getBuildingZone()).size
                         < college.getMaxEntities()) {
                     Optional<NPCBoat> optionalEnemy = generateCollegeNPC(college,false);
                     if (optionalEnemy.isPresent()) {
                         //checks if spawn spot is valid
                         Gdx.app.debug("Building Manager", "Spawning an enemy at " + college.getName());
-                        gameScreen.getEntityManager().addNPC(optionalEnemy.get());
+                        entityManager.addNPC(optionalEnemy.get());
                     }
                 } else {
                     //Gdx.app.debug("BuildingManager", "Max entities @ "+college.getName());
