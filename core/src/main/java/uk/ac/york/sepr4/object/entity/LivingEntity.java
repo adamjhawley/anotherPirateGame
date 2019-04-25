@@ -11,7 +11,7 @@ import uk.ac.york.sepr4.utils.AIUtil;
 @Data
 public abstract class LivingEntity extends Entity {
 
-    private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
+    private Double health = 20.0, maxHealth = 20.0, damage = 5.0, crewMember = 0.0;
     private boolean isAccelerating, isBraking, isDead, isDying;
     private float turningSpeed = 2.3f;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f, angularSpeed = 0f, acceleration = 40f;
