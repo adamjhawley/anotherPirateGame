@@ -90,6 +90,9 @@ public class GameScreen implements Screen, InputProcessor {
     private Integer XpCounter= 0;
     public boolean weatherEffect = false;
 
+    public Integer speedCounter;
+    public boolean firstTime;
+
 
     public static GameScreen getInstance() {
         return gameScreen;
@@ -106,6 +109,8 @@ public class GameScreen implements Screen, InputProcessor {
      * @param pirateGame
      */
     public GameScreen(PirateGame pirateGame) {
+        firstTime = true;
+        speedCounter = 0;
         this.pirateGame = pirateGame;
         gameScreen = this;
 
@@ -212,7 +217,13 @@ public class GameScreen implements Screen, InputProcessor {
         if(!player.isDying()) {
 
             //spawns/despawns entities, handles animations and projectiles
-            entityManager.handleStageEntities(stage, delta);
+            speedCounter += 1;
+            if (speedCounter == 150 || firstTime == true) {
+                entityManager.handleStageEntities(stage, delta);
+                firstTime = false;
+                speedCounter = 0;
+            }
+
         } else {
             //when the player is dying - only process animations
             getEntityManager().getAnimationManager().handleEffects(stage,delta);
