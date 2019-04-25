@@ -32,7 +32,7 @@ public class AnimationManager {
 
     //Takes the centre x,y of where you want the effect to appear
     public void addEffect(float x, float y, float angle, Texture texture, int width, int height, float alpha){
-        Entity effect = new Entity(texture, new Vector2(x,y)) {};
+        Entity effect = new Entity(texture, new Vector2(x,y), false) {};
         effect.setY(y - height/2);
         effect.setX(x - width/2);
         effect.setWidth(width);

@@ -3,6 +3,7 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.hud.HealthBar;
@@ -12,7 +13,7 @@ import uk.ac.york.sepr4.utils.AIUtil;
 public abstract class LivingEntity extends Entity {
 
     private Double health = 20.0, maxHealth = 20.0, damage = 5.0, crewMember = 0.0;
-    private boolean isAccelerating, isBraking, isDead, isDying;
+    private boolean isAccelerating, isBraking, isDead, isDying, amISpecial;
     private float turningSpeed = 2.3f;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f, angularSpeed = 0f, acceleration = 40f;
 
@@ -22,7 +23,8 @@ public abstract class LivingEntity extends Entity {
     private HealthBar healthBar;
 
     public LivingEntity(Texture texture, Vector2 pos) {
-        super(texture, pos);
+        super(texture, pos, false);
+
 
         this.healthBar = new HealthBar(this);
     }
@@ -118,7 +120,7 @@ public abstract class LivingEntity extends Entity {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
             if (currentCooldown >= reqCooldown) {
                 setCurrentCooldown(0f);
-                entityManager.getProjectileManager().spawnProjectile( this, getSpeed(), angle, damage);
+                entityManager.getProjectileManager().spawnProjectile( this, getSpeed(), angle, damage, amISpecial);
                 entityManager.getAnimationManager().addFiringAnimation(this,angle - (float)Math.PI/2);
                 return true;
             }
@@ -137,9 +139,9 @@ public abstract class LivingEntity extends Entity {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
         if (currentCooldown >= reqCooldown) {
             setCurrentCooldown(0f);
-            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle, damage);
-            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle + 0.15f, damage);
-            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle - 0.15f, damage);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle, damage, amISpecial);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle + 0.15f, damage,amISpecial);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle - 0.15f, damage,amISpecial);
             return true;
         }
         return false;

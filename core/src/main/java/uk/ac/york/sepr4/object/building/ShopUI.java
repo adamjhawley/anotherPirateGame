@@ -161,6 +161,7 @@ public class ShopUI {
                         player.updateHealthBar();
                         player.setMaxSpeed(player.getMaxSpeed() + 10f);
                         player.setBulletDamage(player.getBulletDamage() + 1);
+                        player.setAmISpecial(true);
                     }
                 }
                 break;
@@ -188,6 +189,7 @@ public class ShopUI {
                         player.updateHealthBar();
                         player.setMaxSpeed(player.getMaxSpeed() + 10f);
                         player.setBulletDamage(player.getBulletDamage() + 1);
+                        player.setAmISpecial(true);
                     }
                 }
                 break;
@@ -205,6 +207,7 @@ public class ShopUI {
                         player.updateHealthBar();
                         player.setMaxSpeed(player.getMaxSpeed() + 10f);
                         player.setBulletDamage(player.getBulletDamage() + 1);
+                        player.setAmISpecial(true);
                     }
                 }
                 else if (finalI == 1) {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import lombok.Data;
 import uk.ac.york.sepr4.GameScreen;
+import uk.ac.york.sepr4.TextureManager;
 
 @Data
 public abstract class Entity extends Actor {
@@ -14,8 +15,14 @@ public abstract class Entity extends Actor {
     private float angle, speed, alpha = 1;
     private Texture texture;
 
-    public Entity(Texture texture, Vector2 pos) {
-        this.texture = texture;
+    public Entity(Texture texture, Vector2 pos, Boolean amISpecial) {
+
+        if (amISpecial){
+            this.texture = TextureManager.SPECIALCANNONBALL;
+        }else{
+            this.texture = texture;
+        }
+
 
         // Stops texture glitches when moving
         texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);

@@ -19,16 +19,16 @@ public class ProjectileManager {
     }
 
 
-    public void spawnProjectile(LivingEntity livingEntity, float speed, float angle) {
-        Projectile projectile = new Projectile(livingEntity, speed, angle);
+    public void spawnProjectile(LivingEntity livingEntity, float speed, float angle, boolean amISpecial) {
+        Projectile projectile = new Projectile(livingEntity, speed, angle, amISpecial);
         projectileList.add(projectile);
     }
 
     /**
      * Added for Assessment 3: overloaded spawnProjectile to add a damage parameter
      */
-    public void spawnProjectile(LivingEntity livingEntity, float speed, float angle, double damage) {
-        Projectile projectile = new Projectile(livingEntity, speed, angle, damage);
+    public void spawnProjectile(LivingEntity livingEntity, float speed, float angle, double damage, boolean amISpecial) {
+        Projectile projectile = new Projectile(livingEntity, speed, angle, damage, amISpecial);
         projectileList.add(projectile);
     }
     public Array<Projectile> getProjectileInArea(Rectangle rectangle) {

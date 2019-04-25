@@ -18,6 +18,8 @@ public class TextureManager {
     public static Texture PLAYER = new Texture(Gdx.files.internal(path+"player.png"));
 
     public static Texture CANNONBALL = new Texture(Gdx.files.internal(path+"cannonball.png"));
+    //Added for assessment 4
+    public static Texture SPECIALCANNONBALL = new Texture(Gdx.files.internal(path+"specialcannonball.png"));
 
     public static Texture LOOT = new Texture(Gdx.files.internal(path+"crew.png"));
 
