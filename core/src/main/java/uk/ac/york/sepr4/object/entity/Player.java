@@ -110,6 +110,7 @@ public class Player extends LivingEntity implements InputProcessor {
     }
 
     public void updateHealthBar(){
+        getHealthBar().setVisible(false);
         setHealthBar(new HealthBar(this));
     }
     //Methods below for taking keyboard input from player.
