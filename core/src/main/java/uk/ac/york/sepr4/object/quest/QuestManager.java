@@ -24,6 +24,7 @@ public class QuestManager {
 
         Json json = new Json();
         this.questList= json.fromJson(Array.class, Quest.class, Gdx.files.internal("quests.json"));
+        this.questList.reverse();
         this.chooseQuest();
         allQuestsCompleted = false;
         capturedColleges = new ArrayList<>();
@@ -34,20 +35,9 @@ public class QuestManager {
      * @return Random un-completed Quest
      */
     public Quest chooseQuest(){
-        Player player = this.entityManager.getOrCreatePlayer();
         if (this.questList.size !=0) {
-            this.currentQuest = this.questList.random();
+            this.currentQuest = this.questList.pop();
             this.currentQuest.setIsStarted(true);
-
-
-            if (player.getCaptured() != null){
-                for (College college:player.getCaptured()){
-                    if (college.getName() == this.currentQuest.getTargetEntityName()) {
-                        this.questList.removeValue(this.currentQuest, true);
-                        chooseQuest();
-                    }
-                }
-            }
             return this.currentQuest;
         }
         return null;
