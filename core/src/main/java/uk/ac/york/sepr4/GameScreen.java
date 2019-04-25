@@ -303,7 +303,8 @@ public class GameScreen implements Screen, InputProcessor {
     public void updateWeather(Player player){
 
         if (weatherEffect && !(weatherDuration == 0)){
-            player.setHealth(player.getHealth() - 0.005);
+            //player.setHealth(player.getHealth() - 0.005);
+            player.damage(0.005);
             if (player.getHealth() < 0) {
                 player.kill(false);
             }
