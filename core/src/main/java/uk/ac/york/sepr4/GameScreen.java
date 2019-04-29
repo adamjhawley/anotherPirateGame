@@ -59,7 +59,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Getter
     PirateMap pirateMap;
     private TiledMapRenderer tiledMapRenderer;
-
+    @Getter
     private ItemManager itemManager;
     @Getter
     private EntityManager entityManager;
@@ -422,7 +422,7 @@ public class GameScreen implements Screen, InputProcessor {
                             if(livingEntity instanceof NPCBoat) {
                                 Gdx.app.debug("GameScreen", "NPCBoat died.");
                                 NPCBoat npcBoat = (NPCBoat) livingEntity;
-                                Reward reward = itemManager.generateReward();
+                                Reward reward = itemManager.generateReward(null);
                                 reward.setGold(reward.getGold() + (int)npcBoat.getDifficulty());
                                 reward.setXp(reward.getXp() + (int)npcBoat.getDifficulty());
                                 player.issueReward(reward);
@@ -436,7 +436,7 @@ public class GameScreen implements Screen, InputProcessor {
                                         //We use string matching here because quests do not store targets as College instances but as Strings for their name
                                         if (this.questManager.getCurrentQuest().getTargetEntityName().equals(npcBoat.getAllied().get().getName())) {
                                             this.questManager.finishCurrentQuest();
-                                            player.issueReward(itemManager.generateReward());
+                                            player.issueReward(itemManager.generateReward(itemManager.retrieveItem("Crew Member")));
                                         }
                                     }
                                     player.capture(npcBoat.getAllied().get());
