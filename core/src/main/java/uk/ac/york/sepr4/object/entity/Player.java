@@ -19,7 +19,6 @@ import java.util.List;
 public class Player extends LivingEntity implements InputProcessor {
 
     private Integer balance = 0, xp = 0, level = 1;
-    private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
     private boolean turningLeft, turningRight, tripleShot = false;
@@ -96,7 +95,7 @@ public class Player extends LivingEntity implements InputProcessor {
         xp+=val;
     }
     public void addItems(List<Item> items) {
-        inventory.addAll(items);
+        super.getInventory().addAll(items);
     }
 
 
