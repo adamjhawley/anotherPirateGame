@@ -22,11 +22,23 @@ public class ItemManager {
 
     }
 
-    public Reward generateReward() {
+    public Reward generateReward(Item item) {
         Random random = new Random();
         Double scale = random.nextDouble();
+        Reward reward = new Reward(baseXP + (scale.intValue()*100), baseGold + (scale.intValue()*10));
+        if (item != null) {
+            reward.addItem(item);
+        }
+        return reward;
+    }
 
-        return new Reward(baseXP + (scale.intValue()*100), baseGold + (scale.intValue()*10));
+    public Item  retrieveItem (String itemName){
+        for (Item item : items){
+            if (item.getName().equals(itemName)){
+                return item;
+            }
+        }
+        throw new NullPointerException("No item with the name " + itemName  +" found in items.json");
     }
 
 }
