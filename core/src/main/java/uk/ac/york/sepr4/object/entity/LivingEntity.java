@@ -3,11 +3,15 @@ package uk.ac.york.sepr4.object.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.hud.HealthBar;
+import uk.ac.york.sepr4.object.item.Item;
+import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.utils.AIUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public abstract class LivingEntity extends Entity {
@@ -21,6 +25,7 @@ public abstract class LivingEntity extends Entity {
     private int collidedWithIsland = 0, colliedWithBoat = 0;
 
     private HealthBar healthBar;
+    private List<Item> inventory = new ArrayList<>();
 
     public LivingEntity(Texture texture, Vector2 pos) {
         super(texture, pos, false);
@@ -120,6 +125,7 @@ public abstract class LivingEntity extends Entity {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
             if (currentCooldown >= reqCooldown) {
                 setCurrentCooldown(0f);
+                amISpecial();
                 entityManager.getProjectileManager().spawnProjectile( this, getSpeed(), angle, damage, amISpecial);
                 entityManager.getAnimationManager().addFiringAnimation(this,angle - (float)Math.PI/2);
                 return true;
@@ -139,11 +145,24 @@ public abstract class LivingEntity extends Entity {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
         if (currentCooldown >= reqCooldown) {
             setCurrentCooldown(0f);
+            amISpecial();
             entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle, damage, amISpecial);
             entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle + 0.15f, damage,amISpecial);
             entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle - 0.15f, damage,amISpecial);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Added for Assessment 4: Method for testing if a LivingEntity has a Crew Member on board and hence, should have different projectile type.
+     */
+    public void amISpecial() {
+        ItemManager itemManager = GameScreen.getInstance().getItemManager();
+
+       // Item testItem = new Item("Crew Member", "");
+        if (this.inventory.contains(itemManager.retrieveItem("Crew Member"))){
+            amISpecial = true;
+        }
     }
 }

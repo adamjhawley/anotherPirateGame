@@ -59,7 +59,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Getter
     PirateMap pirateMap;
     private TiledMapRenderer tiledMapRenderer;
-
+    @Getter
     private ItemManager itemManager;
     @Getter
     private EntityManager entityManager;
@@ -422,12 +422,13 @@ public class GameScreen implements Screen, InputProcessor {
                             if(livingEntity instanceof NPCBoat) {
                                 Gdx.app.debug("GameScreen", "NPCBoat died.");
                                 NPCBoat npcBoat = (NPCBoat) livingEntity;
-                                Reward reward = itemManager.generateReward();
+                                Reward reward = itemManager.generateReward(null);
                                 reward.setGold(reward.getGold() + (int)npcBoat.getDifficulty());
                                 reward.setXp(reward.getXp() + (int)npcBoat.getDifficulty());
                                 player.issueReward(reward);
                                 //if dead NPC is a boss then player can capture its respective college
                                 if (npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                    //Added for Assessment 4: Quest implementation
                                     // find if college is part of quest
                                     // First null check is to avoid null pointer errors when checking the current quest
                                     // The second predicate ensures the quest is a kill quest since this is section is checking whether a kill also completed a quest
@@ -436,7 +437,8 @@ public class GameScreen implements Screen, InputProcessor {
                                         //We use string matching here because quests do not store targets as College instances but as Strings for their name
                                         if (this.questManager.getCurrentQuest().getTargetEntityName().equals(npcBoat.getAllied().get().getName())) {
                                             this.questManager.finishCurrentQuest();
-                                            player.issueReward(itemManager.generateReward());
+                                            //Rewards player with a crew member for completing quest.
+                                            player.issueReward(itemManager.generateReward(itemManager.retrieveItem("Crew Member")));
                                         }
                                     }
                                     player.capture(npcBoat.getAllied().get());
