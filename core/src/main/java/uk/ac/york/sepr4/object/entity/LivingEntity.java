@@ -154,6 +154,9 @@ public abstract class LivingEntity extends Entity {
         return false;
     }
 
+    /**
+     * Added for Assessment 4: Method for testing if a LivingEntity has a Crew Member on board and hence, should have different projectile type.
+     */
     public void amISpecial() {
         ItemManager itemManager = GameScreen.getInstance().getItemManager();
 
