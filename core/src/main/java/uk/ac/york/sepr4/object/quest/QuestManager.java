@@ -31,7 +31,7 @@ public class QuestManager {
 
     }
     /**
-     * Picks a random quest and if its been completed it picks another one
+     * Amended for Assessment 4: Popping from reversed array to give queue implementation.
      * @return Random un-completed Quest
      */
     public Quest chooseQuest(){

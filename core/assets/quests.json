@@ -79,5 +79,21 @@
     },
     "targetEntityName":"Derwent College",
     "isKillQuest":true
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.quest.Quest",
+    "name": "CONGRATS!",
+    "startMessage": "CONGRATS!",
+    "endMessage": "CONGRATS!",
+    "requires" : [],
+    "gives" : [],
+    "reward" : {
+      "class": "uk.ac.york.sepr4.object.item.Reward",
+      "xp":100,
+      "gold":1000,
+      "items": []
+    },
+    "targetEntityName":"Finish the game",
+    "isKillQuest":true
   }
 ]
