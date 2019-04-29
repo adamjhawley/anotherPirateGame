@@ -22,11 +22,34 @@ public class ItemManager {
 
     }
 
-    public Reward generateReward() {
+    /**
+     * Added for Assessment 4: Items can now be added to rewards by passing them as a parameter or null if no item is needed.
+     * @param item
+     * @return Reward generated
+     */
+    public Reward generateReward(Item item) {
         Random random = new Random();
         Double scale = random.nextDouble();
+        Reward reward = new Reward(baseXP + (scale.intValue()*100), baseGold + (scale.intValue()*10));
+        if (item != null) {
+            reward.addItem(item);
+        }
+        return reward;
+    }
 
-        return new Reward(baseXP + (scale.intValue()*100), baseGold + (scale.intValue()*10));
+    /**
+     Added for Assessment 4: So that items can be specified by their name (especially for use with generateReward()
+     @param itemName
+     @return item
+     @throws NullPointerException when item not found
+     */
+    public Item  retrieveItem (String itemName){
+        for (Item item : items){
+            if (item.getName().equals(itemName)){
+                return item;
+            }
+        }
+        throw new NullPointerException("No item with the name " + itemName  +" found in items.json");
     }
 
 }
