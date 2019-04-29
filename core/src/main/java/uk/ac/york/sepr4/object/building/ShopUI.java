@@ -40,7 +40,6 @@ public class ShopUI {
     private Label maxHealthLabel;
     private Label bulletDamage;
     private Label accelerationLabel;
-    private Label crewMemberLabel;
 
     public ShopUI (GameScreen gameScreen, String name) throws NameNotFoundException {
         this.name = name;
@@ -53,14 +52,14 @@ public class ShopUI {
         String[] itemNames;
         switch (name){
             case "biology":
-                itemNames = new String[]{"Full heal : 100g", "Increase Max Health : 200g", "+1 Crew Member: 400g"};
+                itemNames = new String[]{"Full heal : 100g", "Increase Max Health : 200g"};
                 break;
             case "computer science":
-                itemNames = new String[]{"Increase shot damage : 100g", "Triple shot: 1000g", "+1 Crew Member: 400g"};
+                itemNames = new String[]{"Increase shot damage : 100g", "Triple shot: 1000g"};
                 break;
             case "physics":
                 itemNames = new String[]{"Increase max speed : 100g", "Increase maneuverability: 200g",
-                                         "Increase acceleration: 300g", "+1 Crew Member: 400g"};
+                                         "Increase acceleration: 300g"};
                 break;
             default:
                 throw new NameNotFoundException();
@@ -85,13 +84,9 @@ public class ShopUI {
         bulletDamage = new Label("Bullet Damage: " + (int)player.getBulletDamage(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
 
-        crewMemberLabel = new Label("Crew Members: " + player.getCrewMember(), new Label.LabelStyle(
-                new BitmapFont(), Color.BLACK));
-
         table.add(shopLabel).colspan(3).center();
         table.row().pad(10,0,0,10);
         table.add(balanceLabel).colspan(3).center();
-        table.add(crewMemberLabel);
         table.row().pad(10,0,10,0);
         table.add(maxSpeedLabel);
         table.add(accelerationLabel);
@@ -152,18 +147,6 @@ public class ShopUI {
                         player.updateHealthBar();
                     }
                 }
-                //adding a crew member will increase max health, speed and damage
-                else if (finalI == 2) {
-                    if (player.deduceBalance(400)) {
-                        player.setCrewMember(player.getCrewMember() + 1f);
-                        player.setMaxHealth(player.getMaxHealth() + 5f);
-                        player.setHealth(player.getHealth() + 5f);
-                        player.updateHealthBar();
-                        player.setMaxSpeed(player.getMaxSpeed() + 10f);
-                        player.setBulletDamage(player.getBulletDamage() + 1);
-                        player.setAmISpecial(true);
-                    }
-                }
                 break;
             case "physics":
                 if (finalI == 0) {
@@ -181,33 +164,11 @@ public class ShopUI {
                         player.setAcceleration(player.getAcceleration() + 10f);
                     }
                 }
-                else if (finalI == 3) {
-                    if (player.deduceBalance(400)) {
-                        player.setCrewMember(player.getCrewMember() + 1f);
-                        player.setMaxHealth(player.getMaxHealth() + 5f);
-                        player.setHealth(player.getHealth() + 5f);
-                        player.updateHealthBar();
-                        player.setMaxSpeed(player.getMaxSpeed() + 10f);
-                        player.setBulletDamage(player.getBulletDamage() + 1);
-                        player.setAmISpecial(true);
-                    }
-                }
                 break;
             case "computer science":
                 if (finalI == 0) {
                     if (player.deduceBalance(100)) {
                         player.setBulletDamage(player.getBulletDamage() + 1);
-                    }
-                }
-                else if (finalI == 2) {
-                    if (player.deduceBalance(400)) {
-                        player.setCrewMember(player.getCrewMember() + 1f);
-                        player.setMaxHealth(player.getMaxHealth() + 5f);
-                        player.setHealth(player.getHealth() + 5f);
-                        player.updateHealthBar();
-                        player.setMaxSpeed(player.getMaxSpeed() + 10f);
-                        player.setBulletDamage(player.getBulletDamage() + 1);
-                        player.setAmISpecial(true);
                     }
                 }
                 else if (finalI == 1) {
@@ -232,7 +193,6 @@ public class ShopUI {
         maxHealthLabel.setText("Health: " + player.getHealth().intValue());
         healthLabel.setText("MaxHealth: " + player.getMaxHealth().intValue());
         bulletDamage.setText("BulletDamage: "+ (int) player.getBulletDamage());
-        crewMemberLabel.setText("Crew Members: " + player.getCrewMember().intValue());
     }
 
 
