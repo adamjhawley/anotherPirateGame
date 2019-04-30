@@ -50,6 +50,7 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean gameOver = false;
     @Getter @Setter
     private boolean inDerwentBeforeEnd;
+    // New for A4
     public boolean weatherEffect = false;
 
     @Getter
@@ -153,6 +154,7 @@ public class GameScreen implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
+        // New for A4
         // Shaperenderer for weather effect
         shapeRenderer = new ShapeRenderer();
 
@@ -263,11 +265,13 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
+        // New for A4
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
 
     }
-
+    
+    // New for A4
     private void weatherRenderer() {
         // Renders a transluscent box over the screen
         Gdx.gl.glEnable(GL20.GL_BLEND);

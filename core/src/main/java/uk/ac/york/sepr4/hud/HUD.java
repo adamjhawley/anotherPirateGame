@@ -27,6 +27,7 @@ public class HUD {
     private GameScreen gameScreen;
 
     //Added for Assessment 3: Many labels and tables for the different features added in HUD
+    // New for A4: weatherLabel
     private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
     healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel,
     jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel,
@@ -64,7 +65,7 @@ public class HUD {
         healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
 
-        //Assessment 4: Weather label
+        // New for A4
         weatherLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.RED));
 
 	//Added for Assessment 3: Menu button
@@ -92,6 +93,7 @@ public class HUD {
 
         table.add(healthvalueLable).expandX();
 
+        // New for A4
         table.add(weatherLabel).expandX();
 
 
@@ -228,7 +230,7 @@ public class HUD {
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
 
-        //Assessment 4: Weather label
+        // New for A4
         if (gameScreen.weatherEffect) {
             weatherLabel.setText("You are in bad weather!");
         } else {
