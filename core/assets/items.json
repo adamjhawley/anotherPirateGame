@@ -1,7 +1,8 @@
 [
   {
     "class": "uk.ac.york.sepr4.object.item.Item",
-    "name": "Item1",
-    "lore": "desc for item1"
+    "name": "Crew Member",
+    "lore": "Taken from captured colleges.",
+    "damageMultiplier" : 2.0
   }
 ]

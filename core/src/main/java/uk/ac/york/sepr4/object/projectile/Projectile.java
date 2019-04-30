@@ -1,6 +1,7 @@
 package uk.ac.york.sepr4.object.projectile;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.entity.Entity;
@@ -12,13 +13,22 @@ public class Projectile extends Entity {
     private LivingEntity shooter;
     private Double damage = 5.0;
     private Integer baseSpeed = 100;
+    private Texture ballTexture;
+
+
 
     private boolean active = true;
 
-    public Projectile(LivingEntity shooter, float speed, float angle) {
+    public Projectile(LivingEntity shooter, float speed, float angle, boolean amISpecial) {
         //Take speed from the shooter so bullet has a speed relative to the shooter
         //TODO: Make the speed direction dependant (how much of the force is in the direction of the projectile)
-        super(TextureManager.CANNONBALL, shooter.getCentre());
+        super(TextureManager.CANNONBALL, shooter.getCentre(), amISpecial);
+
+        //Added for Assessment 4
+        if (amISpecial){
+            baseSpeed *= 2;
+        }
+
 
         this.shooter = shooter;
 
@@ -33,10 +43,15 @@ public class Projectile extends Entity {
      * @param angle Angle at which the projectile is shot
      * @param damage Damage dealt on impact by projectile
      */
-    public Projectile(LivingEntity shooter, float speed, float angle, double damage){
-         super(TextureManager.CANNONBALL, shooter.getCentre());
+    public Projectile(LivingEntity shooter, float speed, float angle, double damage, boolean amISpecial){
+         super(TextureManager.CANNONBALL, shooter.getCentre(), amISpecial);
 
         this.shooter = shooter;
+
+        //Added for Assessment 4
+        if (amISpecial){
+            baseSpeed *= 2;
+        }
 
         setAngle(angle);
         setSpeed(speed + baseSpeed);

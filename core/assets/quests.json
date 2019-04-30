@@ -1,9 +1,9 @@
 [
   {
     "class": "uk.ac.york.sepr4.object.quest.Quest",
-    "name": "Tutorial",
-    "startMessage": "Tutorial started",
-    "endMessage": "Tutorial ended",
+    "name": "Capture Halifax",
+    "startMessage": "Time to go and capture Halifax!",
+    "endMessage": "You have defeated MudMan! Onto the next boss!",
     "requires" : [],
     "gives" : [],
     "reward" : {
@@ -12,7 +12,88 @@
       "gold":1000,
       "items": []
     },
-    "targetEntityName":"BigBoss",
+    "targetEntityName":"Halifax College",
+    "isKillQuest":true
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.quest.Quest",
+    "name": "Capture Constantine",
+    "startMessage": "Can you find and capture Constantine College?",
+    "endMessage": "Well done! You have killed Big Boi and captured Constantine.",
+    "requires" : [],
+    "gives" : [],
+    "reward" : {
+      "class": "uk.ac.york.sepr4.object.item.Reward",
+      "xp":100,
+      "gold":1000,
+      "items": []
+    },
+    "targetEntityName":"Constantine College",
+    "isKillQuest":true
+  },
+  {
+  "class": "uk.ac.york.sepr4.object.quest.Quest",
+  "name": "Capture Langwith",
+  "startMessage": "I dare you to go and plunder Langwith...",
+  "endMessage": "You came through and defeated the manager of Glasshouse, great job!",
+  "requires" : [],
+  "gives" : [],
+  "reward" : {
+    "class": "uk.ac.york.sepr4.object.item.Reward",
+    "xp":100,
+    "gold":1000,
+    "items": []
+  },
+  "targetEntityName":"Langwith College",
+  "isKillQuest":true
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.quest.Quest",
+    "name": "Capture James",
+    "startMessage": "Feel like a challenge? Go and take on the PE teacher in James college.",
+    "endMessage": "Well done! Doesn't look like it is your first time plundering a college...",
+    "requires" : [],
+    "gives" : [],
+    "reward" : {
+      "class": "uk.ac.york.sepr4.object.item.Reward",
+      "xp":100,
+      "gold":1000,
+      "items": []
+    },
+    "targetEntityName":"James College",
+    "isKillQuest":true
+  },
+
+  {
+    "class": "uk.ac.york.sepr4.object.quest.Quest",
+    "name": "Capture Derwent",
+    "startMessage": "It's time you tried to take on the Asbest-boss of Derwent",
+    "endMessage": "Nice one!",
+    "requires" : [],
+    "gives" : [],
+    "reward" : {
+      "class": "uk.ac.york.sepr4.object.item.Reward",
+      "xp":100,
+      "gold":1000,
+      "items": []
+    },
+    "targetEntityName":"Derwent College",
+    "isKillQuest":true
+  },
+  {
+    "class": "uk.ac.york.sepr4.object.quest.Quest",
+    "name": "CONGRATS!",
+    "startMessage": "CONGRATS!",
+    "endMessage": "CONGRATS!",
+    "requires" : [],
+    "gives" : [],
+    "reward" : {
+      "class": "uk.ac.york.sepr4.object.item.Reward",
+      "xp":100,
+      "gold":1000,
+      "items": []
+    },
+    "targetEntityName":"Finish the game",
     "isKillQuest":true
   }
 ]

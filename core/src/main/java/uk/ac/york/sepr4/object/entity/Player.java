@@ -5,11 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
-import uk.ac.york.sepr4.*;
+import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.building.College;
-import uk.ac.york.sepr4.object.item.Item;
 import uk.ac.york.sepr4.object.item.Reward;
 
 import java.util.ArrayList;
@@ -19,11 +18,9 @@ import java.util.List;
 public class Player extends LivingEntity implements InputProcessor {
 
     private Integer balance = 0, xp = 0, level = 1;
-    private List<Item> inventory = new ArrayList<>();
 
     private List<College> captured = new ArrayList<>();
     private boolean turningLeft, turningRight, tripleShot = false;
-    private double bulletDamage = 5;
 
 
     public Player(Vector2 pos) {
@@ -39,7 +36,7 @@ public class Player extends LivingEntity implements InputProcessor {
         setMaxHealth(20.0);
         setHealth(getMaxHealth());
         setMaxSpeed(100f);
-        setDamage(0.5);
+        setDamage(5.0);
     }
 
     @Override
@@ -95,9 +92,6 @@ public class Player extends LivingEntity implements InputProcessor {
     public void addXP(Integer val) {
         xp+=val;
     }
-    public void addItems(List<Item> items) {
-        inventory.addAll(items);
-    }
 
 
     //Added for Assessment 3: Allow interaction with shops
@@ -110,6 +104,7 @@ public class Player extends LivingEntity implements InputProcessor {
     }
 
     public void updateHealthBar(){
+        getHealthBar().setVisible(false);
         setHealthBar(new HealthBar(this));
     }
     //Methods below for taking keyboard input from player.

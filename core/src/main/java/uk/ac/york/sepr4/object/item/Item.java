@@ -7,11 +7,13 @@ public class Item {
 
     private String name;
     private String lore;
+    private Double damageMultiplier;
 
     public Item() {}
 
-    public Item(String name, String lore) {
+    public Item(String name, String lore, Double damageMultiplier) {
         this.name = name;
         this.lore = lore;
+        this.damageMultiplier = damageMultiplier;
     }
 }

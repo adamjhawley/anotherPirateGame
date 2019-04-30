@@ -6,23 +6,34 @@ import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.hud.HealthBar;
+import uk.ac.york.sepr4.object.item.Item;
+import uk.ac.york.sepr4.object.item.ItemManager;
 import uk.ac.york.sepr4.utils.AIUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public abstract class LivingEntity extends Entity {
 
-    private Double health = 20.0, maxHealth = 20.0, damage = 5.0;
-    private boolean isAccelerating, isBraking, isDead, isDying;
+    private Double health = 20.0, maxHealth = 20.0, damage = 5.0, crewMember = 0.0;
+    private boolean isAccelerating, isBraking, isDead, isDying, amISpecial;
     private float turningSpeed = 2.3f;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f, angularSpeed = 0f, acceleration = 40f;
+
+    //Added for Assessment 4: Newest item stored so can be displayed in notification.
+    private long newItemTime = 0;
 
     //TODO: Better ways to monitor this
     private int collidedWithIsland = 0, colliedWithBoat = 0;
 
     private HealthBar healthBar;
+    private List<Item> inventory = new ArrayList<>();
+    private Item newItem;
 
     public LivingEntity(Texture texture, Vector2 pos) {
-        super(texture, pos);
+        super(texture, pos, false);
+
 
         this.healthBar = new HealthBar(this);
     }
@@ -118,7 +129,8 @@ public abstract class LivingEntity extends Entity {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
             if (currentCooldown >= reqCooldown) {
                 setCurrentCooldown(0f);
-                entityManager.getProjectileManager().spawnProjectile( this, getSpeed(), angle, damage);
+                amISpecial();
+                entityManager.getProjectileManager().spawnProjectile( this, getSpeed(), angle, damage, amISpecial);
                 entityManager.getAnimationManager().addFiringAnimation(this,angle - (float)Math.PI/2);
                 return true;
             }
@@ -137,11 +149,40 @@ public abstract class LivingEntity extends Entity {
         EntityManager entityManager = GameScreen.getInstance().getEntityManager();
         if (currentCooldown >= reqCooldown) {
             setCurrentCooldown(0f);
-            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle, damage);
-            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle + 0.15f, damage);
-            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle - 0.15f, damage);
+            amISpecial();
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle, damage, amISpecial);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle + 0.15f, damage,amISpecial);
+            entityManager.getProjectileManager().spawnProjectile(this, getSpeed(), angle - 0.15f, damage,amISpecial);
             return true;
         }
         return false;
+    }
+
+    //Changed for Assessment 4: addItems now saves new items so that a notification can be displayed on screen.
+    public void addItems(List<Item> items) {
+        if (!(items.isEmpty())) {
+            getInventory().addAll(items);
+            itemEffects(items);
+            this.newItemTime = System.currentTimeMillis();
+            this.newItem = items.get(0);
+        }
+    }
+
+    public void itemEffects (List<Item> items) {
+        for (Item item : items) {
+            setDamage(getDamage()*item.getDamageMultiplier());
+        }
+    }
+
+    /**
+     * Added for Assessment 4: Method for testing if a LivingEntity has a Crew Member on board and hence, should have different projectile type.
+     */
+    public void amISpecial() {
+        ItemManager itemManager = GameScreen.getInstance().getItemManager();
+
+       // Item testItem = new Item("Crew Member", "");
+        if (this.inventory.contains(itemManager.retrieveItem("Crew Member"))){
+            amISpecial = true;
+        }
     }
 }

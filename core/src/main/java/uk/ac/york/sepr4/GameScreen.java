@@ -18,19 +18,23 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import lombok.Setter;
-import uk.ac.york.sepr4.object.building.College;
-import uk.ac.york.sepr4.object.building.ShopUI;
-import uk.ac.york.sepr4.object.entity.*;
-import uk.ac.york.sepr4.object.PirateMap;
-import uk.ac.york.sepr4.object.building.BuildingManager;
-import uk.ac.york.sepr4.object.item.Reward;
-import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.hud.HUD;
 import uk.ac.york.sepr4.hud.HealthBar;
+import uk.ac.york.sepr4.object.PirateMap;
+import uk.ac.york.sepr4.object.building.BuildingManager;
+import uk.ac.york.sepr4.object.building.ShopUI;
+import uk.ac.york.sepr4.object.entity.EntityManager;
+import uk.ac.york.sepr4.object.entity.LivingEntity;
+import uk.ac.york.sepr4.object.entity.NPCBoat;
+import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.object.item.ItemManager;
+import uk.ac.york.sepr4.object.item.Reward;
 import uk.ac.york.sepr4.object.projectile.Projectile;
+import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.utils.AIUtil;
+
 import javax.naming.NameNotFoundException;
+import java.util.Random;
 
 /**
  * GameScreen is main game class. Holds data related to current player including the
@@ -50,8 +54,7 @@ public class GameScreen implements Screen, InputProcessor {
     private boolean gameOver = false;
     @Getter @Setter
     private boolean inDerwentBeforeEnd;
-    // New for A4
-    public boolean weatherEffect = false;
+
 
     @Getter
     private OrthographicCamera orthographicCamera;
@@ -59,7 +62,7 @@ public class GameScreen implements Screen, InputProcessor {
     @Getter
     PirateMap pirateMap;
     private TiledMapRenderer tiledMapRenderer;
-
+    @Getter
     private ItemManager itemManager;
     @Getter
     private EntityManager entityManager;
@@ -83,6 +86,12 @@ public class GameScreen implements Screen, InputProcessor {
     private ShapeRenderer shapeRenderer;
 
     public static boolean DEBUG = false;
+
+    //Added for assessment 4
+    private Integer weatherDuration;
+    private Random randInt = new Random();
+    private Integer XpCounter= 0;
+    public boolean weatherEffect = false;
 
 
     public static GameScreen getInstance() {
@@ -154,7 +163,6 @@ public class GameScreen implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        // New for A4
         // Shaperenderer for weather effect
         shapeRenderer = new ShapeRenderer();
 
@@ -265,13 +273,61 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
-        // New for A4
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
+	    
+	    //Added for Assessment 4 weather system and Xp incrementer
+        updateWeather(player);
+        Integer XpMultiple = 1;
+        if (weatherEffect ){XpMultiple = 2;}
+
+
+        updatePlayerXP(player, XpMultiple);
+        // If the weather effect is required, call the weather renderer
 
     }
-    
-    // New for A4
+    //Added for Assessment 4
+     /**
+     * Gives the player XP overtime
+     */
+    public void updatePlayerXP(Player player, int multiple){
+        if (this.XpCounter < 60){
+            this.XpCounter += 1;
+        }else{
+            player.addXP((1 * multiple));
+            this.XpCounter = 0;
+        }
+    }
+
+    //Added for Assessment 4
+    /**
+     * Updates the weather to active or un-active and handles damage
+     */
+    public void updateWeather(Player player){
+
+        if (weatherEffect && !(weatherDuration == 0)){
+            //player.setHealth(player.getHealth() - 0.005);
+            player.damage(0.005);
+            if (player.getHealth() < 0) {
+                player.kill(false);
+            }
+            weatherDuration -= 1;
+            if (weatherDuration == 0){
+                weatherEffect = false;
+            }
+        }else{
+            Integer weatherChance = randInt.nextInt(1000);
+            if (weatherChance < 1) {
+                weatherEffect = true;
+                weatherDuration = randInt.nextInt(1000);
+                weatherDuration += 120;
+
+            }
+
+
+        }
+    }
+    //Added for Assessment 4
     private void weatherRenderer() {
         // Renders a transluscent box over the screen
         Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -369,12 +425,25 @@ public class GameScreen implements Screen, InputProcessor {
                             if(livingEntity instanceof NPCBoat) {
                                 Gdx.app.debug("GameScreen", "NPCBoat died.");
                                 NPCBoat npcBoat = (NPCBoat) livingEntity;
-                                Reward reward = itemManager.generateReward();
+                                Reward reward = itemManager.generateReward(null);
                                 reward.setGold(reward.getGold() + (int)npcBoat.getDifficulty());
                                 reward.setXp(reward.getXp() + (int)npcBoat.getDifficulty());
                                 player.issueReward(reward);
                                 //if dead NPC is a boss then player can capture its respective college
-                                if(npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                if (npcBoat.isBoss() && npcBoat.getAllied().isPresent()) {
+                                    //Added for Assessment 4: Quest implementation
+                                    // find if college is part of quest
+                                    // First null check is to avoid null pointer errors when checking the current quest
+                                    // The second predicate ensures the quest is a kill quest since this is section is checking whether a kill also completed a quest
+                                    if ((this.questManager.getCurrentQuest() != null) && (this.questManager.getCurrentQuest().getIsKillQuest())) {
+                                        //Compares the current target of the kill quest vs. the name of the allied college of the npc
+                                        //We use string matching here because quests do not store targets as College instances but as Strings for their name
+                                        if (this.questManager.getCurrentQuest().getTargetEntityName().equals(npcBoat.getAllied().get().getName())) {
+                                            this.questManager.finishCurrentQuest();
+                                            //Rewards player with a crew member for completing quest.
+                                            player.issueReward(itemManager.generateReward(itemManager.retrieveItem("Crew Member")));
+                                        }
+                                    }
                                     player.capture(npcBoat.getAllied().get());
                                 }
                             } else {
@@ -464,11 +533,11 @@ public class GameScreen implements Screen, InputProcessor {
             Gdx.app.debug("GameScreen", "Firing: Click at (rad) " + fireAngle);
 	    //Added for Assessment 3: Allow player to use triple shot
             if (player.isTripleShot()) {
-                if (player.tripleFire(fireAngle, player.getBulletDamage())) {
+                if (player.tripleFire(fireAngle, player.getDamage())) {
                     Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
                 }
             }
-            else if (player.fire(fireAngle, player.getBulletDamage())) {
+            else if (player.fire(fireAngle, player.getDamage())) {
                 Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
             }
             return true;

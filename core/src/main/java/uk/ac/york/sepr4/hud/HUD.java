@@ -17,6 +17,7 @@ import uk.ac.york.sepr4.object.building.Building;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.building.Department;
 import uk.ac.york.sepr4.object.entity.Player;
+import uk.ac.york.sepr4.object.quest.QuestManager;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -25,17 +26,20 @@ public class HUD {
 
     private final TextButton btnMenu;
     private GameScreen gameScreen;
+    private QuestManager questManager;
 
     //Added for Assessment 3: Many labels and tables for the different features added in HUD
-    // New for A4: weatherLabel
+    //Added for Assessment 4: Weather, quest and new item labels.
     private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
     healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel,
     jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel,
-            weatherLabel;
+            weatherLabel, questLabel, newItemLabel;
 
     @Getter
     private Table table, gameoverTable, inDerwentBeforeEndTable, collegeTable, departmentPromptTable, pausedTable, minigamePromptTable;
 
+    //Added for Assessment 4: Timers for quest management.
+    private long endMessageShowTime, startMessageShowTime, gameStartTime;
     /***
      * Class responsible for storing and updating HUD variables.
      * Creates table which is drawn to the stage!
@@ -43,6 +47,14 @@ public class HUD {
      */
     public HUD(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
+
+        //Added for Assessment 4: Quest manager and more timings for quest label.
+        this.questManager = gameScreen.getQuestManager();
+
+        //Amount of time in ms to show the end of quest message
+        this.gameStartTime = System.currentTimeMillis();
+        this.endMessageShowTime = 3000;
+        this.startMessageShowTime = 3000;
 
         //define a table used to organize our hud's labels
         table = new Table();
@@ -61,14 +73,20 @@ public class HUD {
         locationLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
         captureStatus = new Label("", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
 
-	//Added for Assessment 3: Health counter
+	    //Added for Assessment 3: Health counter
         healthLabel = new Label("Health", new Label.LabelStyle(new BitmapFont(), Color.BLACK));
         healthvalueLable= new Label("", new Label.LabelStyle(new BitmapFont(), Color.BLUE));
 
-        // New for A4
+        //Assessment 4: Weather label
         weatherLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.RED));
 
-	//Added for Assessment 3: Menu button
+        //Added for Assessment 4: Quest label
+        questLabel = new Label("QUEST", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
+
+        //Added for Assessment 4: New Item Label
+        newItemLabel = new Label("NEW_ITEM", new Label.LabelStyle(new BitmapFont(), Color.CORAL));
+
+	    //Added for Assessment 3: Menu button
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
         btnMenu = new TextButton("Menu", skin);
         btnMenu.addListener(new ChangeListener() {
@@ -93,10 +111,12 @@ public class HUD {
 
         table.add(healthvalueLable).expandX();
 
-        // New for A4
+        //Added for Assessment 4: Weather and quest labels
         table.add(weatherLabel).expandX();
 
+        table.add(questLabel).expandX();
 
+        table.add(newItemLabel).expandX();
 
         //Assessment 3: print pause during paused state
 
@@ -230,12 +250,57 @@ public class HUD {
         minigamePromptTable.setVisible(gameScreen.isNearMinigame());
         inDerwentBeforeEndTable.setVisible(gameScreen.isInDerwentBeforeEnd());
 
-        // New for A4
+        //Assessment 4: Weather label
         if (gameScreen.weatherEffect) {
             weatherLabel.setText("You are in bad weather!");
         } else {
             weatherLabel.setText("");
         }
+
+        //Added for Assessment 4: Quest label, Quest message, New Item label and update New Item messag, New Item label and update New Item message method.
+        questLabel.setText(updateQuestMessage());
+        newItemLabel.setText(updateNewItem());
     }
 
+    /**
+     * Checks to see if the most recently completed quest was completed within the time specified by the
+     * endMessageShowTime variable, if it was then it returns the completed message's end message.
+     * @return String containing the actual message.
+     */
+    private String updateQuestMessage(){
+        String msg;
+        //The whole method works based on comparisons between System.currentTimeMillis() and the two constants
+        //start(and end)MessageShowtime
+        if (System.currentTimeMillis()<this.gameStartTime+startMessageShowTime){
+            //If the game has started but hasn't been running for longer than the startMessageShowTime
+            msg = this.questManager.getCurrentQuest().getStartMessage();
+        }
+        //This section manages the quest completion message from the most recently completed quest.
+        else if (this.questManager.getLastQuest() != null){
+            long timeSinceLastQuestCompletion = System.currentTimeMillis() - this.questManager.getLastQuest().getTimeCompleted();
+            if (timeSinceLastQuestCompletion <endMessageShowTime) {
+                msg = this.questManager.getLastQuest().getEndMessage();
+            }
+            else if (timeSinceLastQuestCompletion < startMessageShowTime + endMessageShowTime && this.questManager.getCurrentQuest() != null){
+                msg = this.questManager.getCurrentQuest().getStartMessage();
+            }
+            else {
+                msg = ("Active Quest: " + this.questManager.getQuestStatus());
+            }
+        }
+        else {
+            msg = ("Active Quest: " + this.questManager.getQuestStatus());
+        }
+        return msg;
+    }
+
+    //Added for Assessment 4: To show that the player has acquired a new item this checks for the player's newest item.
+    private String updateNewItem(){
+       String msg = "";
+       Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+       if (System.currentTimeMillis()< player.getNewItemTime()+startMessageShowTime){
+           msg = "NEW ITEM: " + player.getNewItem().getName();
+       }
+       return msg;
+    }
 }
