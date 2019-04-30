@@ -5,11 +5,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import lombok.Data;
-import uk.ac.york.sepr4.*;
+import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.hud.HealthBar;
 import uk.ac.york.sepr4.object.building.College;
-import uk.ac.york.sepr4.object.item.Item;
 import uk.ac.york.sepr4.object.item.Reward;
 
 import java.util.ArrayList;
@@ -93,9 +92,6 @@ public class Player extends LivingEntity implements InputProcessor {
     }
     public void addXP(Integer val) {
         xp+=val;
-    }
-    public void addItems(List<Item> items) {
-        super.getInventory().addAll(items);
     }
 
 

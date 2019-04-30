@@ -20,12 +20,14 @@ public abstract class LivingEntity extends Entity {
     private boolean isAccelerating, isBraking, isDead, isDying, amISpecial;
     private float turningSpeed = 2.3f;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f, angularSpeed = 0f, acceleration = 40f;
+    private long newItemTime = 0;
 
     //TODO: Better ways to monitor this
     private int collidedWithIsland = 0, colliedWithBoat = 0;
 
     private HealthBar healthBar;
     private List<Item> inventory = new ArrayList<>();
+    private Item newItem;
 
     public LivingEntity(Texture texture, Vector2 pos) {
         super(texture, pos, false);
@@ -152,6 +154,14 @@ public abstract class LivingEntity extends Entity {
             return true;
         }
         return false;
+    }
+
+    public void addItems(List<Item> items) {
+        if (!(items.isEmpty())) {
+            getInventory().addAll(items);
+            this.newItemTime = System.currentTimeMillis();
+            this.newItem = items.get(0);
+        }
     }
 
     /**

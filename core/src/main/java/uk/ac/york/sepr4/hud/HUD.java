@@ -29,11 +29,11 @@ public class HUD {
     private QuestManager questManager;
 
     //Added for Assessment 3: Many labels and tables for the different features added in HUD
-    //Added for Assessment 4: Weather and quest labels.
+    //Added for Assessment 4: Weather, quest and new item labels.
     private Label goldLabel, goldValueLabel, xpLabel, pausedLabel, xpValueLabel, locationLabel, captureStatus,
     healthLabel, healthvalueLable, gameoverLabel, inDerwentBeforeEndLabel, haliCollegeLabel, constCollegeLabel,
     jamesCollegeLabel, langCollegeLabel, derwentCollegeLabel, departmentPromptLabel, minigamePromptLabel,
-            weatherLabel, questLabel;
+            weatherLabel, questLabel, newItemLabel;
 
     @Getter
     private Table table, gameoverTable, inDerwentBeforeEndTable, collegeTable, departmentPromptTable, pausedTable, minigamePromptTable;
@@ -81,7 +81,10 @@ public class HUD {
         weatherLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.RED));
 
         //Added for Assessment 4: Quest label
-        questLabel = new Label("Test", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
+        questLabel = new Label("QUEST", new Label.LabelStyle(new BitmapFont(), Color.MAGENTA));
+
+        //Added for Assessment 4: New Item Label
+        newItemLabel = new Label("NEW_ITEM", new Label.LabelStyle(new BitmapFont(), Color.CORAL));
 
 	    //Added for Assessment 3: Menu button
         Skin skin = new Skin(Gdx.files.internal("default_skin/uiskin.json"));
@@ -112,6 +115,8 @@ public class HUD {
         table.add(weatherLabel).expandX();
 
         table.add(questLabel).expandX();
+
+        table.add(newItemLabel).expandX();
 
         //Assessment 3: print pause during paused state
 
@@ -252,8 +257,9 @@ public class HUD {
             weatherLabel.setText("");
         }
 
-        //Added for Assessment 4: Quest label and Quest message method.
+        //Added for Assessment 4: Quest label, Quest message, New Item label and update New Item messag, New Item label and update New Item message method.
         questLabel.setText(updateQuestMessage());
+        newItemLabel.setText(updateNewItem());
     }
 
     /**
@@ -286,5 +292,14 @@ public class HUD {
             msg = ("Active Quest: " + this.questManager.getQuestStatus());
         }
         return msg;
+    }
+
+    private String updateNewItem(){
+       String msg = "";
+       Player player = gameScreen.getEntityManager().getOrCreatePlayer();
+       if (System.currentTimeMillis()< player.getNewItemTime()+startMessageShowTime){
+           msg = "NEW ITEM: " + player.getNewItem().getName();
+       }
+       return msg;
     }
 }
