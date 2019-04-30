@@ -163,6 +163,7 @@ public class GameScreen implements Screen, InputProcessor {
         inputMultiplexer.addProcessor(entityManager.getOrCreatePlayer());
         Gdx.input.setInputProcessor(inputMultiplexer);
 
+        //Added for assessment 4
         // Shaperenderer for weather effect
         shapeRenderer = new ShapeRenderer();
 
@@ -273,6 +274,7 @@ public class GameScreen implements Screen, InputProcessor {
             }
         }
 
+        // Added for assessment 4
         // If the weather effect is required, call the weather renderer
         if (this.weatherEffect) { weatherRenderer(); }
 	    
@@ -281,9 +283,7 @@ public class GameScreen implements Screen, InputProcessor {
         Integer XpMultiple = 1;
         if (weatherEffect ){XpMultiple = 2;}
 
-
         updatePlayerXP(player, XpMultiple);
-        // If the weather effect is required, call the weather renderer
 
     }
     //Added for Assessment 4
@@ -329,7 +329,7 @@ public class GameScreen implements Screen, InputProcessor {
     }
     //Added for Assessment 4
     private void weatherRenderer() {
-        // Renders a transluscent box over the screen
+        // Renders a translucent box over the screen
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
