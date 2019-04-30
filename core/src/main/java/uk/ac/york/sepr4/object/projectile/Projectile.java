@@ -3,8 +3,6 @@ package uk.ac.york.sepr4.object.projectile;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import uk.ac.york.sepr4.TextureManager;
 import uk.ac.york.sepr4.object.entity.Entity;
 import uk.ac.york.sepr4.object.entity.LivingEntity;
@@ -28,7 +26,6 @@ public class Projectile extends Entity {
 
         //Added for Assessment 4
         if (amISpecial){
-            damage *= 2;
             baseSpeed *= 2;
         }
 
@@ -53,7 +50,6 @@ public class Projectile extends Entity {
 
         //Added for Assessment 4
         if (amISpecial){
-            damage *= 2;
             baseSpeed *= 2;
         }
 

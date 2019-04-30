@@ -162,8 +162,15 @@ public abstract class LivingEntity extends Entity {
     public void addItems(List<Item> items) {
         if (!(items.isEmpty())) {
             getInventory().addAll(items);
+            itemEffects(items);
             this.newItemTime = System.currentTimeMillis();
             this.newItem = items.get(0);
+        }
+    }
+
+    public void itemEffects (List<Item> items) {
+        for (Item item : items) {
+            setDamage(getDamage()*item.getDamageMultiplier());
         }
     }
 

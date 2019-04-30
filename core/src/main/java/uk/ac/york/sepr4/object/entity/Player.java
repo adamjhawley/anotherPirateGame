@@ -21,7 +21,6 @@ public class Player extends LivingEntity implements InputProcessor {
 
     private List<College> captured = new ArrayList<>();
     private boolean turningLeft, turningRight, tripleShot = false;
-    private double bulletDamage = 5;
 
 
     public Player(Vector2 pos) {
@@ -37,7 +36,7 @@ public class Player extends LivingEntity implements InputProcessor {
         setMaxHealth(20.0);
         setHealth(getMaxHealth());
         setMaxSpeed(100f);
-        setDamage(0.5);
+        setDamage(5.0);
     }
 
     @Override

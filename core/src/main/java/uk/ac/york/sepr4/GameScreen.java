@@ -18,18 +18,21 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import lombok.Getter;
 import lombok.Setter;
-import uk.ac.york.sepr4.object.building.College;
-import uk.ac.york.sepr4.object.building.ShopUI;
-import uk.ac.york.sepr4.object.entity.*;
-import uk.ac.york.sepr4.object.PirateMap;
-import uk.ac.york.sepr4.object.building.BuildingManager;
-import uk.ac.york.sepr4.object.item.Reward;
-import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.hud.HUD;
 import uk.ac.york.sepr4.hud.HealthBar;
+import uk.ac.york.sepr4.object.PirateMap;
+import uk.ac.york.sepr4.object.building.BuildingManager;
+import uk.ac.york.sepr4.object.building.ShopUI;
+import uk.ac.york.sepr4.object.entity.EntityManager;
+import uk.ac.york.sepr4.object.entity.LivingEntity;
+import uk.ac.york.sepr4.object.entity.NPCBoat;
+import uk.ac.york.sepr4.object.entity.Player;
 import uk.ac.york.sepr4.object.item.ItemManager;
+import uk.ac.york.sepr4.object.item.Reward;
 import uk.ac.york.sepr4.object.projectile.Projectile;
+import uk.ac.york.sepr4.object.quest.QuestManager;
 import uk.ac.york.sepr4.utils.AIUtil;
+
 import javax.naming.NameNotFoundException;
 import java.util.Random;
 
@@ -530,11 +533,11 @@ public class GameScreen implements Screen, InputProcessor {
             Gdx.app.debug("GameScreen", "Firing: Click at (rad) " + fireAngle);
 	    //Added for Assessment 3: Allow player to use triple shot
             if (player.isTripleShot()) {
-                if (player.tripleFire(fireAngle, player.getBulletDamage())) {
+                if (player.tripleFire(fireAngle, player.getDamage())) {
                     Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
                 }
             }
-            else if (player.fire(fireAngle, player.getBulletDamage())) {
+            else if (player.fire(fireAngle, player.getDamage())) {
                 Gdx.app.debug("GameScreen", "Firing: Error! (cooldown?)");
             }
             return true;

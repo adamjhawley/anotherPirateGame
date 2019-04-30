@@ -11,9 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import lombok.Getter;
 import uk.ac.york.sepr4.GameScreen;
 import uk.ac.york.sepr4.object.entity.Player;
-import lombok.Getter;
 
 import javax.naming.NameNotFoundException;
 
@@ -81,7 +81,7 @@ public class ShopUI {
                 new BitmapFont(), Color.BLACK));
         maxHealthLabel = new Label("Max Health: " + player.getMaxHealth().intValue(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
-        bulletDamage = new Label("Bullet Damage: " + (int)player.getBulletDamage(), new Label.LabelStyle(
+        bulletDamage = new Label("Bullet Damage: " + player.getDamage(), new Label.LabelStyle(
                 new BitmapFont(), Color.BLACK));
 
         table.add(shopLabel).colspan(3).center();
@@ -168,7 +168,7 @@ public class ShopUI {
             case "computer science":
                 if (finalI == 0) {
                     if (player.deduceBalance(100)) {
-                        player.setBulletDamage(player.getBulletDamage() + 1);
+                        player.setDamage(player.getDamage() + 1);
                     }
                 }
                 else if (finalI == 1) {
@@ -192,7 +192,7 @@ public class ShopUI {
         turningSpeedLabel.setText("TurningSpeed: " + player.getTurningSpeed());
         maxHealthLabel.setText("Health: " + player.getHealth().intValue());
         healthLabel.setText("MaxHealth: " + player.getMaxHealth().intValue());
-        bulletDamage.setText("BulletDamage: "+ (int) player.getBulletDamage());
+        bulletDamage.setText("Damage: "+  player.getDamage());
     }
 
 
