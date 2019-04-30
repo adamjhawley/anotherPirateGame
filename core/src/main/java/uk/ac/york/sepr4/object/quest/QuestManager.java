@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.Json;
 import lombok.Data;
 import uk.ac.york.sepr4.object.building.College;
 import uk.ac.york.sepr4.object.entity.EntityManager;
-import uk.ac.york.sepr4.object.entity.Player;
 
 import java.util.ArrayList;
 
@@ -25,8 +24,8 @@ public class QuestManager {
         Json json = new Json();
         this.questList= json.fromJson(Array.class, Quest.class, Gdx.files.internal("quests.json"));
         this.questList.reverse();
-        this.chooseQuest();
         allQuestsCompleted = false;
+        this.chooseQuest();
         capturedColleges = new ArrayList<>();
 
     }
@@ -38,6 +37,7 @@ public class QuestManager {
         if (this.questList.size !=0) {
             this.currentQuest = this.questList.pop();
             this.currentQuest.setIsStarted(true);
+            Gdx.app.log("QuestManager", "Quest selected: " + this.getCurrentQuest().getName());
             return this.currentQuest;
         }
         return null;
@@ -50,12 +50,12 @@ public class QuestManager {
         this.currentQuest.setIsCompleted(true);
         this.lastQuest = this.currentQuest;
         this.questList.removeValue(this.currentQuest,true);
+        Gdx.app.log("QuestManager","Quest '" + getLastQuest().getName() + "' Completed");
         if (this.chooseQuest() == null){
             allQuestsCompleted = true;
         }else{
             allQuestsCompleted = false;
         }
-        System.out.println("Quest is complete");
     }
 
     public Quest getCurrentQuest(){
