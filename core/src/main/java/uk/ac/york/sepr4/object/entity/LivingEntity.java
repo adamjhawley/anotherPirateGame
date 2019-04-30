@@ -20,6 +20,8 @@ public abstract class LivingEntity extends Entity {
     private boolean isAccelerating, isBraking, isDead, isDying, amISpecial;
     private float turningSpeed = 2.3f;
     private float currentCooldown = 0f, reqCooldown = 0.5f, maxSpeed = 100f, angularSpeed = 0f, acceleration = 40f;
+
+    //Added for Assessment 4: Newest item stored so can be displayed in notification.
     private long newItemTime = 0;
 
     //TODO: Better ways to monitor this
@@ -156,6 +158,7 @@ public abstract class LivingEntity extends Entity {
         return false;
     }
 
+    //Changed for Assessment 4: addItems now saves new items so that a notification can be displayed on screen.
     public void addItems(List<Item> items) {
         if (!(items.isEmpty())) {
             getInventory().addAll(items);

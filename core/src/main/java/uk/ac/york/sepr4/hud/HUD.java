@@ -294,6 +294,7 @@ public class HUD {
         return msg;
     }
 
+    //Added for Assessment 4: To show that the player has acquired a new item this checks for the player's newest item.
     private String updateNewItem(){
        String msg = "";
        Player player = gameScreen.getEntityManager().getOrCreatePlayer();
